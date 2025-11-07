@@ -1,0 +1,35 @@
+@import '../../design-system/tokens/designTokens.css';
+
+.drag-handle {
+  position: absolute;
+  left: calc(-1 * var(--table-control-offset));
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: grab;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+  z-index: var(--z-index-controls);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+
+/* Show on row hover */
+.table-row:hover .drag-handle {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drag-handle:hover {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+

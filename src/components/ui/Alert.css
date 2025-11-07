@@ -1,0 +1,37 @@
+/* Alert Component Styles */
+
+.luna-alert {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-gray-400);
+  border: 1px solid var(--color-gray-200);
+  background: var(--color-gray-50);
+}
+
+.luna-alert__icon {
+  font-size: 1.25rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  color: var(--color-gray-600);
+}
+
+.luna-alert__content {
+  flex: 1;
+}
+
+.luna-alert__title {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.luna-alert__message {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+

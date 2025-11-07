@@ -1,0 +1,23 @@
+@import '../../tokens/designTokens.css';
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color var(--transition-normal);
+  margin: 0;
+  padding: 0;
+  color: var(--color-dark);
+}
+
+.icon-filled {
+  fill: currentColor;
+  stroke: none;
+}
+
+.icon-outline {
+  fill: none;
+  stroke: currentColor;
+}
+

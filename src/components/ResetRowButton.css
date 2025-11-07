@@ -1,0 +1,46 @@
+.reset-row-btn-component {
+  position: absolute;
+  right: -36px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #e0e0e0;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  z-index: 10000;
+  box-shadow: none;
+  padding: 0;
+}
+
+.reset-row-btn-component svg {
+  color: #666;
+  transition: color 0.2s ease;
+}
+
+.reset-row-btn-component:hover {
+  background: #f5f5f5;
+  border-color: #d0d0d0;
+}
+
+.reset-row-btn-component:hover svg {
+  color: #333;
+}
+
+.cargo-table tbody tr:hover .reset-row-btn-component {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.reset-row-btn-component:hover {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+

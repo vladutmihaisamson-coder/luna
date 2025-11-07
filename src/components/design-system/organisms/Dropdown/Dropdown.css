@@ -1,0 +1,46 @@
+@import '../../tokens/designTokens.css';
+
+.dropdown {
+  position: absolute;
+  z-index: var(--z-index-dropdown);
+  min-width: 120px;
+  max-width: 300px;
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--color-bg-white);
+  border: var(--border-width) solid var(--color-border-light);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-md);
+  isolation: isolate;
+}
+
+.dropdown-bottom {
+  top: 100%;
+  margin-top: var(--spacing-xs);
+}
+
+.dropdown-top {
+  bottom: 100%;
+  margin-bottom: var(--spacing-xs);
+  margin-top: 0;
+}
+
+.dropdown-align-left {
+  left: 0;
+}
+
+.dropdown-align-right {
+  right: 0;
+}
+
+.dropdown-align-center {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dropdown-list {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-xs) 0;
+}
+

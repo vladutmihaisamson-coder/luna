@@ -1,0 +1,47 @@
+/* Input Component Styles */
+
+.luna-input {
+  padding: 0.75rem 1.25rem;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  font-size: 0.9375rem;
+  font-family: var(--font-family-primary);
+  color: var(--color-text-primary);
+  background: white;
+  transition: all var(--transition-fast);
+  width: 100%;
+  max-width: 320px;
+}
+
+.luna-input::placeholder {
+  color: var(--color-text-light);
+}
+
+.luna-input:hover:not(:disabled) {
+  border-color: var(--color-text-primary);
+}
+
+.luna-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+.luna-input:disabled {
+  background: var(--color-gray-100);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+.luna-input--error {
+  border-color: var(--color-error);
+}
+
+.luna-input--error:focus {
+  box-shadow: 0 0 0 2px rgba(222, 53, 11, 0.1);
+}
+
+.luna-input--full-width {
+  max-width: none;
+}
+

@@ -1,0 +1,117 @@
+@import '../../tokens/designTokens.css';
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  border: var(--border-width) solid var(--color-border-light);
+  border-radius: var(--border-radius-sm);
+  background: var(--color-bg-white);
+  cursor: pointer;
+  padding: var(--spacing-sm) var(--spacing-md);
+  transition: all var(--transition-normal);
+  box-shadow: none;
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-primary);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  width: auto;
+  min-width: auto;
+}
+
+.button:focus {
+  outline: none;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Sizes */
+.button-sm {
+  height: var(--size-button-sm);
+  min-width: var(--size-button-sm);
+  padding: var(--spacing-xs);
+}
+
+.button-md {
+  height: var(--size-button-md);
+  min-width: var(--size-button-md);
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.button-lg {
+  height: var(--size-button-lg);
+  min-width: var(--size-button-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+/* Variants */
+.button-default {
+  border-color: var(--color-border-light);
+  background: var(--color-bg-white);
+}
+
+.button-default:hover:not(:disabled) {
+  background: var(--color-bg-light);
+  border-color: var(--color-border-medium);
+}
+
+.button-primary {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: white;
+}
+
+.button-primary:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
+.button-danger {
+  border-color: var(--color-error-border);
+  background: var(--color-error-light);
+}
+
+.button-danger:hover:not(:disabled) {
+  background: var(--color-error-hover-light);
+  border-color: var(--color-error-border);
+}
+
+.button-ghost {
+  border-color: transparent;
+  background: transparent;
+}
+
+.button-ghost:hover:not(:disabled) {
+  background: var(--color-bg-light);
+  border-color: var(--color-border-light);
+}
+
+.button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.button-content {
+  flex: 1;
+}
+
+.button-with-icon.button-sm .button-icon,
+.button-with-icon.button-md .button-icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

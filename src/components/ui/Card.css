@@ -1,0 +1,32 @@
+/* Card Component Styles */
+
+.luna-card {
+  background: white;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+}
+
+.luna-card--hoverable:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-default);
+}
+
+/* Variants */
+.luna-card--default {
+  /* Default styling already applied above */
+}
+
+.luna-card--accent {
+  border-top-width: 3px;
+  border-top-color: var(--color-gray-300);
+}
+
+.luna-card--subtle {
+  background: var(--color-gray-50);
+  border-color: var(--color-gray-200);
+}
+

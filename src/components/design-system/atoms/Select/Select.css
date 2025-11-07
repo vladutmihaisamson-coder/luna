@@ -1,0 +1,28 @@
+@import '../../tokens/designTokens.css';
+
+.select {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  padding: var(--spacing-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-sizing: border-box;
+}
+
+.select:focus {
+  background: transparent;
+}
+
+.select-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

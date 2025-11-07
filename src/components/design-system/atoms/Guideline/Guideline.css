@@ -1,0 +1,80 @@
+@import '../../tokens/designTokens.css';
+
+.guideline {
+  position: absolute;
+  z-index: var(--z-index-controls);
+  cursor: move;
+  pointer-events: auto;
+}
+
+.guideline-horizontal {
+  border-top: 1px dashed var(--color-primary);
+  background: transparent;
+  height: 1px;
+}
+
+.guideline-vertical {
+  border-left: 1px dashed var(--color-primary);
+  background: transparent;
+  width: 1px;
+}
+
+.guideline-handle {
+  position: absolute;
+  background: var(--color-primary);
+  border-radius: var(--border-radius-round);
+  cursor: grab;
+  transition: transform var(--transition-fast), background var(--transition-fast);
+  pointer-events: auto;
+}
+
+.guideline-horizontal .guideline-handle {
+  width: 12px;
+  height: 12px;
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.guideline-vertical .guideline-handle {
+  width: 12px;
+  height: 12px;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.guideline-drag-area {
+  position: absolute;
+  pointer-events: auto;
+  cursor: grab;
+}
+
+.guideline-horizontal .guideline-drag-area {
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 16px;
+}
+
+.guideline-vertical .guideline-drag-area {
+  left: -8px;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+}
+
+.guideline:hover .guideline-handle,
+.guideline:active .guideline-handle {
+  transform: translate(-50%, -50%) scale(1.2);
+  background: var(--color-primary-hover);
+}
+
+.guideline:active {
+  cursor: grabbing;
+}
+
+.guideline:active .guideline-drag-area {
+  cursor: grabbing;
+}
+

@@ -1,0 +1,50 @@
+/* Table Design Tokens */
+
+:root {
+  /* Colors */
+  --table-border-color: #e0e0e0;
+  --table-border-hover: #d0d0d0;
+  --table-border-dark: #666;
+  --table-border-medium: #ccc;
+  --table-text-primary: #1a1a1a;
+  --table-text-secondary: #666;
+  --table-bg-hover: #fafafa;
+  --table-bg-white: #ffffff;
+  --table-bg-light: #f5f5f5;
+  --table-color-primary: #0066ff;
+  
+  /* Spacing */
+  --table-cell-padding: 12px;
+  --table-cell-padding-small: 8px;
+  --table-row-min-height: 48px;
+  --table-input-min-height: 24px;
+  --table-control-spacing: 4px;
+  --table-button-size: 28px;
+  --table-button-size-small: 20px;
+  --table-icon-size: 10px;
+  
+  /* Typography */
+  --table-font-size: 14px;
+  --table-font-size-small: 13px;
+  --table-font-weight-normal: 400;
+  --table-font-weight-bold: 600;
+  
+  /* Borders */
+  --table-border-radius: 3px;
+  --table-border-radius-round: 50%;
+  --table-border-width: 1px;
+  --table-border-width-thick: 2px;
+  
+  /* Transitions */
+  --table-transition-fast: 0.15s ease;
+  --table-transition-normal: 0.2s ease;
+  
+  /* Z-index */
+  --table-z-index-controls: 10000;
+  --table-z-index-dropdown: 1000;
+  
+  /* Control offsets */
+  --table-control-offset: 36px;
+  --table-control-offset-small: 24px;
+}
+

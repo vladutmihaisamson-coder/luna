@@ -1,0 +1,28 @@
+@import '../../tokens/designTokens.css';
+
+.input {
+  width: 100%;
+  min-height: var(--size-input-min-height);
+  border: none;
+  background: transparent;
+  padding: var(--spacing-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  background: transparent;
+}
+
+.input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.input-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

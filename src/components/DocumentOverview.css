@@ -1,0 +1,108 @@
+.document-overview {
+  display: inline-block;
+}
+
+.document-preview {
+  position: relative;
+  width: 300px;
+  aspect-ratio: 21 / 29.7;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #e0e0e0;
+}
+
+.document-preview:focus {
+  outline: 2px solid #0066ff;
+  outline-offset: 2px;
+}
+
+.document-preview-content {
+  transform: scale(0.378);
+  transform-origin: top left;
+  width: 264.55%;
+  height: 264.55%;
+  pointer-events: none;
+}
+
+.document-info {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.document-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.document-metadata {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.document-id {
+  color: #666;
+  font-size: 13px;
+  font-weight: 400;
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+.metadata-separator {
+  color: #666;
+  user-select: none;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.document-date {
+  color: #666;
+  font-size: 13px;
+  font-weight: 400;
+  outline: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  cursor: default;
+  pointer-events: none;
+}
+
+.document-type-tag {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.document-type-tag .luna-badge {
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+}
+
+.document-type-tag[data-type="transport"] .luna-badge {
+  background: #0066ff !important;
+  color: white;
+}
+
+.document-type-tag[data-type="offer"] .luna-badge {
+  background: #10b981 !important;
+  color: white;
+}
+
+.document-type-tag[data-type="fattura"] .luna-badge {
+  background: #f59e0b !important;
+  color: white;
+}
+

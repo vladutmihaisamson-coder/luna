@@ -1,0 +1,160 @@
+.fattura-document {
+  width: 21cm;
+  height: 29.7cm;
+  padding: 1cm 1.2cm 1.5cm 1.2cm;
+  background: white;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  color: #1a1a1a;
+}
+
+.fattura-document .document-header {
+  margin-bottom: 24px;
+}
+
+.fattura-document .document-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: #1a1a1a;
+}
+
+.fattura-document .document-meta {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+}
+
+.fattura-document .document-number {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.fattura-document .document-meta-separator {
+  color: #666;
+  user-select: none;
+}
+
+.fattura-document .document-date {
+  font-weight: 600;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  user-select: none;
+  display: inline-block;
+  padding: 0 0 2px 0;
+  border-bottom: 1px solid transparent;
+}
+
+.fattura-document .document-date:hover {
+  color: #0066ff;
+  border-bottom-color: #0066ff;
+}
+
+.fattura-document .document-date:focus {
+  outline: none;
+  color: #0066ff;
+  border-bottom-color: #0066ff;
+}
+
+.fattura-document .document-date-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.fattura-document .document-section {
+  margin-bottom: 24px;
+  display: flex;
+  gap: 48px;
+}
+
+.fattura-document .party-info {
+  flex: 1;
+}
+
+.fattura-document .party-info h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #1a1a1a;
+}
+
+.fattura-document .party-info p {
+  font-size: 12px;
+  margin: 4px 0;
+  color: #666;
+}
+
+.fattura-document .fattura-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.fattura-document .fattura-table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.fattura-document .fattura-table td {
+  padding: 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.fattura-document .document-footer {
+  margin-top: auto;
+  padding-top: 32px;
+}
+
+.fattura-document .totals {
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.fattura-document .total-row {
+  display: flex;
+  gap: 24px;
+  width: 300px;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.fattura-document .total-row.total-final {
+  font-weight: 700;
+  font-size: 16px;
+  padding-top: 8px;
+  border-top: 2px solid #e0e0e0;
+  margin-top: 8px;
+}
+
+.fattura-document .signatures {
+  display: flex;
+  gap: 48px;
+  margin-top: 48px;
+}
+
+.fattura-document .signature-box {
+  flex: 1;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 16px;
+}
+
+.fattura-document .signature-box p {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+}
+

@@ -1,0 +1,28 @@
+/* Progress Component Styles */
+
+.luna-progress {
+  width: 100%;
+  background: var(--color-border-light);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.luna-progress--sm {
+  height: 4px;
+}
+
+.luna-progress--md {
+  height: 6px;
+}
+
+.luna-progress--lg {
+  height: 8px;
+}
+
+.luna-progress__bar {
+  height: 100%;
+  background-color: var(--color-primary);
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+

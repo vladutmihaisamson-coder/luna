@@ -1,0 +1,39 @@
+@import '../../tokens/designTokens.css';
+
+.textarea {
+  width: 100%;
+  min-height: var(--size-input-min-height);
+  max-width: 100%;
+  border: none;
+  background: transparent;
+  padding: var(--spacing-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+  outline: none;
+  display: block;
+  box-sizing: border-box;
+  resize: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+}
+
+.textarea:focus {
+  background: transparent;
+}
+
+.textarea::placeholder {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-normal);
+}
+
+.textarea-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

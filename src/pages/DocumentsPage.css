@@ -1,0 +1,39 @@
+.documents-page {
+  display: flex;
+  flex-direction: column;
+  padding: 48px;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+.documents-page-header {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.test-table-link {
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.test-table-link:hover {
+  background: #f5f5f5;
+  border-color: #d0d0d0;
+}
+
+.documents-page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 32px;
+  align-content: start;
+}
+

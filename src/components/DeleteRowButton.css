@@ -1,0 +1,40 @@
+.delete-row-btn-component {
+  position: absolute;
+  right: -36px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #e0e0e0;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+  box-shadow: none;
+  z-index: 10000;
+}
+
+.delete-row-btn-component:hover {
+  background: #fee;
+  border-color: #fcc;
+  box-shadow: none;
+}
+
+.delete-row-btn-component svg {
+  color: #c0392b;
+  transition: color 0.2s ease;
+}
+
+.delete-row-btn-component:hover svg {
+  color: #a93226;
+}
+
+.delete-row-btn-component:hover {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
