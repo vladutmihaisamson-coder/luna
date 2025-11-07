@@ -1,23 +1,6 @@
 @import '../../tokens/designTokens.css';
 
 .reset-button {
-  position: absolute;
-  right: calc(-1 * var(--table-control-offset));
-  top: 50%;
-  transform: translateY(-50%);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--transition-normal);
-  z-index: var(--z-index-controls);
-}
-
-.reset-button:hover {
-  opacity: 1 !important;
-  pointer-events: auto !important;
-}
-
-.table-row:hover .reset-button {
-  opacity: 1;
-  pointer-events: auto;
+  /* Positioning is handled by the RowActionButtons wrapper */
 }
 

@@ -1,11 +1,17 @@
 @import '../../design-system/tokens/designTokens.css';
+@import '../tokens/tableTokens.css';
 
 .editable-text-cell {
   width: 100%;
   max-width: 100%;
-  padding-top: calc(var(--spacing-md) + 2px) !important;
-  padding-bottom: calc(var(--spacing-md) + 1px) !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
   padding-left: var(--spacing-md) !important;
   padding-right: var(--spacing-md) !important;
+  transition: background-color var(--table-transition-normal);
+}
+
+.editable-text-cell:hover {
+  background-color: var(--table-bg-light);
 }
 

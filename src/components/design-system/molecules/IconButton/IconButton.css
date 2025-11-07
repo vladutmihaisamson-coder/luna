@@ -16,3 +16,15 @@
   padding: 0;
 }
 
+/* Primary icon button - icons should be white */
+.button-primary.icon-button .icon,
+.button-primary.icon-button .icon > * {
+  color: var(--color-white) !important;
+}
+
+/* Danger icon button - icons change to error color on hover */
+.button-danger.icon-button:hover:not(:disabled) .icon,
+.button-danger.icon-button:hover:not(:disabled) .icon > * {
+  color: var(--color-error-hover) !important;
+}
+

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { BackButton } from '../components/BackButton';
 import { TransportDocument } from '../components/TransportDocument';
 import { FatturaDocument } from '../components/FatturaDocument';
 import html2pdf from 'html2pdf.js';
@@ -73,15 +74,7 @@ export const DocumentViewPage = () => {
 
   return (
     <div className="document-view-page">
-      <button 
-        className="back-button" 
-        onClick={handleBack}
-        aria-label="Go back"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
-        </svg>
-      </button>
+      <BackButton onClick={handleBack} />
       
       <div className="action-buttons">
         {hasUnsavedChanges && (

@@ -305,18 +305,7 @@
   overflow: hidden;
 }
 
-.quantity-cell {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  position: relative;
-  width: 100%;
-  min-height: 100%;
-  padding: var(--spacing-md);
-  box-sizing: border-box;
-  min-width: 0;
-  padding-top: var(--spacing-md);
-}
+/* QuantityCell styles are now handled by the QuantityCell component itself */
 
 .cargo-table td:has(.quantity-cell) {
   padding: 0;
@@ -445,7 +434,7 @@
   background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
-.cargo-table td:has(.unit-input-wrapper) {
+.cargo-table td:has(.unit-cell) {
   padding: 0;
 }
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { BackButton } from '../components/BackButton';
 import { getAccessibilityRating } from '../utils/accessibility';
 import './ColorResearch.css';
 
@@ -18,8 +19,8 @@ function ColorResearch() {
 
   return (
     <div className="color-research">
+      <BackButton />
       <header className="color-header">
-        <Link to="/" className="back-link">← Back to Home</Link>
         <h1>Color Research Lab</h1>
         <p>Test and explore WCAG-compliant design system colors on different components</p>
       </header>

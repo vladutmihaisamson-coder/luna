@@ -30,37 +30,39 @@ export const UnitCell = ({
   };
 
   return (
-    <div ref={wrapperRef} className={`unit-input-wrapper ${isDropdownOpen ? 'dropdown-open' : ''} ${className}`}>
-      <div className="unit-input-label-wrapper">
-        <Input
-          type="text"
-          className="unit-input"
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-        />
-      </div>
-      <div className="unit-dropdown-controls">
-        <div className="unit-dropdown-button-wrapper">
-          <IconButton
-            icon="chevron-down"
-            size="md"
-            onClick={handleDropdownClick}
-            variant="ghost"
-            className="unit-dropdown-button"
-            aria-label="Open dropdown"
-            aria-expanded={isDropdownOpen}
+    <div ref={wrapperRef} className={`unit-cell ${isDropdownOpen ? 'dropdown-open' : ''} ${className}`}>
+      <div className="unit-input-and-controls-wrapper">
+        <div className="unit-input-label-wrapper">
+          <Input
+            type="text"
+            className="unit-input"
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
           />
-          <Dropdown
-            isOpen={isDropdownOpen}
-            onClose={handleDropdownClose}
-            options={options}
-            selectedValue={value}
-            onSelect={handleSelect}
-            position="bottom"
-            align="right"
-            className="unit-dropdown"
-          />
+        </div>
+        <div className="unit-dropdown-controls">
+          <div className="unit-dropdown-button-wrapper">
+            <IconButton
+              icon="chevron-down"
+              size="md"
+              onClick={handleDropdownClick}
+              variant="ghost"
+              className="unit-dropdown-button"
+              aria-label="Open dropdown"
+              aria-expanded={isDropdownOpen}
+            />
+            <Dropdown
+              isOpen={isDropdownOpen}
+              onClose={handleDropdownClose}
+              options={options}
+              selectedValue={value}
+              onSelect={handleSelect}
+              position="bottom"
+              align="right"
+              className="unit-dropdown"
+            />
+          </div>
         </div>
       </div>
     </div>

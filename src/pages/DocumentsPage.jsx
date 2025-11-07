@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { BackButton } from '../components/BackButton';
 import { DocumentOverview } from '../components/DocumentOverview';
 import { TransportDocument } from '../components/TransportDocument';
 import { OfferDocument } from '../components/OfferDocument';
@@ -8,6 +9,7 @@ import './DocumentsPage.css';
 export const DocumentsPage = () => {
   return (
     <div className="documents-page">
+      <BackButton />
       <div className="documents-page-header">
         <Link to="/table-components-showcase" className="test-table-link">
           Test Table

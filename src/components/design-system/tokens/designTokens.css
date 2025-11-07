@@ -22,6 +22,9 @@
   --color-bg-hover: #fafafa;
   --color-bg-disabled: #f0f0f0;
   
+  /* Text Colors - White */
+  --color-white: #ffffff;
+  
   /* Border Colors */
   --color-border-light: #e0e0e0;
   --color-border-medium: #d0d0d0;
@@ -46,6 +49,16 @@
   
   /* ===== RULER ===== */
   --ruler-size: 32px;
+  
+  /* ===== DOCUMENT ===== */
+  /* A4 dimensions at 96 DPI (standard web) */
+  --document-a4-width: 210mm;
+  --document-a4-height: 297mm;
+  --document-a4-width-px: 794px; /* 210mm at 96 DPI */
+  --document-a4-height-px: 1123px; /* 297mm at 96 DPI */
+  /* Padding should be large enough to fit table row LR buttons (36px offset) */
+  --document-padding: 40px;
+  --document-margin: var(--spacing-xl);
   
   /* ===== TYPOGRAPHY ===== */
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
@@ -72,6 +85,10 @@
   --border-radius-md: 6px;
   --border-radius-lg: 8px;
   --border-radius-round: 50%;
+  
+  /* ===== STROKES (Universal Subtle Stroke) ===== */
+  --stroke-weight-subtle: 1px;
+  --stroke-color-subtle: #e0e0e0;
   
   /* ===== SHADOWS ===== */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);

@@ -1,0 +1,55 @@
+@import '../../tokens/designTokens.css';
+
+.document {
+  position: relative;
+  background: var(--color-bg-white);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: var(--document-margin) auto;
+  box-sizing: border-box;
+  overflow: hidden;
+  /* Dimensions will be set via inline styles based on actual screen DPI */
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+/* Document content wrapper */
+.document-content {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Document with padding */
+.document-padding .document-content {
+  padding: var(--document-padding);
+}
+
+/* Responsive behavior */
+@media (max-width: 900px) {
+  .document {
+    width: 100% !important;
+    max-width: 100%;
+    margin: var(--spacing-md) auto;
+  }
+}
+
+/* Print styles */
+@media print {
+  .document {
+    box-shadow: none;
+    margin: 0;
+    page-break-after: always;
+    /* Use CSS mm units for print */
+  }
+  
+  .document-a4.document-portrait {
+    width: var(--document-a4-width);
+    height: var(--document-a4-height);
+  }
+  
+  .document-a4.document-landscape {
+    width: var(--document-a4-height);
+    height: var(--document-a4-width);
+  }
+}
+

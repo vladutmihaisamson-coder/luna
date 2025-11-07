@@ -1,4 +1,5 @@
 @import '../../design-system/tokens/designTokens.css';
+@import '../tokens/tableTokens.css';
 
 .quantity-cell {
   display: flex;
@@ -6,13 +7,17 @@
   justify-content: space-between;
   position: relative;
   width: 100%;
-  min-height: 100%;
-  padding-top: 7px;
+  padding-top: 6px;
   padding-bottom: 6px;
-  padding-left: var(--table-cell-padding);
-  padding-right: var(--table-cell-padding);
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
   box-sizing: border-box;
   min-width: 0;
+  transition: background-color var(--table-transition-normal);
+}
+
+.quantity-cell:hover {
+  background-color: var(--table-bg-light);
 }
 
 .quantity-input-wrapper {
@@ -22,7 +27,7 @@
   align-items: center;
   box-sizing: border-box;
   height: var(--size-button-md);
-  padding-top: calc((var(--size-button-md) - var(--font-size-md) * var(--line-height-normal)) / 2);
+  padding-top: 1px;
 }
 
 .quantity-input {
@@ -49,7 +54,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
-  margin-left: var(--table-cell-padding);
+  margin-left: var(--spacing-md);
   align-items: center;
   justify-content: center;
   opacity: 0;

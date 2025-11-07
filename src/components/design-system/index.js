@@ -21,4 +21,5 @@ export { ResetButton } from './molecules/ResetButton/ResetButton';
 // Organisms
 export { Dropdown } from './organisms/Dropdown/Dropdown';
 export { Rulers } from './organisms/Rulers/Rulers';
+export { Document } from './organisms/Document/Document';
 

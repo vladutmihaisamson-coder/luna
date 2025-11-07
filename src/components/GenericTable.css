@@ -1,0 +1,10 @@
+.generic-table-container {
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+/* GenericTable uses the same table styles */
+/* All table styling is handled by Table.css and table component CSS */
+

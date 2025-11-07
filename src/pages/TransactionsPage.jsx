@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { BackButton } from '../components/BackButton';
 import { Card, Badge } from '../components/ui';
 import './TransactionsPage.css';
 
@@ -35,8 +36,8 @@ function TransactionsPage() {
 
   return (
     <div className="transactions-page">
+      <BackButton />
       <header className="transactions-header">
-        <Link to="/" className="back-link">← Back to Home</Link>
         <h1>Transactions</h1>
         <p>View and manage your transactions</p>
       </header>

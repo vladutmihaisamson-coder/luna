@@ -13,6 +13,7 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
+  overflow: visible;
 }
 
 .page-header {
@@ -33,12 +34,68 @@
   text-decoration: none;
 }
 
+.icon-button-example {
+  margin-bottom: 60px;
+  overflow: visible;
+  position: relative;
+}
+
+.icon-button-example h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.icon-button-example > p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+}
+
+.icon-button-example-container {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.icon-button-example-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.icon-button-example-item h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.icon-button-example-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  min-height: 48px;
+  padding: 12px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.icon-button-example-value {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  font-family: monospace;
+}
+
 .table-cells-example {
   margin-bottom: 60px;
-  padding: 24px 60px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background: white;
   overflow: visible;
   position: relative;
 }
@@ -77,9 +134,6 @@
 }
 
 .cell-example-wrapper {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
   min-height: 48px;
   width: 100%;
   min-width: 200px;
@@ -99,12 +153,79 @@
   font-family: monospace;
 }
 
+.table-header-cell-example {
+  margin-bottom: 60px;
+  overflow: visible;
+  position: relative;
+}
+
+.table-header-cell-example h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.table-header-cell-example > p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+}
+
+.table-header-cell-example-container {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.table-header-cell-example-container .cell-example-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.table-header-cell-example-container .cell-example-item h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.table-header-cell-example-container .cell-example-wrapper {
+  min-height: 48px;
+  width: 100%;
+  min-width: 200px;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.table-header-cell-example-container .cargo-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  position: relative;
+  font-size: 14px;
+  overflow: visible;
+}
+
+.table-header-cell-example-container .cargo-table thead {
+  display: block;
+}
+
+.table-header-cell-example-container .cargo-table tr {
+  display: block;
+}
+
+.table-header-cell-example-container .cargo-table th {
+  display: block;
+  overflow: visible;
+}
+
 .table-header-example {
   margin-bottom: 60px;
-  padding: 24px 60px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background: white;
   overflow: visible;
   position: relative;
 }
@@ -127,7 +248,6 @@
   overflow-x: visible;
   overflow-y: visible;
   position: relative;
-  padding: 0 36px;
 }
 
 .table-header-example-container .cargo-table {
@@ -151,10 +271,6 @@
 
 .table-row-example {
   margin-bottom: 60px;
-  padding: 24px 60px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background: white;
   overflow: visible;
   position: relative;
 }
@@ -177,7 +293,7 @@
   overflow-x: visible;
   overflow-y: visible;
   position: relative;
-  padding: 0 36px;
+  padding-right: 0;
 }
 
 .table-row-example-container .cargo-table {
@@ -240,4 +356,110 @@
 .table-row-example-container .unit-cell-with-delete {
   position: relative;
   overflow: visible;
+}
+
+/* Remove padding from cells that contain cell components - matching Table.css */
+.table-row-example-container .cargo-table td:has(.editable-text-cell),
+.table-row-example-container .cargo-table td:has(.textarea) {
+  padding: 0;
+  overflow: visible;
+}
+
+.table-row-example-container .cargo-table td:has(.quantity-cell) {
+  padding: 0;
+}
+
+.table-row-example-container .cargo-table td:has(.unit-cell) {
+  padding: 0;
+}
+
+/* State label rows */
+.table-row-state-label {
+  background-color: #f5f5f5;
+  border-bottom: 2px solid #ddd;
+}
+
+.table-row-state-label:hover {
+  background-color: #f5f5f5;
+}
+
+.state-label-cell {
+  padding: 12px 16px !important;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+}
+
+.state-number {
+  display: inline-block;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-right: 8px;
+  min-width: 24px;
+}
+
+.state-description {
+  color: #666;
+}
+
+.table-component-example {
+  margin-bottom: 60px;
+  overflow: visible;
+  position: relative;
+}
+
+.table-component-example h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.table-component-example > p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+}
+
+.table-component-example-container {
+  width: 100%;
+  overflow-x: visible;
+  overflow-y: visible;
+  overflow: visible;
+  position: relative;
+  box-sizing: border-box;
+  /* Ensure buttons positioned outside table are visible */
+  margin-right: 36px;
+}
+
+.document-component-example {
+  margin-bottom: 60px;
+  overflow: visible;
+  position: relative;
+}
+
+.document-component-example h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.document-component-example > p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+}
+
+.document-component-example-container {
+  width: 100%;
+  max-width: none;
+  overflow: visible;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  /* Allow document to display at full calculated size */
+  min-width: 0;
 }

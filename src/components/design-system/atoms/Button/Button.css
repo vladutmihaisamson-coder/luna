@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-xs);
-  border: var(--border-width) solid var(--color-border-light);
+  border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
   border-radius: var(--border-radius-sm);
   background: var(--color-bg-white);
   cursor: pointer;
@@ -55,7 +55,7 @@
 
 /* Variants */
 .button-default {
-  border-color: var(--color-border-light);
+  border-color: var(--stroke-color-subtle);
   background: var(--color-bg-white);
 }
 
@@ -92,7 +92,7 @@
 
 .button-ghost:hover:not(:disabled) {
   background: var(--color-bg-light);
-  border-color: var(--color-border-light);
+  border-color: var(--stroke-color-subtle);
 }
 
 .button-icon {

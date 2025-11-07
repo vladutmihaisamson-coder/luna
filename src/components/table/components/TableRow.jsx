@@ -1,20 +1,21 @@
 import React from 'react';
-import { EditableTextCell } from './EditableTextCell';
-import { QuantityCell } from './QuantityCell';
-import { UnitCell } from './UnitCell';
-import { DragHandle } from './DragHandle';
-import { RowActionButtons } from './RowActionButtons';
+import { EditableTextCell } from './EditableTextCell.jsx';
+import { QuantityCell } from './QuantityCell.jsx';
+import { UnitCell } from './UnitCell.jsx';
+import { DragHandle } from './DragHandle.jsx';
+import { RowActionButtons } from './RowActionButtons.jsx';
 import './TableRow.css';
 
 export const TableRow = ({
   item,
   unitOptions = [],
-  canDelete = true,
+  actionButton = 'delete', // 'delete' | 'reset' | null - determines which button to show on the right side (default: 'delete')
   onUpdateItem,
   onIncrementQuantity,
   onDecrementQuantity,
   onDeleteItem,
   onResetRow,
+  defaultValues = { description: '', quantity: 1, unit: 'boxes' },
   className = ''
 }) => {
   const handleDescriptionChange = (value) => {
@@ -88,9 +89,14 @@ export const TableRow = ({
           placeholder="Unit"
         />
         <RowActionButtons
-          canDelete={canDelete}
+          actionButton={actionButton}
           onDelete={handleDelete}
           onReset={handleReset}
+          isDefault={
+            item.description === defaultValues.description &&
+            item.quantity === defaultValues.quantity &&
+            item.unit === defaultValues.unit
+          }
         />
       </td>
     </tr>

@@ -1,17 +1,47 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { TransportDocumentTable } from '../components/TransportDocumentTable';
-import { TableRow, TableHeader, EditableTextCell, QuantityCell, UnitCell } from '../components/table';
-import { Button } from '../components/design-system';
-import '../components/TransportDocumentTable.css';
+import { BackButton } from '../components/BackButton';
+import { Table } from '../components/Table';
+import { TableRow } from '../components/table/components/TableRow.jsx';
+import { TableHeader } from '../components/table/components/TableHeader.jsx';
+import { TableHeaderCell } from '../components/table/components/TableHeaderCell.jsx';
+import { EditableTextCell } from '../components/table/components/EditableTextCell.jsx';
+import { QuantityCell } from '../components/table/components/QuantityCell.jsx';
+import { UnitCell } from '../components/table/components/UnitCell.jsx';
+import { Button, IconButton, Document } from '../components/design-system';
 import './TestTablePage.css';
 
 export const TestTablePage = () => {
-  const [exampleItem, setExampleItem] = useState({
-    id: 'example-1',
-    description: 'Example item description',
+  // State 1: Row with delete button (default state - multiple rows in table)
+  const [state1Item, setState1Item] = useState({
+    id: 'state-1',
+    description: 'Sample item with delete button',
     quantity: 5,
     unit: 'boxes'
+  });
+
+  // State 2: Row with reset button (last row, not in default state)
+  const [state2Item, setState2Item] = useState({
+    id: 'state-2',
+    description: 'Last row with reset button',
+    quantity: 10,
+    unit: 'pieces'
+  });
+
+  // State 3: Row with no button (last row, reset to default values)
+  const [state3Item, setState3Item] = useState({
+    id: 'state-3',
+    description: '',
+    quantity: 1,
+    unit: 'boxes'
+  });
+
+  // State 4: Row with null actionButton (no button at all)
+  const [state4Item, setState4Item] = useState({
+    id: 'state-4',
+    description: 'Row with no action button',
+    quantity: 3,
+    unit: 'units'
   });
 
   const [cellExampleDescription, setCellExampleDescription] = useState('Sample description text');
@@ -20,39 +50,112 @@ export const TestTablePage = () => {
 
   const unitOptions = ['boxes', 'pallets', 'pieces', 'units', 'sets', 'set', 'unit', 'kg', 'tons', 'liters'];
 
+  const defaultValues = { description: '', quantity: 1, unit: 'boxes' };
+
   const handleUpdateItem = (id, field, value) => {
-    setExampleItem(prev => ({ ...prev, [field]: value }));
+    if (id === 'state-1') {
+      setState1Item(prev => ({ ...prev, [field]: value }));
+    } else if (id === 'state-2') {
+      setState2Item(prev => ({ ...prev, [field]: value }));
+    } else if (id === 'state-3') {
+      setState3Item(prev => ({ ...prev, [field]: value }));
+    } else if (id === 'state-4') {
+      setState4Item(prev => ({ ...prev, [field]: value }));
+    }
   };
 
-  const handleIncrementQuantity = () => {
-    setExampleItem(prev => ({ ...prev, quantity: (prev.quantity || 0) + 1 }));
+  const handleIncrementQuantity = (id) => {
+    if (id === 'state-1') {
+      setState1Item(prev => ({ ...prev, quantity: (prev.quantity || 0) + 1 }));
+    } else if (id === 'state-2') {
+      setState2Item(prev => ({ ...prev, quantity: (prev.quantity || 0) + 1 }));
+    } else if (id === 'state-3') {
+      setState3Item(prev => ({ ...prev, quantity: (prev.quantity || 0) + 1 }));
+    } else if (id === 'state-4') {
+      setState4Item(prev => ({ ...prev, quantity: (prev.quantity || 0) + 1 }));
+    }
   };
 
-  const handleDecrementQuantity = () => {
-    setExampleItem(prev => ({ ...prev, quantity: Math.max(0, (prev.quantity || 0) - 1) }));
+  const handleDecrementQuantity = (id) => {
+    if (id === 'state-1') {
+      setState1Item(prev => ({ ...prev, quantity: Math.max(0, (prev.quantity || 0) - 1) }));
+    } else if (id === 'state-2') {
+      setState2Item(prev => ({ ...prev, quantity: Math.max(0, (prev.quantity || 0) - 1) }));
+    } else if (id === 'state-3') {
+      setState3Item(prev => ({ ...prev, quantity: Math.max(0, (prev.quantity || 0) - 1) }));
+    } else if (id === 'state-4') {
+      setState4Item(prev => ({ ...prev, quantity: Math.max(0, (prev.quantity || 0) - 1) }));
+    }
   };
 
-  const handleDeleteItem = () => {
-    console.log('Delete item:', exampleItem.id);
+  const handleDeleteItem = (id) => {
+    console.log('Delete item:', id);
   };
 
-  const handleResetRow = () => {
-    setExampleItem({
-      id: 'example-1',
-      description: '',
-      quantity: 1,
-      unit: 'boxes'
-    });
+  const handleResetRow = (id) => {
+    if (id === 'state-1') {
+      setState1Item({ id: 'state-1', ...defaultValues });
+    } else if (id === 'state-2') {
+      setState2Item({ id: 'state-2', ...defaultValues });
+    } else if (id === 'state-3') {
+      setState3Item({ id: 'state-3', ...defaultValues });
+    } else if (id === 'state-4') {
+      setState4Item({ id: 'state-4', ...defaultValues });
+    }
   };
 
   return (
     <div className="test-table-page">
+      <BackButton />
       <div className="test-table-page-content">
         <div className="page-header">
           <h1>Test Table</h1>
           <Link to="/table-components-showcase" className="components-link">
             <Button variant="default">← Table Components Showcase</Button>
           </Link>
+        </div>
+        
+        {/* IconButton Component Examples */}
+        <div className="icon-button-example">
+          <h2>IconButton Component Examples</h2>
+          <p>Icon button component with different variants, sizes, and icons.</p>
+          <div className="icon-button-example-container">
+            <div className="icon-button-example-item">
+              <h3>Variants</h3>
+              <div className="icon-button-example-wrapper">
+                <IconButton icon="plus" variant="default" size="md" aria-label="Default" />
+                <IconButton icon="plus" variant="primary" size="md" aria-label="Primary" />
+                <IconButton icon="plus" variant="ghost" size="md" aria-label="Ghost" />
+                <IconButton icon="delete" variant="danger" size="md" aria-label="Danger" />
+              </div>
+              <p className="icon-button-example-value">default, primary, ghost, danger</p>
+            </div>
+            
+            <div className="icon-button-example-item">
+              <h3>Sizes</h3>
+              <div className="icon-button-example-wrapper">
+                <IconButton icon="plus" variant="default" size="sm" aria-label="Small" />
+                <IconButton icon="plus" variant="default" size="md" aria-label="Medium" />
+                <IconButton icon="plus" variant="default" size="lg" aria-label="Large" />
+              </div>
+              <p className="icon-button-example-value">sm, md, lg</p>
+            </div>
+            
+            <div className="icon-button-example-item">
+              <h3>Icons</h3>
+              <div className="icon-button-example-wrapper">
+                <IconButton icon="plus" variant="ghost" size="md" aria-label="Plus" />
+                <IconButton icon="minus" variant="ghost" size="md" aria-label="Minus" />
+                <IconButton icon="delete" variant="ghost" size="md" aria-label="Delete" />
+                <IconButton icon="reset" variant="ghost" size="md" aria-label="Reset" />
+                <IconButton icon="filter" variant="ghost" size="md" aria-label="Filter" />
+                <IconButton icon="chevron-down" variant="ghost" size="md" aria-label="Chevron Down" />
+                <IconButton icon="chevron-left" variant="ghost" size="md" aria-label="Chevron Left" />
+                <IconButton icon="x" variant="ghost" size="md" aria-label="Close" />
+              </div>
+              <p className="icon-button-example-value">plus, minus, delete, reset, filter, chevron-down, chevron-left, x</p>
+            </div>
+          </div>
         </div>
         
         {/* Example Cell Components */}
@@ -101,6 +204,26 @@ export const TestTablePage = () => {
           </div>
         </div>
 
+        {/* Example TableHeaderCell atom component */}
+        <div className="table-header-cell-example">
+          <h2>TableHeaderCell Component Example</h2>
+          <p>Atom component for individual table header cells.</p>
+          <div className="table-header-cell-example-container">
+            <div className="cell-example-item">
+              <h3>TableHeaderCell</h3>
+              <div className="cell-example-wrapper">
+                <table className="cargo-table">
+                  <thead>
+                    <tr>
+                      <TableHeaderCell>Title</TableHeaderCell>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Example TableHeader component */}
         <div className="table-header-example">
           <h2>TableHeader Component Example</h2>
@@ -115,27 +238,116 @@ export const TestTablePage = () => {
         {/* Example TableRow component */}
         <div className="table-row-example">
           <h2>TableRow Component Example</h2>
-          <p>Hover over the row to see the drag handle and delete button appear.</p>
+          <p>All possible row states that the TableRow component can display. Hover over the rows to see the drag handle and action buttons appear.</p>
           <div className="table-row-example-container">
             <table className="cargo-table">
               <TableHeader columns={['Description', 'Quantity', 'Unit']} />
               <tbody>
+                {/* State 1: Row with delete button (default state - multiple rows in table) */}
+                <tr className="table-row-state-label">
+                  <td colSpan="3" className="state-label-cell">
+                    <span className="state-number">1.</span>
+                    <span className="state-description">Row with delete button (default state - multiple rows in table)</span>
+                  </td>
+                </tr>
                 <TableRow
-                  item={exampleItem}
+                  item={state1Item}
                   unitOptions={unitOptions}
-                  canDelete={true}
+                  actionButton="delete"
                   onUpdateItem={handleUpdateItem}
                   onIncrementQuantity={handleIncrementQuantity}
                   onDecrementQuantity={handleDecrementQuantity}
                   onDeleteItem={handleDeleteItem}
                   onResetRow={handleResetRow}
+                  defaultValues={defaultValues}
+                />
+                
+                {/* State 2: Row with reset button (last row, not in default state) */}
+                <tr className="table-row-state-label">
+                  <td colSpan="3" className="state-label-cell">
+                    <span className="state-number">2.</span>
+                    <span className="state-description">Row with reset button (last row, not in default state)</span>
+                  </td>
+                </tr>
+                <TableRow
+                  item={state2Item}
+                  unitOptions={unitOptions}
+                  actionButton="reset"
+                  onUpdateItem={handleUpdateItem}
+                  onIncrementQuantity={handleIncrementQuantity}
+                  onDecrementQuantity={handleDecrementQuantity}
+                  onDeleteItem={handleDeleteItem}
+                  onResetRow={handleResetRow}
+                  defaultValues={defaultValues}
+                />
+                
+                {/* State 3: Row with no button (last row, reset to default values) */}
+                <tr className="table-row-state-label">
+                  <td colSpan="3" className="state-label-cell">
+                    <span className="state-number">3.</span>
+                    <span className="state-description">Row with no button (last row, reset to default values - actionButton="reset" and isDefault=true)</span>
+                  </td>
+                </tr>
+                <TableRow
+                  item={state3Item}
+                  unitOptions={unitOptions}
+                  actionButton="reset"
+                  onUpdateItem={handleUpdateItem}
+                  onIncrementQuantity={handleIncrementQuantity}
+                  onDecrementQuantity={handleDecrementQuantity}
+                  onDeleteItem={handleDeleteItem}
+                  onResetRow={handleResetRow}
+                  defaultValues={defaultValues}
+                />
+                
+                {/* State 4: Row with null actionButton (no button at all) */}
+                <tr className="table-row-state-label">
+                  <td colSpan="3" className="state-label-cell">
+                    <span className="state-number">4.</span>
+                    <span className="state-description">Row with no action button (actionButton=null)</span>
+                  </td>
+                </tr>
+                <TableRow
+                  item={state4Item}
+                  unitOptions={unitOptions}
+                  actionButton={null}
+                  onUpdateItem={handleUpdateItem}
+                  onIncrementQuantity={handleIncrementQuantity}
+                  onDecrementQuantity={handleDecrementQuantity}
+                  onDeleteItem={handleDeleteItem}
+                  onResetRow={handleResetRow}
+                  defaultValues={defaultValues}
                 />
               </tbody>
             </table>
           </div>
         </div>
 
-        <TransportDocumentTable />
+        {/* Table component */}
+        <div className="table-component-example">
+          <h2>Table Component Example</h2>
+          <p>Complete table component with all features including row management, cell editing, and action buttons.</p>
+          <div className="table-component-example-container">
+            <Table showRulers={false} />
+          </div>
+        </div>
+
+        {/* Document component */}
+        <div className="document-component-example">
+          <h2>Document Component Example</h2>
+          <p>Generic document component with A4 real-life size that can contain different types of atoms, molecules, or text.</p>
+          <div className="document-component-example-container">
+            <Document>
+              <h3>Document Title</h3>
+              <p>This is a generic document component that follows A4 real-life dimensions (210mm × 297mm).</p>
+              <p>It can contain any content including atoms, molecules, or text.</p>
+              <div style={{ marginTop: '16px', marginBottom: '16px' }}>
+                <Button variant="default">Example Button</Button>
+              </div>
+              <Table showRulers={false} />
+            </Document>
+          </div>
+        </div>
       </div>
     </div>
   );

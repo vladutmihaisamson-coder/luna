@@ -10,22 +10,12 @@ export const Rulers = ({
   className = '',
   ...props
 }) => {
+  const RULER_SIZE = 32; // Match CSS --ruler-size
   const [horizontalGuidelines, setHorizontalGuidelines] = useState([]);
   const [verticalGuidelines, setVerticalGuidelines] = useState([]);
   const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 });
   const rulersRef = useRef(null);
-  const containerRectRef = useRef(null);
-
-  const updateContainerRect = () => {
-    if (containerRef?.current) {
-      containerRectRef.current = containerRef.current.getBoundingClientRect();
-    } else if (rulersRef.current) {
-      const contentElement = rulersRef.current.querySelector('.rulers-content');
-      if (contentElement) {
-        containerRectRef.current = contentElement.getBoundingClientRect();
-      }
-    }
-  };
+  const draggingGuidelineRef = useRef(null);
 
   useEffect(() => {
     const updateScrollOffset = () => {
@@ -46,51 +36,48 @@ export const Rulers = ({
     };
 
     updateScrollOffset();
-    updateContainerRect();
 
     const container = containerRef?.current || rulersRef.current?.querySelector('.rulers-content');
     if (container) {
       container.addEventListener('scroll', updateScrollOffset);
     }
-    window.addEventListener('resize', updateContainerRect);
-    window.addEventListener('scroll', updateContainerRect, true);
 
     return () => {
       if (container) {
         container.removeEventListener('scroll', updateScrollOffset);
       }
-      window.removeEventListener('resize', updateContainerRect);
-      window.removeEventListener('scroll', updateContainerRect, true);
     };
   }, [containerRef]);
+
+  const getMaxPosition = (isHorizontal) =>
+    isHorizontal ? Math.max(0, window.innerHeight - RULER_SIZE) : Math.max(0, window.innerWidth - RULER_SIZE);
+
+  const clampPosition = (position, isHorizontal) => {
+    const maxPosition = getMaxPosition(isHorizontal);
+    return Math.max(0, Math.min(position, maxPosition));
+  };
 
   const handleRulerMouseDown = (e, orientation) => {
     e.preventDefault();
     e.stopPropagation();
     
     const isHorizontal = orientation === 'horizontal';
-    updateContainerRect();
-    const containerRect = containerRectRef.current;
-    
-    if (!containerRect) return;
-    
-    const rulerSize = 32; // Match CSS --ruler-size
     const tempId = 'temp-guideline';
     let isDragging = true;
 
     const handleMouseMove = (moveEvent) => {
-      if (!isDragging || !containerRect) return;
+      if (!isDragging) return;
       
+      moveEvent.preventDefault();
+
       const currentPosition = isHorizontal ? moveEvent.clientY : moveEvent.clientX;
-      // Account for ruler offset
-      const relativePosition = isHorizontal
-        ? currentPosition - containerRect.top
-        : currentPosition - containerRect.left;
+      const offsetPosition = currentPosition - RULER_SIZE;
+      const clampedPosition = clampPosition(offsetPosition, isHorizontal);
       
       // Create or update temporary guideline while dragging
       const tempGuideline = {
         id: tempId,
-        position: relativePosition,
+        position: clampedPosition,
       };
       
       if (isHorizontal) {
@@ -110,22 +97,18 @@ export const Rulers = ({
       if (!isDragging) return;
       isDragging = false;
       
-      updateContainerRect();
-      const finalContainerRect = containerRectRef.current;
-      if (!finalContainerRect) return;
-      
+      upEvent.preventDefault();
+
       const finalPosition = isHorizontal ? upEvent.clientY : upEvent.clientX;
-      const relativePosition = isHorizontal
-        ? finalPosition - finalContainerRect.top
-        : finalPosition - finalContainerRect.left;
-      
-      // Check if dragged outside the page (remove guideline)
-      const isOutside = isHorizontal
-        ? (finalPosition < finalContainerRect.top || finalPosition > finalContainerRect.bottom)
-        : (finalPosition < finalContainerRect.left || finalPosition > finalContainerRect.right);
-      
-      if (isOutside) {
-        // Remove temporary guideline
+      const offsetPosition = finalPosition - RULER_SIZE;
+      const clampedPosition = clampPosition(offsetPosition, isHorizontal);
+
+      const isOnRuler = finalPosition <= RULER_SIZE;
+      const isBeyondViewport = isHorizontal
+        ? finalPosition >= window.innerHeight
+        : finalPosition >= window.innerWidth;
+
+      if (isOnRuler || isBeyondViewport) {
         if (isHorizontal) {
           setHorizontalGuidelines(prev => prev.filter(g => g.id !== tempId));
         } else {
@@ -135,7 +118,7 @@ export const Rulers = ({
         // Create permanent guideline
         const newGuideline = {
           id: `guideline-${Date.now()}-${Math.random()}`,
-          position: relativePosition,
+          position: clampedPosition,
         };
         
         if (isHorizontal) {
@@ -162,30 +145,27 @@ export const Rulers = ({
   const handleGuidelineDragStart = (e, position) => {
     e.preventDefault();
     e.stopPropagation();
-    updateContainerRect();
+    
+    // Store reference to the guideline element being dragged
+    const guidelineElement = e.currentTarget?.closest?.('.guideline') || 
+                             e.target?.closest?.('.guideline');
+    if (guidelineElement) {
+      draggingGuidelineRef.current = {
+        id: guidelineElement.dataset?.guidelineId,
+        isHorizontal: guidelineElement.classList.contains('guideline-horizontal')
+      };
+    }
   };
 
   const handleGuidelineDrag = (e, newPosition) => {
-    updateContainerRect();
-    const containerRect = containerRectRef.current;
-    if (!containerRect) return;
+    // Use stored reference from drag start
+    const draggingGuideline = draggingGuidelineRef.current;
+    if (!draggingGuideline || !draggingGuideline.id) return;
     
-    const guidelineElement = e.target.closest('.guideline');
-    if (!guidelineElement) return;
-    
-    const guidelineId = guidelineElement.dataset?.guidelineId;
-    if (!guidelineId) return;
-    
-    const isHorizontal = guidelineElement.classList.contains('guideline-horizontal');
-    // Convert viewport coordinates to relative position within container
-    const relativePosition = isHorizontal
-      ? newPosition - containerRect.top
-      : newPosition - containerRect.left;
-    
-    // Clamp position to container bounds
-    const clampedPosition = isHorizontal
-      ? Math.max(0, Math.min(relativePosition, containerRect.height))
-      : Math.max(0, Math.min(relativePosition, containerRect.width));
+    const { id: guidelineId, isHorizontal } = draggingGuideline;
+
+    const offsetPosition = newPosition - RULER_SIZE;
+    const clampedPosition = clampPosition(offsetPosition, isHorizontal);
     
     if (isHorizontal) {
       setHorizontalGuidelines(prev =>
@@ -199,27 +179,28 @@ export const Rulers = ({
   };
 
   const handleGuidelineDragEnd = (e, finalPosition) => {
-    updateContainerRect();
-    const containerRect = containerRectRef.current;
+    // Use stored reference from drag start
+    const draggingGuideline = draggingGuidelineRef.current;
     
-    if (containerRect) {
-      const isOutside = e.clientY < containerRect.top || 
-                       e.clientY > containerRect.bottom ||
-                       e.clientX < containerRect.left ||
-                       e.clientX > containerRect.right;
-      
-      if (isOutside) {
-        // Find and remove the guideline that was dragged
-        const guidelineElement = e.target.closest('.guideline');
-        if (guidelineElement) {
-          const guidelineId = guidelineElement.dataset?.guidelineId;
-          if (guidelineId) {
-            setHorizontalGuidelines(prev => prev.filter(g => g.id !== guidelineId));
-            setVerticalGuidelines(prev => prev.filter(g => g.id !== guidelineId));
-          }
+    if (draggingGuideline && draggingGuideline.id) {
+      const isHorizontal = draggingGuideline.isHorizontal;
+      const isOnRuler = finalPosition <= RULER_SIZE;
+      const isBeyondViewport = isHorizontal
+        ? finalPosition >= window.innerHeight
+        : finalPosition >= window.innerWidth;
+
+      if (isOnRuler || isBeyondViewport || finalPosition < 0) {
+        const guidelineId = draggingGuideline.id;
+        if (isHorizontal) {
+          setHorizontalGuidelines(prev => prev.filter(g => g.id !== guidelineId));
+        } else {
+          setVerticalGuidelines(prev => prev.filter(g => g.id !== guidelineId));
         }
       }
     }
+    
+    // Clear the dragging reference
+    draggingGuidelineRef.current = null;
   };
 
   const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
@@ -281,7 +262,7 @@ export const Rulers = ({
           >
             <Ruler
               orientation="vertical"
-              height={dimensions.height - 32}
+            height={Math.max(0, dimensions.height - RULER_SIZE)}
               scrollOffset={scrollOffset.y}
             />
           </div>
@@ -302,13 +283,14 @@ export const Rulers = ({
             {horizontalGuidelines.length > 1 && (() => {
               const sortedGuidelines = [...horizontalGuidelines].sort((a, b) => a.position - b.position);
               const distances = [];
+              const rulerSize = 32; // Match --ruler-size
               for (let i = 0; i < sortedGuidelines.length - 1; i++) {
                 const distance = Math.abs(sortedGuidelines[i + 1].position - sortedGuidelines[i].position);
                 const midPosition = (sortedGuidelines[i].position + sortedGuidelines[i + 1].position) / 2;
                 distances.push({
                   id: `distance-${sortedGuidelines[i].id}-${sortedGuidelines[i + 1].id}`,
                   distance,
-                  position: midPosition,
+                  position: midPosition + rulerSize, // Account for ruler offset
                 });
               }
               return distances.map((dist) => (
@@ -319,6 +301,7 @@ export const Rulers = ({
                     top: `${dist.position}px`,
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
+                    position: 'fixed',
                   }}
                 >
                   {Math.round(dist.distance)}px

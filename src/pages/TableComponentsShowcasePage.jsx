@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  EditableTextCell, 
-  QuantityCell, 
-  UnitCell
-} from '../components/table';
+import { BackButton } from '../components/BackButton';
+import { EditableTextCell } from '../components/table/components/EditableTextCell.jsx';
+import { QuantityCell } from '../components/table/components/QuantityCell.jsx';
+import { UnitCell } from '../components/table/components/UnitCell.jsx';
 import {
   Icon,
   Button,
@@ -30,6 +29,7 @@ export const TableComponentsShowcasePage = () => {
 
   return (
     <div className="table-components-showcase-page">
+      <BackButton />
       <div className="table-components-showcase-content">
         <div className="table-components-showcase">
           <div className="page-header">

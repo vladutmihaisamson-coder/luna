@@ -1,29 +1,6 @@
 @import '../tokens/tableTokens.css';
 
-.row-action-buttons-wrapper {
-  position: absolute;
-  right: calc(-1 * var(--table-control-offset));
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: var(--z-index-controls);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--transition-normal);
-}
-
-.row-action-buttons-wrapper > * {
-  pointer-events: auto;
-}
-
-.table-row:hover .row-action-buttons-wrapper,
-.table-row-with-delete:hover .row-action-buttons-wrapper,
-.cargo-table tbody tr:hover .row-action-buttons-wrapper {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.unit-cell-with-delete:hover .row-action-buttons-wrapper {
-  opacity: 1;
-  pointer-events: auto;
-}
+/* Row action button positioning - applied directly to DeleteButton/ResetButton */
+/* Base styles are handled by Table.css to ensure proper context */
+/* This file is kept for potential future row-specific styles */
 

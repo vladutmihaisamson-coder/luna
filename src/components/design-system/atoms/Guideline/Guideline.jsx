@@ -38,6 +38,7 @@ export const Guideline = ({
     }
 
     const handleMouseMove = (moveEvent) => {
+      moveEvent.preventDefault();
       if (onDrag) {
         const newPosition = isHorizontal
           ? moveEvent.clientY
@@ -47,6 +48,7 @@ export const Guideline = ({
     };
 
     const handleMouseUp = (upEvent) => {
+      upEvent.preventDefault();
       if (onDragEnd) {
         const finalPosition = isHorizontal
           ? upEvent.clientY
@@ -61,6 +63,11 @@ export const Guideline = ({
     document.addEventListener('mouseup', handleMouseUp);
   };
 
+  const handleChildMouseDown = (e) => {
+    e.stopPropagation(); // Prevent bubbling to parent
+    handleMouseDown(e);
+  };
+
   return (
     <div
       className={`guideline guideline-${orientation} ${className}`}
@@ -69,8 +76,8 @@ export const Guideline = ({
       data-guideline-id={guidelineId}
       {...props}
     >
-      <div className="guideline-handle" />
-      <div className="guideline-drag-area" />
+      <div className="guideline-handle" onMouseDown={handleChildMouseDown} />
+      <div className="guideline-drag-area" onMouseDown={handleChildMouseDown} />
     </div>
   );
 };

@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
+import { BackButton } from '../components/BackButton';
 import './HomePage.css';
 
 function HomePage() {
   return (
     <div className="home-page">
+      <BackButton />
       <div className="home-content">
         <h1>Luna Design System</h1>
         <p>Welcome to the Luna design system workspace</p>

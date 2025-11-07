@@ -10,6 +10,7 @@ import {
   FiRotateCcw, 
   FiFilter,
   FiChevronDown,
+  FiChevronLeft,
   FiX
 } from 'react-icons/fi';
 
@@ -22,6 +23,7 @@ import {
   MdFilterList,
   MdDragHandle,
   MdKeyboardArrowDown,
+  MdKeyboardArrowLeft,
   MdClose
 } from 'react-icons/md';
 
@@ -60,6 +62,10 @@ const iconMap = {
   'chevron-down': {
     outline: FiChevronDown,
     filled: MdKeyboardArrowDown,
+  },
+  'chevron-left': {
+    outline: FiChevronLeft,
+    filled: MdKeyboardArrowLeft,
   },
   x: {
     outline: FiX,

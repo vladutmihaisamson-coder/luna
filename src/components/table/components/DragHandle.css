@@ -8,7 +8,7 @@
   cursor: grab;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--transition-normal);
+  transition: opacity var(--transition-normal) 0.1s;
   z-index: var(--z-index-controls);
   user-select: none;
   -webkit-user-select: none;
@@ -32,6 +32,7 @@
 .drag-handle:hover {
   opacity: 1 !important;
   pointer-events: auto !important;
+  transition-delay: 0s !important;
 }
 
 

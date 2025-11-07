@@ -3,6 +3,9 @@
 // Import design tokens (CSS file should be imported where needed)
 import './tokens/tableTokens.css';
 
+// Atom Components
+export { TableHeaderCell } from './components/TableHeaderCell.jsx';
+
 // Cell Components
 export { EditableTextCell } from './components/EditableTextCell';
 export { QuantityCell } from './components/QuantityCell';

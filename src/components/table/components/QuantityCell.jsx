@@ -12,6 +12,7 @@ export const QuantityCell = ({
   className = ''
 }) => {
   const [isHighlighted, setIsHighlighted] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const prevValueRef = useRef(value);
 
   useEffect(() => {
@@ -26,29 +27,41 @@ export const QuantityCell = ({
   }, [value]);
 
   const handleChange = (inputValue) => {
-    if (inputValue === '') {
-      if (onChange) onChange('');
+    if (inputValue === '' || inputValue === '--') {
+      if (onChange) onChange(0);
     } else {
       const numValue = parseInt(inputValue);
       if (onChange) onChange(isNaN(numValue) ? 0 : numValue);
     }
   };
 
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
   const handleBlur = (e) => {
-    if (e.target.value === '') {
+    setIsFocused(false);
+    if (e.target.value === '' || e.target.value === '--') {
       if (onChange) onChange(0);
     }
   };
+
+  // Display "--" when value is 0 and not focused, otherwise show the actual value
+  const displayValue = (value === 0 || value === '0') && !isFocused 
+    ? '--' 
+    : (value === '' ? '' : value);
 
   return (
     <div className={`quantity-cell ${className}`}>
       <div className="quantity-input-wrapper">
         <Input
-          type="number"
+          type="text"
           className={`quantity-input ${isHighlighted ? 'quantity-input-highlighted' : ''}`}
-          value={value === '' ? '' : value}
+          value={displayValue}
           onChange={handleChange}
           onBlur={handleBlur}
+          onFocus={handleFocus}
           min={min}
         />
       </div>

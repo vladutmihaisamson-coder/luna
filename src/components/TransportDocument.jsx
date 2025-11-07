@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { DatePickerDropdown } from './DatePickerDropdown';
-import { TransportDocumentTable } from './TransportDocumentTable';
+import { GenericTable } from './GenericTable';
 import './TransportDocument.css';
 
 export const TransportDocument = ({ onHasChanges, onSave, onRevert }) => {
@@ -303,8 +303,9 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert }) => {
           )}
 
           <div className="document-section">
-            <TransportDocumentTable
+            <GenericTable
               items={page.items}
+              columns={['Description', 'Quantity', 'Unit']}
               unitOptions={unitOptions}
               onUpdateItem={updateItem}
               onIncrementQuantity={incrementQuantity}

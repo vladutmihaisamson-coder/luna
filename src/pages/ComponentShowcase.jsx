@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { BackButton } from '../components/BackButton';
 import { 
   Button, 
   Card, 
@@ -19,8 +20,8 @@ function ComponentShowcase() {
 
   return (
     <div className="showcase">
+      <BackButton />
       <header className="showcase-header">
-        <Link to="/" className="back-link">← Back to Home</Link>
         <h1>Component Showcase</h1>
         <p>All Luna Design System components ready for rapid prototyping</p>
       </header>

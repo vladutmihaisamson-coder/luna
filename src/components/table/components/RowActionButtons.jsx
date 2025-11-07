@@ -4,23 +4,30 @@ import { ResetButton } from '../../design-system/molecules/ResetButton/ResetButt
 import './RowActionButtons.css';
 
 export const RowActionButtons = ({ 
-  canDelete = true,
+  actionButton = 'delete', // 'delete' | 'reset' | null
   onDelete,
   onReset,
+  isDefault = false,
   className = ''
 }) => {
-  if (canDelete) {
+  // Don't show reset button if row is already in default state
+  if (actionButton === 'reset' && isDefault) {
+    return null;
+  }
+  
+  if (actionButton === 'delete') {
     return (
-      <div className="row-action-buttons-wrapper">
-        <DeleteButton onClick={onDelete} className={className} />
-      </div>
+      <DeleteButton onClick={onDelete} className={`row-action-button ${className}`} />
     );
   }
   
-  return (
-    <div className="row-action-buttons-wrapper">
-      <ResetButton onClick={onReset} className={className} />
-    </div>
-  );
+  if (actionButton === 'reset') {
+    return (
+      <ResetButton onClick={onReset} className={`row-action-button ${className}`} />
+    );
+  }
+  
+  // actionButton is null or undefined - don't show any button
+  return null;
 };
 
