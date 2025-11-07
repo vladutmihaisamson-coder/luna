@@ -10,9 +10,17 @@ export const RowActionButtons = ({
   className = ''
 }) => {
   if (canDelete) {
-    return <DeleteButton onClick={onDelete} className={className} />;
+    return (
+      <div className="row-action-buttons-wrapper">
+        <DeleteButton onClick={onDelete} className={className} />
+      </div>
+    );
   }
   
-  return <ResetButton onClick={onReset} className={className} />;
+  return (
+    <div className="row-action-buttons-wrapper">
+      <ResetButton onClick={onReset} className={className} />
+    </div>
+  );
 };
 

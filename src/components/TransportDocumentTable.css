@@ -93,10 +93,12 @@
 
 .unit-cell-with-delete {
   position: relative;
+  overflow: visible;
 }
 
-.cargo-table tbody tr:hover .delete-row-btn-component {
+.cargo-table tbody tr:hover .delete-button {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .editable-cell {

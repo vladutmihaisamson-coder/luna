@@ -32,3 +32,212 @@
 .components-link {
   text-decoration: none;
 }
+
+.table-cells-example {
+  margin-bottom: 60px;
+  padding: 24px 60px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  overflow: visible;
+  position: relative;
+}
+
+.table-cells-example h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.table-cells-example > p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+}
+
+.table-cells-example-container {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.cell-example-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cell-example-item h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.cell-example-wrapper {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  min-height: 48px;
+  width: 100%;
+  min-width: 200px;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.cell-example-item {
+  flex: 1;
+  min-width: 0;
+}
+
+.cell-example-value {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  font-family: monospace;
+}
+
+.table-header-example {
+  margin-bottom: 60px;
+  padding: 24px 60px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  overflow: visible;
+  position: relative;
+}
+
+.table-header-example h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.table-header-example p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+}
+
+.table-header-example-container {
+  width: 100%;
+  overflow-x: visible;
+  overflow-y: visible;
+  position: relative;
+  padding: 0 36px;
+}
+
+.table-header-example-container .cargo-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  position: relative;
+  font-size: 14px;
+  overflow: visible;
+}
+
+.table-header-example-container .cargo-table th {
+  overflow: visible;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+  border-bottom: 2px solid #666;
+}
+
+.table-row-example {
+  margin-bottom: 60px;
+  padding: 24px 60px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  overflow: visible;
+  position: relative;
+}
+
+.table-row-example h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.table-row-example p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+}
+
+.table-row-example-container {
+  width: 100%;
+  overflow-x: visible;
+  overflow-y: visible;
+  position: relative;
+  padding: 0 36px;
+}
+
+.table-row-example-container .cargo-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  position: relative;
+  font-size: 14px;
+  overflow: visible;
+}
+
+.table-row-example-container .cargo-table tbody {
+  position: relative;
+  overflow: visible;
+}
+
+.table-row-example-container .cargo-table tbody tr {
+  position: relative;
+  overflow: visible;
+  min-height: 48px;
+  transition: background-color 0.15s ease;
+}
+
+.table-row-example-container .cargo-table tbody tr:hover {
+  background-color: #fafafa;
+}
+
+.table-row-example-container .cargo-table th,
+.table-row-example-container .cargo-table td {
+  padding: 12px;
+  text-align: left;
+  position: relative;
+  vertical-align: top;
+}
+
+.table-row-example-container .cargo-table th {
+  overflow: visible;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+  border-bottom: 2px solid #666;
+}
+
+.table-row-example-container .cargo-table td {
+  padding: 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #ccc;
+  overflow: visible;
+  word-wrap: break-word;
+}
+
+.table-row-example-container .description-cell-with-handle {
+  position: relative;
+  overflow: visible;
+  word-wrap: break-word;
+}
+
+.table-row-example-container .unit-cell-with-delete {
+  position: relative;
+  overflow: visible;
+}

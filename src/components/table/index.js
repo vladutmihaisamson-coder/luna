@@ -12,3 +12,9 @@ export { UnitCell } from './components/UnitCell';
 export { DragHandle } from './components/DragHandle';
 export { RowActionButtons } from './components/RowActionButtons';
 
+// Row Component
+export { TableRow } from './components/TableRow';
+
+// Header Component
+export { TableHeader } from './components/TableHeader';
+

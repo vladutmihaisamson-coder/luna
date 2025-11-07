@@ -22,7 +22,9 @@
 
 
 /* Show on row hover */
-.table-row:hover .drag-handle {
+.table-row:hover .drag-handle,
+.table-row-with-delete:hover .drag-handle,
+.cargo-table tbody tr:hover .drag-handle {
   opacity: 1;
   pointer-events: auto;
 }
