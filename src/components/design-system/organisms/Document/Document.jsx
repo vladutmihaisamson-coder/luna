@@ -37,6 +37,7 @@ export const Document = ({
   customWidth,
   customHeight,
   padding = true,
+  logo,
   ...props
 }) => {
   const [dimensions, setDimensions] = useState({ width: null, height: null });
@@ -78,6 +79,11 @@ export const Document = ({
       {...props}
     >
       <div className="document-content">
+        {logo && (
+          <div className="document-logo">
+            <img src={logo} alt="Company logo" className="document-logo-image" />
+          </div>
+        )}
         {children}
       </div>
     </div>

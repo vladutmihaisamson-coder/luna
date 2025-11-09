@@ -29,6 +29,8 @@ export const UnitCell = ({
     }
   };
 
+  const hasOptions = options && options.length > 0;
+
   return (
     <div ref={wrapperRef} className={`unit-cell ${isDropdownOpen ? 'dropdown-open' : ''} ${className}`}>
       <div className="unit-input-and-controls-wrapper">
@@ -41,29 +43,31 @@ export const UnitCell = ({
             placeholder={placeholder}
           />
         </div>
-        <div className="unit-dropdown-controls">
-          <div className="unit-dropdown-button-wrapper">
-            <IconButton
-              icon="chevron-down"
-              size="md"
-              onClick={handleDropdownClick}
-              variant="ghost"
-              className="unit-dropdown-button"
-              aria-label="Open dropdown"
-              aria-expanded={isDropdownOpen}
-            />
-            <Dropdown
-              isOpen={isDropdownOpen}
-              onClose={handleDropdownClose}
-              options={options}
-              selectedValue={value}
-              onSelect={handleSelect}
-              position="bottom"
-              align="right"
-              className="unit-dropdown"
-            />
+        {hasOptions && (
+          <div className="unit-dropdown-controls">
+            <div className="unit-dropdown-button-wrapper">
+              <IconButton
+                icon="chevron-down"
+                size="md"
+                onClick={handleDropdownClick}
+                variant="ghost"
+                className="unit-dropdown-button"
+                aria-label="Open dropdown"
+                aria-expanded={isDropdownOpen}
+              />
+              <Dropdown
+                isOpen={isDropdownOpen}
+                onClose={handleDropdownClose}
+                options={options}
+                selectedValue={value}
+                onSelect={handleSelect}
+                position="bottom"
+                align="right"
+                className="unit-dropdown"
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

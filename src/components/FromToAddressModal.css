@@ -1,0 +1,194 @@
+@import './design-system/tokens/designTokens.css';
+
+.from-to-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-index-modal-backdrop);
+  padding: var(--spacing-lg);
+}
+
+.from-to-modal {
+  background: var(--color-bg-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: var(--z-index-modal);
+  position: relative;
+}
+
+.from-to-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+}
+
+.from-to-modal-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.from-to-modal-content {
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.from-to-modal-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.from-to-modal-section:last-child {
+  margin-bottom: 0;
+}
+
+.from-to-modal-section-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--color-text-primary);
+}
+
+.from-to-search-container {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  align-items: center;
+}
+
+.from-to-search-input-wrapper {
+  flex: 1;
+}
+
+.from-to-search-input {
+  width: 100%;
+  min-height: var(--size-input-min-height);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-md);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  background: var(--color-bg-white);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color var(--transition-normal);
+}
+
+.from-to-search-input:focus {
+  border-color: var(--color-primary);
+}
+
+.from-to-search-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.from-to-search-button {
+  flex-shrink: 0;
+}
+
+.from-to-search-results {
+  max-height: 200px;
+  overflow-y: auto;
+  border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  border-radius: var(--border-radius-sm);
+  margin-top: var(--spacing-md);
+}
+
+.from-to-search-result-item {
+  padding: var(--spacing-md);
+  border-bottom: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  cursor: pointer;
+  transition: background var(--transition-normal);
+}
+
+.from-to-search-result-item:last-child {
+  border-bottom: none;
+}
+
+.from-to-search-result-item:hover {
+  background: var(--color-bg-light);
+}
+
+.from-to-search-result-name {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.from-to-search-result-address {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.from-to-address-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.from-to-address-line {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+.from-to-address-input-wrapper {
+  flex: 1;
+}
+
+.from-to-address-input {
+  width: 100%;
+  min-height: var(--size-input-min-height);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-md);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  background: var(--color-bg-white);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color var(--transition-normal);
+}
+
+.from-to-address-input:focus {
+  border-color: var(--color-primary);
+}
+
+.from-to-address-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.from-to-add-line-button {
+  align-self: flex-start;
+}
+
+.from-to-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  border-top: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+}
+
+.from-to-modal-button {
+  /* Button styles are handled by the Button component */
+}
+

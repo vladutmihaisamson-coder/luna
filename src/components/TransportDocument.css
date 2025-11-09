@@ -23,6 +23,8 @@
   position: relative;
   font-size: var(--font-size-md);
   color: var(--color-text-primary);
+  display: flex;
+  flex-direction: column;
 }
 
 @media print {
@@ -152,6 +154,12 @@
   display: flex;
   gap: var(--spacing-3xl);
   overflow: visible;
+}
+
+.document-content-section {
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 0;
 }
 
 .document-section h2 {

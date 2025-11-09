@@ -1,12 +1,11 @@
 import { useState, useRef } from 'react';
-import { TableRow } from './table/components/TableRow.jsx';
-import { TableHeader } from './table/components/TableHeader.jsx';
+import { DivTableRow } from './div-table/components/DivTableRow.jsx';
+import { DivTableHeader } from './div-table/components/DivTableHeader.jsx';
 import { Button } from './design-system/atoms/Button/Button';
 import { Rulers } from './design-system/organisms/Rulers/Rulers';
-import './GenericTable.css';
-import './Table.css';
+import './DivTable.css';
 
-export const GenericTable = ({ 
+export const DivTable = ({ 
   items: controlledItems,
   columns = ['Description', 'Quantity', 'Unit'], // Array of strings or objects with { label, key, ... }
   renderRow, // Optional custom row renderer function: (item, index, items) => ReactNode
@@ -19,28 +18,16 @@ export const GenericTable = ({
   onAddNewRow,
   showRulers = false,
   className = '',
-  defaultValues = { description: '', quantity: 1, unit: 'boxes' }
+  defaultValues = { description: '', quantity: 1, unit: 'boxes' },
+  totalItemsCount // Total count of items across all pages (for determining actionButton)
 }) => {
   const containerRef = useRef(null);
+  // Always start with one default empty row
   const [internalItems, setInternalItems] = useState([
     { 
       id: 1, 
-      description: 'Sample item 1', 
-      quantity: 5, 
-      unit: 'pieces' 
-    },
-    { 
-      id: 2, 
-      description: 'Sample item 2', 
-      quantity: 10, 
-      unit: 'boxes' 
-    },
-    { 
-      id: 3, 
-      description: '', 
-      quantity: 1, 
-      unit: 'boxes' 
-    },
+      ...defaultValues
+    }
   ]);
 
   const items = controlledItems || internalItems;
@@ -123,29 +110,31 @@ export const GenericTable = ({
   const columnLabels = columns.map(col => typeof col === 'string' ? col : col.label || col.key || '');
 
   const tableContent = (
-    <div ref={containerRef} className={`generic-table-container ${className}`}>
-      <table className="cargo-table">
-        <TableHeader columns={columnLabels} />
-        <tbody>
+    <div ref={containerRef} className={`div-table-container ${className}`}>
+      <div className="div-cargo-table">
+        <DivTableHeader columns={columnLabels} />
+        <div className="div-table-body">
           {items.map((item, index) => {
             // If custom renderRow function is provided, use it
             if (renderRow) {
               return (
-                <tr key={item.id || index} className="table-row">
+                <div key={item.id || index} className="div-table-row">
                   {renderRow(item, index, items)}
-                </tr>
+                </div>
               );
             }
             
-            // Default: use TableRow component (for backward compatibility)
+            // Default: use DivTableRow component
             // State management:
-            // State 1: More than 1 row -> all rows show delete button
-            // State 2: Only 1 row -> show reset button
+            // State 1: More than 1 row (total across all pages) -> all rows show delete button
+            // State 2: Only 1 row total -> show reset button (if row is modified from default)
             // State 3: Reset clicked -> row matches defaultValues -> no button (handled by isDefault)
-            const actionButton = items.length > 1 ? 'delete' : 'reset';
+            // Use totalItemsCount if provided, otherwise fall back to items.length
+            const totalCount = totalItemsCount !== undefined ? totalItemsCount : items.length;
+            const actionButton = totalCount > 1 ? 'delete' : 'reset';
             
             return (
-              <TableRow
+              <DivTableRow
                 key={item.id || index}
                 item={item}
                 unitOptions={unitOptions}
@@ -159,14 +148,14 @@ export const GenericTable = ({
               />
             );
           })}
-        </tbody>
-      </table>
+        </div>
+      </div>
       {(onAddNewRow || !controlledItems) && (
-        <div className="add-row-button-container">
+        <div className="div-table-add-row-container">
           <Button 
             variant="default" 
             onClick={addNewRow}
-            className="add-row-button"
+            className="div-table-add-row-button"
           >
             Add Row
           </Button>
@@ -177,7 +166,7 @@ export const GenericTable = ({
 
   if (showRulers) {
     return (
-      <Rulers containerRef={containerRef} className="generic-table-rulers">
+      <Rulers containerRef={containerRef} className="div-table-rulers">
         {tableContent}
       </Rulers>
     );

@@ -1,107 +1,39 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BackButton } from '../components/BackButton';
-import { Table } from '../components/Table';
-import { TableRow } from '../components/table/components/TableRow.jsx';
+import { DivTable } from '../components/DivTable';
+import { DocumentTitle } from '../components/DocumentTitle';
+import { FromTo } from '../components/FromTo';
+import { SignatureFooter } from '../components/SignatureFooter';
+import { DocumentOverview } from '../components/DocumentOverview';
 import { TableHeader } from '../components/table/components/TableHeader.jsx';
 import { TableHeaderCell } from '../components/table/components/TableHeaderCell.jsx';
 import { EditableTextCell } from '../components/table/components/EditableTextCell.jsx';
 import { QuantityCell } from '../components/table/components/QuantityCell.jsx';
 import { UnitCell } from '../components/table/components/UnitCell.jsx';
+import { PriceCell } from '../components/table/components/PriceCell.jsx';
+import { TotalCell } from '../components/table/components/TotalCell.jsx';
+import { TotalRow } from '../components/table/components/TotalRow.jsx';
 import { Button, IconButton, Document } from '../components/design-system';
 import './TestTablePage.css';
 
 export const TestTablePage = () => {
-  // State 1: Row with delete button (default state - multiple rows in table)
-  const [state1Item, setState1Item] = useState({
-    id: 'state-1',
-    description: 'Sample item with delete button',
-    quantity: 5,
-    unit: 'boxes'
-  });
-
-  // State 2: Row with reset button (last row, not in default state)
-  const [state2Item, setState2Item] = useState({
-    id: 'state-2',
-    description: 'Last row with reset button',
-    quantity: 10,
-    unit: 'pieces'
-  });
-
-  // State 3: Row with no button (last row, reset to default values)
-  const [state3Item, setState3Item] = useState({
-    id: 'state-3',
-    description: '',
-    quantity: 1,
-    unit: 'boxes'
-  });
-
-  // State 4: Row with null actionButton (no button at all)
-  const [state4Item, setState4Item] = useState({
-    id: 'state-4',
-    description: 'Row with no action button',
-    quantity: 3,
-    unit: 'units'
-  });
-
   const [cellExampleDescription, setCellExampleDescription] = useState('Sample description text');
   const [cellExampleQuantity, setCellExampleQuantity] = useState(10);
   const [cellExampleUnit, setCellExampleUnit] = useState('boxes');
+  const [cellExamplePrice, setCellExamplePrice] = useState(50.00);
+  const [cellExampleTotal, setCellExampleTotal] = useState(500.00);
+  const [documentTitleDate, setDocumentTitleDate] = useState(new Date().toISOString().split('T')[0]);
+  const [showDocumentTitleDatePicker, setShowDocumentTitleDatePicker] = useState(false);
 
   const unitOptions = ['boxes', 'pallets', 'pieces', 'units', 'sets', 'set', 'unit', 'kg', 'tons', 'liters'];
 
-  const defaultValues = { description: '', quantity: 1, unit: 'boxes' };
-
-  const handleUpdateItem = (id, field, value) => {
-    if (id === 'state-1') {
-      setState1Item(prev => ({ ...prev, [field]: value }));
-    } else if (id === 'state-2') {
-      setState2Item(prev => ({ ...prev, [field]: value }));
-    } else if (id === 'state-3') {
-      setState3Item(prev => ({ ...prev, [field]: value }));
-    } else if (id === 'state-4') {
-      setState4Item(prev => ({ ...prev, [field]: value }));
-    }
+  const handleDocumentTitleDateChange = (newDate) => {
+    setDocumentTitleDate(newDate);
   };
 
-  const handleIncrementQuantity = (id) => {
-    if (id === 'state-1') {
-      setState1Item(prev => ({ ...prev, quantity: (prev.quantity || 0) + 1 }));
-    } else if (id === 'state-2') {
-      setState2Item(prev => ({ ...prev, quantity: (prev.quantity || 0) + 1 }));
-    } else if (id === 'state-3') {
-      setState3Item(prev => ({ ...prev, quantity: (prev.quantity || 0) + 1 }));
-    } else if (id === 'state-4') {
-      setState4Item(prev => ({ ...prev, quantity: (prev.quantity || 0) + 1 }));
-    }
-  };
-
-  const handleDecrementQuantity = (id) => {
-    if (id === 'state-1') {
-      setState1Item(prev => ({ ...prev, quantity: Math.max(0, (prev.quantity || 0) - 1) }));
-    } else if (id === 'state-2') {
-      setState2Item(prev => ({ ...prev, quantity: Math.max(0, (prev.quantity || 0) - 1) }));
-    } else if (id === 'state-3') {
-      setState3Item(prev => ({ ...prev, quantity: Math.max(0, (prev.quantity || 0) - 1) }));
-    } else if (id === 'state-4') {
-      setState4Item(prev => ({ ...prev, quantity: Math.max(0, (prev.quantity || 0) - 1) }));
-    }
-  };
-
-  const handleDeleteItem = (id) => {
-    console.log('Delete item:', id);
-  };
-
-  const handleResetRow = (id) => {
-    if (id === 'state-1') {
-      setState1Item({ id: 'state-1', ...defaultValues });
-    } else if (id === 'state-2') {
-      setState2Item({ id: 'state-2', ...defaultValues });
-    } else if (id === 'state-3') {
-      setState3Item({ id: 'state-3', ...defaultValues });
-    } else if (id === 'state-4') {
-      setState4Item({ id: 'state-4', ...defaultValues });
-    }
+  const handleDocumentTitleDatePickerToggle = (isOpen) => {
+    setShowDocumentTitleDatePicker(isOpen);
   };
 
   return (
@@ -115,7 +47,6 @@ export const TestTablePage = () => {
           </Link>
         </div>
         
-        {/* IconButton Component Examples */}
         <div className="icon-button-example">
           <h2>IconButton Component Examples</h2>
           <p>Icon button component with different variants, sizes, and icons.</p>
@@ -158,7 +89,6 @@ export const TestTablePage = () => {
           </div>
         </div>
         
-        {/* Example Cell Components */}
         <div className="table-cells-example">
           <h2>Table Cell Components Examples</h2>
           <p>Individual cell components that can be used in table rows.</p>
@@ -201,10 +131,45 @@ export const TestTablePage = () => {
               </div>
               <p className="cell-example-value">Value: {cellExampleUnit}</p>
             </div>
+            
+            <div className="cell-example-item">
+              <h3>PriceCell</h3>
+              <div className="cell-example-wrapper">
+                <PriceCell
+                  value={cellExamplePrice}
+                  onChange={setCellExamplePrice}
+                  min={0}
+                  currencySymbol="€"
+                />
+              </div>
+              <p className="cell-example-value">Value: €{cellExamplePrice.toFixed(2)}</p>
+            </div>
+            
+            <div className="cell-example-item">
+              <h3>TotalCell</h3>
+              <div className="cell-example-wrapper">
+                <TotalCell
+                  value={cellExampleTotal}
+                  currencySymbol="€"
+                />
+              </div>
+              <p className="cell-example-value">Value: €{cellExampleTotal.toFixed(2)}</p>
+            </div>
+            
+            <div className="cell-example-item">
+              <h3>TotalRow</h3>
+              <div className="cell-example-wrapper">
+                <TotalRow
+                  label="Total"
+                  value={cellExampleTotal}
+                  currencySymbol="€"
+                />
+              </div>
+              <p className="cell-example-value">Total row component displayed below table</p>
+            </div>
           </div>
         </div>
 
-        {/* Example TableHeaderCell atom component */}
         <div className="table-header-cell-example">
           <h2>TableHeaderCell Component Example</h2>
           <p>Atom component for individual table header cells.</p>
@@ -224,7 +189,6 @@ export const TestTablePage = () => {
           </div>
         </div>
 
-        {/* Example TableHeader component */}
         <div className="table-header-example">
           <h2>TableHeader Component Example</h2>
           <p>Table header component with customizable columns.</p>
@@ -235,117 +199,288 @@ export const TestTablePage = () => {
           </div>
         </div>
 
-        {/* Example TableRow component */}
-        <div className="table-row-example">
-          <h2>TableRow Component Example</h2>
-          <p>All possible row states that the TableRow component can display. Hover over the rows to see the drag handle and action buttons appear.</p>
-          <div className="table-row-example-container">
-            <table className="cargo-table">
-              <TableHeader columns={['Description', 'Quantity', 'Unit']} />
-              <tbody>
-                {/* State 1: Row with delete button (default state - multiple rows in table) */}
-                <tr className="table-row-state-label">
-                  <td colSpan="3" className="state-label-cell">
-                    <span className="state-number">1.</span>
-                    <span className="state-description">Row with delete button (default state - multiple rows in table)</span>
-                  </td>
-                </tr>
-                <TableRow
-                  item={state1Item}
-                  unitOptions={unitOptions}
-                  actionButton="delete"
-                  onUpdateItem={handleUpdateItem}
-                  onIncrementQuantity={handleIncrementQuantity}
-                  onDecrementQuantity={handleDecrementQuantity}
-                  onDeleteItem={handleDeleteItem}
-                  onResetRow={handleResetRow}
-                  defaultValues={defaultValues}
-                />
-                
-                {/* State 2: Row with reset button (last row, not in default state) */}
-                <tr className="table-row-state-label">
-                  <td colSpan="3" className="state-label-cell">
-                    <span className="state-number">2.</span>
-                    <span className="state-description">Row with reset button (last row, not in default state)</span>
-                  </td>
-                </tr>
-                <TableRow
-                  item={state2Item}
-                  unitOptions={unitOptions}
-                  actionButton="reset"
-                  onUpdateItem={handleUpdateItem}
-                  onIncrementQuantity={handleIncrementQuantity}
-                  onDecrementQuantity={handleDecrementQuantity}
-                  onDeleteItem={handleDeleteItem}
-                  onResetRow={handleResetRow}
-                  defaultValues={defaultValues}
-                />
-                
-                {/* State 3: Row with no button (last row, reset to default values) */}
-                <tr className="table-row-state-label">
-                  <td colSpan="3" className="state-label-cell">
-                    <span className="state-number">3.</span>
-                    <span className="state-description">Row with no button (last row, reset to default values - actionButton="reset" and isDefault=true)</span>
-                  </td>
-                </tr>
-                <TableRow
-                  item={state3Item}
-                  unitOptions={unitOptions}
-                  actionButton="reset"
-                  onUpdateItem={handleUpdateItem}
-                  onIncrementQuantity={handleIncrementQuantity}
-                  onDecrementQuantity={handleDecrementQuantity}
-                  onDeleteItem={handleDeleteItem}
-                  onResetRow={handleResetRow}
-                  defaultValues={defaultValues}
-                />
-                
-                {/* State 4: Row with null actionButton (no button at all) */}
-                <tr className="table-row-state-label">
-                  <td colSpan="3" className="state-label-cell">
-                    <span className="state-number">4.</span>
-                    <span className="state-description">Row with no action button (actionButton=null)</span>
-                  </td>
-                </tr>
-                <TableRow
-                  item={state4Item}
-                  unitOptions={unitOptions}
-                  actionButton={null}
-                  onUpdateItem={handleUpdateItem}
-                  onIncrementQuantity={handleIncrementQuantity}
-                  onDecrementQuantity={handleDecrementQuantity}
-                  onDeleteItem={handleDeleteItem}
-                  onResetRow={handleResetRow}
-                  defaultValues={defaultValues}
-                />
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Table component */}
         <div className="table-component-example">
-          <h2>Table Component Example</h2>
+          <h2>DivTable Component Example</h2>
           <p>Complete table component with all features including row management, cell editing, and action buttons.</p>
           <div className="table-component-example-container">
-            <Table showRulers={false} />
+            <DivTable showRulers={false} />
           </div>
         </div>
 
-        {/* Document component */}
+        <div className="document-title-example">
+          <h2>DocumentTitle Component Example</h2>
+          <p>Reusable document title component with title, document number, and date. The date can be editable with a date picker.</p>
+          <div className="document-title-example-container">
+            <div className="document-title-example-item">
+              <h3>Editable Date</h3>
+              <div className="document-title-example-wrapper">
+                <DocumentTitle
+                  title="Transport Document"
+                  documentNumber="TD-2025-001"
+                  date={documentTitleDate}
+                  onDateChange={handleDocumentTitleDateChange}
+                  showDatePicker={showDocumentTitleDatePicker}
+                  onDatePickerToggle={handleDocumentTitleDatePickerToggle}
+                />
+              </div>
+              <p className="document-title-example-value">Date: {documentTitleDate}</p>
+            </div>
+            
+            <div className="document-title-example-item">
+              <h3>Read-only Date</h3>
+              <div className="document-title-example-wrapper">
+                <DocumentTitle
+                  title="Invoice"
+                  documentNumber="INV-2025-042"
+                  date="2025-01-15"
+                />
+              </div>
+              <p className="document-title-example-value">Date is read-only (no onDateChange provided)</p>
+            </div>
+            
+            <div className="document-title-example-item">
+              <h3>No Date</h3>
+              <div className="document-title-example-wrapper">
+                <DocumentTitle
+                  title="Quote"
+                  documentNumber="QT-2025-123"
+                />
+              </div>
+              <p className="document-title-example-value">No date provided</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="from-to-example">
+          <h2>FromTo Component Example</h2>
+          <p>Component for displaying "From" and "To" address sections side by side in documents.</p>
+          <div className="from-to-example-container">
+            <div className="from-to-example-item">
+              <h3>With Addresses</h3>
+              <div className="from-to-example-wrapper">
+                <FromTo
+                  fromLabel="From"
+                  toLabel="To"
+                  fromAddress={[
+                    'ABC Logistics Ltd.',
+                    '123 Warehouse St, Industrial Park',
+                    'New York, NY 10001',
+                    '+1 (555) 123-4567'
+                  ]}
+                  toAddress={[
+                    'XYZ Distribution Co.',
+                    '456 Delivery Ave, Commerce District',
+                    'Los Angeles, CA 90001',
+                    '+1 (555) 987-6543'
+                  ]}
+                />
+              </div>
+            </div>
+            
+            <div className="from-to-example-item">
+              <h3>With Custom Labels</h3>
+              <div className="from-to-example-wrapper">
+                <FromTo
+                  fromLabel="Shipper"
+                  toLabel="Consignee"
+                  fromAddress={[
+                    'Company Name',
+                    'Address Line 1',
+                    'City, Country'
+                  ]}
+                  toAddress={[
+                    'Client Company',
+                    'Client Address',
+                    'Client City, Country'
+                  ]}
+                />
+              </div>
+            </div>
+            
+            <div className="from-to-example-item">
+              <h3>Empty Addresses</h3>
+              <div className="from-to-example-wrapper">
+                <FromTo
+                  fromLabel="From"
+                  toLabel="To"
+                  fromAddress={[]}
+                  toAddress={[]}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="document-component-example">
           <h2>Document Component Example</h2>
           <p>Generic document component with A4 real-life size that can contain different types of atoms, molecules, or text.</p>
           <div className="document-component-example-container">
             <Document>
-              <h3>Document Title</h3>
-              <p>This is a generic document component that follows A4 real-life dimensions (210mm × 297mm).</p>
-              <p>It can contain any content including atoms, molecules, or text.</p>
-              <div style={{ marginTop: '16px', marginBottom: '16px' }}>
-                <Button variant="default">Example Button</Button>
+              <DocumentTitle
+                title="Sample Document"
+                documentNumber="DOC-2025-001"
+                date={documentTitleDate}
+                onDateChange={handleDocumentTitleDateChange}
+                showDatePicker={showDocumentTitleDatePicker}
+                onDatePickerToggle={handleDocumentTitleDatePickerToggle}
+              />
+              <FromTo
+                fromLabel="From"
+                toLabel="To"
+                fromAddress={[]}
+                toAddress={[]}
+              />
+              <div className="document-content-section">
+                <DivTable showRulers={false} />
               </div>
-              <Table showRulers={false} />
+              <SignatureFooter
+                signatures={[
+                  { label: 'Shipper Signature' },
+                  { label: 'Carrier Signature' }
+                ]}
+              />
             </Document>
+          </div>
+        </div>
+
+        <div className="div-table-component-example">
+          <h2>DivTable Component Example</h2>
+          <p>Table component recreated using only div groups instead of table elements. All functionality remains the same.</p>
+          <div className="div-table-component-example-container">
+            <DivTable showRulers={false} />
+          </div>
+        </div>
+
+        <div className="signature-footer-example">
+          <h2>SignatureFooter Component Example</h2>
+          <p>Footer component for signatures that stays at the bottom of the first page.</p>
+          <div className="signature-footer-example-container">
+            <div className="signature-footer-example-item">
+              <h3>Default Signatures</h3>
+              <div className="signature-footer-example-wrapper">
+                <div style={{ position: 'relative', height: '400px', width: '100%', border: '1px solid #e0e0e0', borderRadius: '8px', padding: '20px', boxSizing: 'border-box' }}>
+                  <div style={{ padding: '20px' }}>
+                    <p>Document content goes here...</p>
+                    <p>The signature footer will appear at the bottom of this container.</p>
+                  </div>
+                  <SignatureFooter
+                    signatures={[
+                      { label: 'Shipper Signature' },
+                      { label: 'Carrier Signature' }
+                    ]}
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="signature-footer-example-item">
+              <h3>Custom Signatures</h3>
+              <div className="signature-footer-example-wrapper">
+                <div style={{ position: 'relative', height: '400px', width: '100%', border: '1px solid #e0e0e0', borderRadius: '8px', padding: '20px', boxSizing: 'border-box' }}>
+                  <div style={{ padding: '20px' }}>
+                    <p>Document content goes here...</p>
+                    <p>The signature footer will appear at the bottom of this container.</p>
+                  </div>
+                  <SignatureFooter
+                    signatures={[
+                      { label: 'Sender Signature' },
+                      { label: 'Receiver Signature' },
+                      { label: 'Witness Signature' }
+                    ]}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="document-overview-example">
+          <h2>DocumentOverview Component Example</h2>
+          <p>Document preview thumbnail component that displays a preview of the document with title, number, date, and type tag.</p>
+          <div className="document-overview-example-container">
+            <div className="document-overview-example-item">
+              <h3>Transport Document</h3>
+              <div className="document-overview-example-wrapper">
+                <DocumentOverview
+                  documentId="transport-001"
+                  title="XYZ Distribution Co."
+                  documentNumber="TD-2025-001"
+                  date="2025-01-15"
+                  documentType="Transport"
+                  previewContent={
+                    <Document>
+                      <DocumentTitle
+                        title="Transport Document"
+                        documentNumber="TD-2025-001"
+                        date="2025-01-15"
+                      />
+                      <FromTo
+                        fromLabel="From"
+                        toLabel="To"
+                        fromAddress={['ABC Logistics Ltd.', '123 Warehouse St']}
+                        toAddress={['XYZ Distribution Co.', '456 Delivery Ave']}
+                      />
+                    </Document>
+                  }
+                />
+              </div>
+            </div>
+            
+            <div className="document-overview-example-item">
+              <h3>Invoice Document</h3>
+              <div className="document-overview-example-wrapper">
+                <DocumentOverview
+                  documentId="invoice-001"
+                  title="Innovation Tech SpA"
+                  documentNumber="INV-2025-042"
+                  date="2025-01-20"
+                  documentType="Fattura"
+                  previewContent={
+                    <Document>
+                      <DocumentTitle
+                        title="Fattura"
+                        documentNumber="INV-2025-042"
+                        date="2025-01-20"
+                      />
+                      <FromTo
+                        fromLabel="From"
+                        toLabel="To"
+                        fromAddress={['Digital Services SRL', 'Via Roma 45']}
+                        toAddress={['Innovation Tech SpA', 'Corso Vittorio Emanuele 78']}
+                      />
+                    </Document>
+                  }
+                />
+              </div>
+            </div>
+            
+            <div className="document-overview-example-item">
+              <h3>Offer Document</h3>
+              <div className="document-overview-example-wrapper">
+                <DocumentOverview
+                  documentId="offer-001"
+                  title="Global Enterprises Ltd."
+                  documentNumber="OFF-2025-123"
+                  date="2025-01-18"
+                  documentType="Offer"
+                  previewContent={
+                    <Document>
+                      <DocumentTitle
+                        title="Offer"
+                        documentNumber="OFF-2025-123"
+                        date="2025-01-18"
+                      />
+                      <FromTo
+                        fromLabel="From"
+                        toLabel="To"
+                        fromAddress={['Tech Solutions Inc.', '123 Business Park']}
+                        toAddress={['Global Enterprises Ltd.', '456 Corporate Boulevard']}
+                      />
+                    </Document>
+                  }
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

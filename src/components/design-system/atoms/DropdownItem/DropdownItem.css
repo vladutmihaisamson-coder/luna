@@ -11,7 +11,7 @@
   font-size: var(--font-size-md);
   color: var(--color-text-primary);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: var(--transition-background);
   box-sizing: border-box;
 }
 

@@ -1,0 +1,197 @@
+@import '../tokens/designTokens.css';
+
+/* ===== ANIMATION UTILITIES ===== */
+/* Very subtle and clean animations for platform-wide use */
+
+/* Fade Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide Animations - Very subtle */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scale Animations - Minimal */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+/* Utility Classes */
+.animate-fade-in {
+  animation: fadeIn var(--duration-normal) var(--easing-subtle) forwards;
+}
+
+.animate-fade-out {
+  animation: fadeOut var(--duration-fast) var(--easing-subtle) forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp var(--duration-normal) var(--easing-subtle) forwards;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown var(--duration-normal) var(--easing-subtle) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight var(--duration-normal) var(--easing-subtle) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft var(--duration-normal) var(--easing-subtle) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--duration-normal) var(--easing-subtle) forwards;
+}
+
+.animate-scale-out {
+  animation: scaleOut var(--duration-fast) var(--easing-subtle) forwards;
+}
+
+/* Transition Utilities */
+.transition-all {
+  transition: var(--transition-all);
+}
+
+.transition-color {
+  transition: var(--transition-color);
+}
+
+.transition-background {
+  transition: var(--transition-background);
+}
+
+.transition-transform {
+  transition: var(--transition-transform);
+}
+
+.transition-opacity {
+  transition: var(--transition-opacity);
+}
+
+.transition-shadow {
+  transition: var(--transition-shadow);
+}
+
+/* Hover Effects - Subtle */
+.hover-lift {
+  transition: var(--transition-transform), var(--transition-shadow);
+}
+
+.hover-lift:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.hover-scale {
+  transition: var(--transition-transform);
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.hover-fade {
+  transition: var(--transition-opacity);
+}
+
+.hover-fade:hover {
+  opacity: 0.8;
+}
+
+/* Focus States - Subtle */
+.focus-ring {
+  transition: var(--transition-shadow);
+}
+
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+

@@ -95,10 +95,31 @@
   --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.15);
   
-  /* ===== TRANSITIONS ===== */
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.2s ease;
-  --transition-slow: 0.3s ease;
+  /* ===== TRANSITIONS & ANIMATIONS ===== */
+  /* Easing Functions - Subtle and smooth */
+  --easing-subtle: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --easing-gentle: cubic-bezier(0.2, 0, 0, 1);
+  
+  /* Durations - Very subtle */
+  --duration-instant: 100ms;
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 400ms;
+  
+  /* Transition Presets */
+  --transition-fast: var(--duration-fast) var(--easing-subtle);
+  --transition-normal: var(--duration-normal) var(--easing-subtle);
+  --transition-slow: var(--duration-slow) var(--easing-subtle);
+  
+  /* Specific Property Transitions */
+  --transition-color: color var(--duration-fast) var(--easing-subtle);
+  --transition-background: background-color var(--duration-fast) var(--easing-subtle);
+  --transition-transform: transform var(--duration-normal) var(--easing-subtle);
+  --transition-opacity: opacity var(--duration-fast) var(--easing-subtle);
+  --transition-shadow: box-shadow var(--duration-normal) var(--easing-subtle);
+  --transition-all: all var(--duration-normal) var(--easing-subtle);
   
   /* ===== Z-INDEX ===== */
   --z-index-base: 1;

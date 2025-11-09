@@ -1,6 +1,12 @@
 @import '../../design-system/tokens/designTokens.css';
 @import '../tokens/tableTokens.css';
 
+.editable-text-cell-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+}
+
 .editable-text-cell {
   width: 100%;
   max-width: 100%;
@@ -9,9 +15,89 @@
   padding-left: var(--spacing-md) !important;
   padding-right: var(--spacing-md) !important;
   transition: background-color var(--table-transition-normal);
+  position: relative;
 }
 
-.editable-text-cell:hover {
+.editable-text-cell:hover:not(.is-hidden) {
   background-color: var(--table-bg-light);
+}
+
+.editable-text-cell.is-hidden {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.editable-text-cell.is-editing {
+  position: relative;
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+/* Formatted display for non-focused state */
+.editable-text-cell-display {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  cursor: text;
+  pointer-events: auto;
+  z-index: 1;
+  transition: background-color var(--table-transition-normal);
+  background-color: transparent;
+}
+
+.editable-text-cell-display:hover {
+  background-color: var(--table-bg-light) !important;
+}
+
+.editable-text-cell-wrapper:hover .editable-text-cell-display {
+  background-color: var(--table-bg-light) !important;
+}
+
+.editable-text-cell-wrapper.is-focused .editable-text-cell-display {
+  display: none;
+}
+
+.bullet-line {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0;
+  line-height: var(--line-height-normal);
+}
+
+.text-line {
+  line-height: var(--line-height-normal);
+  margin-bottom: 0;
+}
+
+.bullet-point {
+  display: inline-block;
+  margin-right: 8px;
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-normal);
+  flex-shrink: 0;
+}
+
+.line-content {
+  flex: 1;
+  min-width: 0;
 }
 

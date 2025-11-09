@@ -21,6 +21,8 @@ export const TableHeader = ({
             </TableHeaderCell>
           );
         })}
+        {/* Empty header cell for action column (delete/reset buttons) */}
+        <TableHeaderCell className="row-action-header-cell" />
       </tr>
     </thead>
   );

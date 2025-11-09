@@ -1,0 +1,62 @@
+@import './design-system/tokens/designTokens.css';
+
+.document-title {
+  margin-bottom: var(--spacing-xl);
+}
+
+.document-title-text {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--color-text-primary);
+}
+
+.document-title-meta {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-sm);
+  align-items: center;
+  font-size: var(--font-size-md);
+}
+
+.document-title-number {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.document-title-separator {
+  color: var(--color-text-secondary);
+  user-select: none;
+}
+
+.document-title-date-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.document-title-date {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  user-select: none;
+  display: inline-block;
+  padding: 0 0 2px 0;
+  border-bottom: var(--border-width) solid transparent;
+  transition: color var(--transition-normal), border-bottom-color var(--transition-normal);
+}
+
+.document-title-date[role="button"] {
+  cursor: pointer;
+}
+
+.document-title-date[role="button"]:hover {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.document-title-date[role="button"]:focus {
+  outline: none;
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+

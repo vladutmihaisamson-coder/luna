@@ -1,7 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, forwardRef } from 'react';
 import './Textarea.css';
 
-export const Textarea = ({ 
+export const Textarea = forwardRef(({ 
   value,
   onChange,
   placeholder,
@@ -10,8 +10,9 @@ export const Textarea = ({
   rows = 1,
   className = '',
   ...props 
-}) => {
-  const textareaRef = useRef(null);
+}, ref) => {
+  const internalRef = useRef(null);
+  const textareaRef = ref || internalRef;
 
   useEffect(() => {
     if (autoResize && textareaRef.current) {
@@ -36,6 +37,15 @@ export const Textarea = ({
       e.target.style.height = 'auto';
       e.target.style.height = e.target.scrollHeight + 'px';
     }
+    if (props.onFocus) {
+      props.onFocus(e);
+    }
+  };
+
+  const handleBlur = (e) => {
+    if (props.onBlur) {
+      props.onBlur(e);
+    }
   };
 
   const textareaClasses = [
@@ -51,11 +61,12 @@ export const Textarea = ({
       value={value || ''}
       onChange={handleChange}
       onFocus={handleFocus}
+      onBlur={handleBlur}
       placeholder={placeholder}
       disabled={disabled}
       rows={rows}
       {...props}
     />
   );
-};
+});
 

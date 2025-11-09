@@ -10,8 +10,22 @@ import {
   FiRotateCcw, 
   FiFilter,
   FiChevronDown,
+  FiChevronUp,
   FiChevronLeft,
-  FiX
+  FiEdit2,
+  FiX,
+  FiFolder,
+  FiGrid,
+  FiSearch,
+  FiMoreVertical,
+  FiTruck,
+  FiFileText,
+  FiFile,
+  FiShare2,
+  FiUser,
+  FiPrinter,
+  FiDownload,
+  FiSave
 } from 'react-icons/fi';
 
 // Material Design Icons (filled) - verified to exist
@@ -24,12 +38,30 @@ import {
   MdDragHandle,
   MdKeyboardArrowDown,
   MdKeyboardArrowLeft,
-  MdClose
+  MdEdit,
+  MdClose,
+  MdFolder,
+  MdGridOn,
+  MdSearch,
+  MdMoreVert,
+  MdLocalShipping,
+  MdDescription,
+  MdReceipt,
+  MdShare,
+  MdPerson,
+  MdPrint,
+  MdDownload,
+  MdSave
 } from 'react-icons/md';
 
 // Bootstrap Icons (for drag handle filled) - verified to exist
 import { 
-  BsGripVertical
+  BsGripVertical,
+  BsTruck,
+  BsFileText,
+  BsReceipt,
+  BsArrowDownCircleFill,
+  BsArrowUpCircleFill
 } from 'react-icons/bs';
 
 // Map of icon names to icon components (outline and filled)
@@ -67,9 +99,69 @@ const iconMap = {
     outline: FiChevronLeft,
     filled: MdKeyboardArrowLeft,
   },
+  edit: {
+    outline: FiEdit2,
+    filled: MdEdit,
+  },
   x: {
     outline: FiX,
     filled: MdClose,
+  },
+  folder: {
+    outline: FiFolder,
+    filled: MdFolder,
+  },
+  grid: {
+    outline: FiGrid,
+    filled: MdGridOn,
+  },
+  search: {
+    outline: FiSearch,
+    filled: MdSearch,
+  },
+  more: {
+    outline: FiMoreVertical,
+    filled: MdMoreVert,
+  },
+  truck: {
+    outline: FiTruck,
+    filled: BsTruck,
+  },
+  'file-text': {
+    outline: FiFileText,
+    filled: BsFileText,
+  },
+  receipt: {
+    outline: FiFile,
+    filled: BsReceipt,
+  },
+  share: {
+    outline: FiShare2,
+    filled: MdShare,
+  },
+  user: {
+    outline: FiUser,
+    filled: MdPerson,
+  },
+  'arrow-down': {
+    outline: FiChevronDown,
+    filled: BsArrowDownCircleFill,
+  },
+  'arrow-up': {
+    outline: FiChevronUp,
+    filled: BsArrowUpCircleFill,
+  },
+  print: {
+    outline: FiPrinter,
+    filled: MdPrint,
+  },
+  download: {
+    outline: FiDownload,
+    filled: MdDownload,
+  },
+  save: {
+    outline: FiSave,
+    filled: MdSave,
   },
 };
 

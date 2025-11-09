@@ -10,7 +10,7 @@
   background: var(--color-bg-white);
   cursor: pointer;
   padding: var(--spacing-sm) var(--spacing-md);
-  transition: all var(--transition-normal);
+  transition: var(--transition-all);
   box-shadow: none;
   font-family: var(--font-family);
   font-size: var(--font-size-md);
@@ -22,6 +22,8 @@
   -ms-user-select: none;
   width: auto;
   min-width: auto;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .button:focus {
@@ -91,7 +93,7 @@
 }
 
 .button-ghost:hover:not(:disabled) {
-  background: var(--color-bg-light);
+  background: var(--color-bg-white);
   border-color: var(--stroke-color-subtle);
 }
 
@@ -103,15 +105,14 @@
 }
 
 .button-content {
-  flex: 1;
+  flex-shrink: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.button-with-icon.button-sm .button-icon,
-.button-with-icon.button-md .button-icon {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.button-with-icon {
+  flex-wrap: nowrap;
 }
 

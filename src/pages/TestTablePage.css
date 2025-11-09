@@ -16,6 +16,13 @@
   overflow: visible;
 }
 
+/* All annotation/description paragraphs use a different font */
+.test-table-page-content > div > p,
+.test-table-page-content [class*="-example"] > p {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+}
+
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -51,6 +58,8 @@
   font-size: 14px;
   color: #666;
   margin: 0 0 20px 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
 }
 
 .icon-button-example-container {
@@ -111,6 +120,8 @@
   font-size: 14px;
   color: #666;
   margin: 0 0 20px 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
 }
 
 .table-cells-example-container {
@@ -170,6 +181,8 @@
   font-size: 14px;
   color: #666;
   margin: 0 0 20px 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
 }
 
 .table-header-cell-example-container {
@@ -241,6 +254,8 @@
   font-size: 14px;
   color: #666;
   margin: 0 0 20px 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
 }
 
 .table-header-example-container {
@@ -353,9 +368,12 @@
   word-wrap: break-word;
 }
 
-.table-row-example-container .unit-cell-with-delete {
+.table-row-example-container .row-action-cell {
   position: relative;
   overflow: visible;
+  padding: 0;
+  width: 0;
+  min-width: 0;
 }
 
 /* Remove padding from cells that contain cell components - matching Table.css */
@@ -420,6 +438,8 @@
   font-size: 14px;
   color: #666;
   margin: 0 0 20px 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
 }
 
 .table-component-example-container {
@@ -450,6 +470,8 @@
   font-size: 14px;
   color: #666;
   margin: 0 0 20px 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
 }
 
 .document-component-example-container {
@@ -462,4 +484,254 @@
   align-items: flex-start;
   /* Allow document to display at full calculated size */
   min-width: 0;
+}
+
+.document-title-example {
+  margin-bottom: 60px;
+  overflow: visible;
+  position: relative;
+}
+
+.document-title-example h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.document-title-example > p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+}
+
+.document-title-example-container {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.document-title-example-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.document-title-example-item h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.document-title-example-wrapper {
+  min-height: 48px;
+  width: 100%;
+  min-width: 200px;
+  padding: 12px;
+  box-sizing: border-box;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.document-title-example-value {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  font-family: monospace;
+}
+
+.div-table-component-example {
+  margin-bottom: 60px;
+  overflow: visible;
+  position: relative;
+}
+
+.div-table-component-example h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.div-table-component-example > p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+}
+
+.div-table-component-example-container {
+  width: 100%;
+  overflow-x: visible;
+  overflow-y: visible;
+  overflow: visible;
+  position: relative;
+  box-sizing: border-box;
+  margin-right: 36px;
+}
+
+.from-to-example {
+  margin-bottom: 60px;
+  overflow: visible;
+  position: relative;
+}
+
+.from-to-example h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.from-to-example > p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+}
+
+.from-to-example-container {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.from-to-example-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.from-to-example-item h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.from-to-example-wrapper {
+  min-height: 48px;
+  width: 100%;
+  min-width: 200px;
+  padding: 12px;
+  box-sizing: border-box;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.signature-footer-example {
+  margin-bottom: 60px;
+  overflow: visible;
+  position: relative;
+}
+
+.signature-footer-example h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.signature-footer-example > p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+}
+
+.signature-footer-example-container {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.signature-footer-example-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.signature-footer-example-item h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.signature-footer-example-wrapper {
+  min-height: 400px;
+  width: 100%;
+  min-width: 300px;
+  box-sizing: border-box;
+}
+
+.document-content-section {
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+.document-overview-example {
+  margin-bottom: 60px;
+  overflow: visible;
+  position: relative;
+}
+
+.document-overview-example h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.document-overview-example > p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+}
+
+.document-overview-example-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.document-overview-example-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.document-overview-example-item h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.document-overview-example-wrapper {
+  width: 100%;
+  min-width: 300px;
+  box-sizing: border-box;
 }

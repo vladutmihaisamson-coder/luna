@@ -1,12 +1,12 @@
 import React from 'react';
-import { EditableTextCell } from './EditableTextCell.jsx';
-import { QuantityCell } from './QuantityCell.jsx';
-import { UnitCell } from './UnitCell.jsx';
-import { DragHandle } from './DragHandle.jsx';
-import { RowActionButtons } from './RowActionButtons.jsx';
-import './TableRow.css';
+import { EditableTextCell } from '../../table/components/EditableTextCell.jsx';
+import { QuantityCell } from '../../table/components/QuantityCell.jsx';
+import { UnitCell } from '../../table/components/UnitCell.jsx';
+import { DragHandle } from '../../table/components/DragHandle.jsx';
+import { RowActionButtons } from '../../table/components/RowActionButtons.jsx';
+import './DivTableRow.css';
 
-export const TableRow = ({
+export const DivTableRow = ({
   item,
   unitOptions = [],
   actionButton = 'delete', // 'delete' | 'reset' | null - determines which button to show on the right side (default: 'delete')
@@ -61,18 +61,18 @@ export const TableRow = ({
   };
 
   return (
-    <tr 
-      className={`table-row table-row-with-delete ${className}`}
+    <div 
+      className={`div-table-row div-table-row-with-delete ${className}`}
     >
-      <td className="description-cell-with-handle">
+      <div className="div-description-cell-with-handle">
         <DragHandle />
         <EditableTextCell
           value={item.description}
           onChange={handleDescriptionChange}
           placeholder="Enter description"
         />
-      </td>
-      <td>
+      </div>
+      <div className="div-table-cell">
         <QuantityCell
           value={item.quantity}
           onChange={handleQuantityChange}
@@ -80,14 +80,16 @@ export const TableRow = ({
           onDecrement={handleDecrement}
           min={0}
         />
-      </td>
-      <td className="unit-cell-with-delete">
+      </div>
+      <div className="div-table-cell">
         <UnitCell
           value={item.unit}
           onChange={handleUnitChange}
           options={unitOptions}
           placeholder="Unit"
         />
+      </div>
+      <div className="div-row-action-cell">
         <RowActionButtons
           actionButton={actionButton}
           onDelete={handleDelete}
@@ -98,8 +100,8 @@ export const TableRow = ({
             item.unit === defaultValues.unit
           }
         />
-      </td>
-    </tr>
+      </div>
+    </div>
   );
 };
 

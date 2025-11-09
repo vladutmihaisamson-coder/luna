@@ -1,0 +1,411 @@
+/* DivTable Component Styles */
+@import './table/tokens/tableTokens.css';
+@import './design-system/tokens/designTokens.css';
+
+.div-table-container {
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.div-cargo-table {
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  font-size: 14px;
+  overflow: visible;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.div-table-header {
+  width: 100%;
+  position: relative;
+}
+
+.div-table-header-row {
+  display: flex;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.div-table-body {
+  position: relative;
+  overflow: visible;
+}
+
+.div-table-row {
+  display: flex;
+  position: relative;
+  overflow: visible;
+  width: calc(100% + var(--table-control-offset));
+  box-sizing: border-box;
+  min-height: 48px;
+  transition: background-color 0.15s ease;
+  /* No border on row - border will be on cells only */
+  /* Extend the hoverable area with margin/padding to include button areas */
+  margin-left: calc(-1 * var(--table-control-offset));
+  margin-right: 0;
+  padding-left: var(--table-control-offset);
+  padding-right: 0;
+}
+
+/* Ensure row container allows drag handle to be positioned outside */
+.div-table-container,
+.div-cargo-table,
+.div-table-body {
+  overflow: visible;
+}
+
+/* Extend hover area to include button wrappers on left and right */
+.div-table-row::before,
+.div-table-row::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--table-control-offset);
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.div-table-row::before {
+  left: calc(-1 * var(--table-control-offset));
+}
+
+.div-table-row::after {
+  right: calc(-1 * var(--table-control-offset));
+}
+
+/* Extend hover state to pseudo-elements */
+.div-table-row:hover,
+.div-table-row:hover::before,
+.div-table-row:hover::after {
+  background-color: #fafafa;
+}
+
+/* Ensure row hover is maintained when hovering over button areas */
+.div-table-row:has(.drag-handle:hover),
+.div-table-row:has(.row-action-button:hover) {
+  background-color: #fafafa;
+}
+
+.div-table-row:has(.drag-handle:hover)::before,
+.div-table-row:has(.row-action-button:hover)::after {
+  background-color: #fafafa;
+}
+
+/* Adjust cells to account for the padding */
+.div-table-row > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure row has high z-index when dropdown is open */
+.div-table-row:has(.unit-cell.dropdown-open) {
+  z-index: 9999 !important;
+  position: relative;
+}
+
+.div-table-cell {
+  padding: 13px 12px 12px 12px;
+  text-align: left;
+  position: relative;
+  vertical-align: top;
+  overflow: visible;
+  flex: 1 1 0%;
+  flex-basis: 0;
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  box-sizing: border-box;
+  /* Border only on cells, not on button areas */
+  border-bottom: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+}
+
+/* Cell classes used by DivTableRow component */
+.div-description-cell-with-handle {
+  position: relative;
+  overflow: visible;
+  word-wrap: break-word;
+  padding: 13px 12px 12px 12px;
+  flex: 3 1 0%; /* Larger width for description column - 60% of space */
+  flex-basis: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+  box-sizing: border-box;
+  /* Border only on cells, not on button areas */
+  border-bottom: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  /* No styling - no background and no stroke */
+  background: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Ensure drag handle is positioned correctly relative to description cell */
+.div-description-cell-with-handle .drag-handle {
+  position: absolute;
+  left: calc(-1 * var(--table-control-offset));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Remove all styling from description cell wrapper in all states */
+.div-description-cell-with-handle:hover,
+.div-description-cell-with-handle:focus,
+.div-description-cell-with-handle:active,
+.div-description-cell-with-handle:focus-visible {
+  background: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.div-row-action-cell {
+  position: relative;
+  overflow: visible;
+  padding: 0;
+  width: 0;
+  min-width: 0;
+  flex: 0 0 auto;
+  /* No border on action cell - border is only on data cells */
+  border: none !important;
+  /* No styling - no background and no stroke */
+  background: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove all styling from action cell wrapper in all states */
+.div-row-action-cell:hover,
+.div-row-action-cell:focus,
+.div-row-action-cell:active,
+.div-row-action-cell:focus-visible {
+  background: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.div-row-action-header-cell {
+  padding: 0;
+  width: 0;
+  min-width: 0;
+  border: none;
+  flex: 0 0 auto;
+}
+
+/* Remove padding from cells that contain cell components */
+.div-table-cell:has(.editable-text-cell),
+.div-table-cell:has(.textarea),
+.div-description-cell-with-handle:has(.editable-text-cell),
+.div-description-cell-with-handle:has(.textarea) {
+  padding: 0;
+  overflow: visible;
+}
+
+/* Ensure description cell with handle maintains gap when padding is removed */
+.div-description-cell-with-handle:has(.editable-text-cell),
+.div-description-cell-with-handle:has(.textarea) {
+  gap: 8px;
+}
+
+.div-table-cell:has(.quantity-cell) {
+  padding: 0;
+  padding-right: var(--table-control-offset, 36px);
+}
+
+.div-table-cell:has(.unit-cell) {
+  padding: 0;
+}
+
+.div-table-cell:has(.price-cell) {
+  padding: 0;
+}
+
+.div-table-cell:has(.total-cell) {
+  padding: 0;
+}
+
+.div-table-cell:has(.fattura-vat-cell),
+.div-table-cell:has(.fattura-total-cell) {
+  padding: 0;
+}
+
+/* Cell components take full height but content aligns to top */
+.div-table-cell .quantity-cell,
+.div-table-cell .unit-cell,
+.div-table-cell .price-cell,
+.div-table-cell .total-cell {
+  height: 100%;
+  min-height: 100%;
+  display: flex;
+  align-items: flex-start;
+  align-self: stretch;
+}
+
+.div-table-cell .editable-text-cell,
+.div-description-cell-with-handle .editable-text-cell {
+  height: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+}
+
+.div-description-cell-with-handle .editable-text-cell {
+  flex: 1;
+}
+
+/* Ensure textarea inside editable-text-cell aligns to top */
+.div-table-cell .editable-text-cell textarea,
+.div-description-cell-with-handle .editable-text-cell textarea {
+  align-self: flex-start;
+}
+
+/* Row action button base styles - applied directly to DeleteButton/ResetButton */
+.div-table-container .row-action-button,
+.div-cargo-table .row-action-button,
+.div-table-container .delete-button.row-action-button,
+.div-table-container .reset-button.row-action-button,
+.div-cargo-table .delete-button.row-action-button,
+.div-cargo-table .reset-button.row-action-button,
+.div-table-container .div-row-action-cell .row-action-button,
+.div-cargo-table .div-row-action-cell .row-action-button,
+.div-table-container .div-row-action-cell button.row-action-button,
+.div-cargo-table .div-row-action-cell button.row-action-button {
+  position: absolute !important;
+  right: calc(-1 * var(--table-control-offset)) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: var(--z-index-controls) !important;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-normal) 0.2s, visibility var(--transition-normal) 0.2s;
+  margin: 0 !important;
+}
+
+/* Keep button visible when hovering over the button itself */
+.div-table-container .row-action-button:hover,
+.div-cargo-table .row-action-button:hover,
+.div-table-container .delete-button.row-action-button:hover,
+.div-table-container .reset-button.row-action-button:hover,
+.div-cargo-table .delete-button.row-action-button:hover,
+.div-cargo-table .reset-button.row-action-button:hover {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  transition-delay: 0s !important;
+}
+
+/* Row action buttons visibility on hover - applied directly to buttons */
+.div-cargo-table .div-table-body .div-table-row:hover .row-action-button,
+.div-cargo-table .div-table-body .div-table-row-with-delete:hover .row-action-button,
+.div-cargo-table .div-table-body .div-table-row:hover .div-row-action-cell .row-action-button,
+.div-cargo-table .div-table-body .div-table-row-with-delete:hover .div-row-action-cell .row-action-button,
+.div-table-container .div-cargo-table .div-table-body .div-table-row:hover .row-action-button,
+.div-table-container .div-cargo-table .div-table-body .div-table-row-with-delete:hover .row-action-button,
+.div-cargo-table .div-table-body .div-table-row:hover .div-row-action-cell button.row-action-button,
+.div-cargo-table .div-table-body .div-table-row-with-delete:hover .div-row-action-cell button.row-action-button,
+.div-table-container .div-cargo-table .div-table-body .div-table-row:hover .div-row-action-cell button.row-action-button,
+.div-table-container .div-cargo-table .div-table-body .div-table-row-with-delete:hover .div-row-action-cell button.row-action-button {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+}
+
+.div-row-action-cell:hover .row-action-button,
+.div-table-container .div-row-action-cell:hover .row-action-button,
+.div-row-action-cell:hover button.row-action-button,
+.div-table-container .div-row-action-cell:hover button.row-action-button {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+}
+
+/* Add Row Button */
+.div-table-add-row-container {
+  margin-top: 16px;
+  min-height: 60px;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.div-table-add-row-button {
+  padding: 8px 16px;
+  background: white;
+  border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: opacity 0.15s ease, visibility 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  white-space: nowrap;
+  box-shadow: none;
+}
+
+.div-table-add-row-container:hover .div-table-add-row-button {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.div-table-add-row-container:not(:hover) .div-table-add-row-button {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.div-table-add-row-button:hover {
+  background: #f5f5f5;
+  border-color: var(--color-border-medium);
+}
+
+/* Drag Handle visibility on hover for div-based table */
+.div-table-row:hover .drag-handle,
+.div-table-row-with-delete:hover .drag-handle,
+.div-cargo-table .div-table-body .div-table-row:hover .drag-handle,
+.div-cargo-table .div-table-body .div-table-row-with-delete:hover .drag-handle,
+.div-table-container .div-cargo-table .div-table-body .div-table-row:hover .drag-handle,
+.div-table-container .div-cargo-table .div-table-body .div-table-row-with-delete:hover .drag-handle {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.div-description-cell-with-handle:hover .drag-handle {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transition-delay: 0s !important;
+}
+

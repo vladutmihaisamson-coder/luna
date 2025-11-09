@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from '../Icon/Icon';
 import './Button.css';
 
 export const Button = ({ 
@@ -6,6 +7,7 @@ export const Button = ({
   variant = 'default',
   size = 'md',
   icon,
+  iconVariant = 'outline',
   iconPosition = 'left',
   onClick,
   disabled = false,
@@ -23,6 +25,12 @@ export const Button = ({
     className
   ].filter(Boolean).join(' ');
 
+  const iconElement = icon ? (
+    <span className="button-icon">
+      <Icon name={icon} size={size === 'sm' ? 'sm' : size === 'md' ? 'md' : 'md'} variant={iconVariant} />
+    </span>
+  ) : null;
+
   return (
     <button
       type={type}
@@ -31,9 +39,9 @@ export const Button = ({
       disabled={disabled}
       {...props}
     >
-      {icon && iconPosition === 'left' && <span className="button-icon">{icon}</span>}
+      {icon && iconPosition === 'left' && iconElement}
       {children && <span className="button-content">{children}</span>}
-      {icon && iconPosition === 'right' && <span className="button-icon">{icon}</span>}
+      {icon && iconPosition === 'right' && iconElement}
     </button>
   );
 };

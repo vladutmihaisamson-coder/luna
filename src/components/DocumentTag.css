@@ -1,0 +1,30 @@
+@import './design-system/tokens/designTokens.css';
+
+.document-tag {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.document-tag .luna-badge {
+  text-transform: uppercase;
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.5px;
+  background: var(--color-bg-light) !important;
+  border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle) !important;
+  color: var(--color-text-primary) !important;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.document-tag-icon {
+  flex-shrink: 0;
+}
+
+.document-tag-text {
+  display: inline-block;
+}
+

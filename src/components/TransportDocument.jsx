@@ -1,12 +1,27 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
-import { DatePickerDropdown } from './DatePickerDropdown';
-import { GenericTable } from './GenericTable';
+import { useState, useMemo, useEffect } from 'react';
+import { Document } from './design-system/organisms/Document/Document';
+import { DocumentTitle } from './DocumentTitle';
+import { FromTo } from './FromTo';
+import { DivTable } from './DivTable';
+import { SignatureFooter } from './SignatureFooter';
 import './TransportDocument.css';
 
-export const TransportDocument = ({ onHasChanges, onSave, onRevert }) => {
-  const initialCargoItems = [
+export const TransportDocument = ({ onHasChanges, onSave, onRevert, isEmpty = false }) => {
+  const initialCargoItems = isEmpty ? [
+    { id: 1, description: '', quantity: 1, unit: 'boxes' }
+  ] : [
     { id: 1, description: 'Electronic Equipment', quantity: 25, unit: 'boxes' },
-    { id: 2, description: 'Office Supplies', quantity: 10, unit: 'boxes' }
+    { id: 2, description: 'Office Supplies', quantity: 10, unit: 'boxes' },
+    { id: 3, description: 'Furniture Pieces', quantity: 5, unit: 'pallets' },
+    { id: 4, description: 'Raw Materials', quantity: 150, unit: 'kg' },
+    { id: 5, description: 'Packaging Materials', quantity: 8, unit: 'pallets' },
+    { id: 6, description: 'Machinery Parts', quantity: 12, unit: 'pieces' },
+    { id: 7, description: 'Textile Goods', quantity: 200, unit: 'kg' },
+    { id: 8, description: 'Automotive Components', quantity: 30, unit: 'boxes' },
+    { id: 9, description: 'Construction Materials', quantity: 3, unit: 'tons' },
+    { id: 10, description: 'Medical Supplies', quantity: 15, unit: 'boxes' },
+    { id: 11, description: 'Food Products', quantity: 50, unit: 'boxes' },
+    { id: 12, description: 'Chemical Containers', quantity: 20, unit: 'liters' }
   ];
   const initialDate = new Date().toISOString().split('T')[0];
 
@@ -15,29 +30,15 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert }) => {
   const [savedCargoItems, setSavedCargoItems] = useState(initialCargoItems);
   const [savedDate, setSavedDate] = useState(initialDate);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const dateRef = useRef(null);
 
   const unitOptions = ['boxes', 'pallets', 'pieces', 'kg', 'tons', 'liters', 'units'];
-
-  const formatDate = (dateString) => {
-    const dateObj = new Date(dateString);
-    return dateObj.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
-    });
-  };
-
-  const handleDateClick = () => {
-    setShowDatePicker(!showDatePicker);
-  };
 
   const handleDateChange = (newDate) => {
     setDocumentDate(newDate);
   };
 
-  const handleCloseDatePicker = () => {
-    setShowDatePicker(false);
+  const handleDatePickerToggle = (isOpen) => {
+    setShowDatePicker(isOpen);
   };
 
   // Check if there are unsaved changes
@@ -152,20 +153,25 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert }) => {
   const HEADER_HEIGHT_CM = 3;
   const PARTIES_SECTION_CM = 5.5;
   const TABLE_HEADER_CM = 1.5;
-  const ROW_HEIGHT_CM = 1.3;
+  const ROW_HEIGHT_CM = 1.0; // Actual row height is smaller
   const FOOTER_HEIGHT_CM = 4;
-  const ADD_BUTTON_CM = 1.5;
+  const ADD_BUTTON_CM = 0.8; // Button container and spacing (reduced)
+  const BUTTON_TO_FOOTER_GAP_CM = 1.05; // ~40px gap between button and footer (40px ≈ 1.05cm at 96 DPI)
+  const MIN_SPACE_BEFORE_FOOTER_CM = FOOTER_HEIGHT_CM + ADD_BUTTON_CM + BUTTON_TO_FOOTER_GAP_CM; // Footer + Add button + 40px gap
 
   const pages = useMemo(() => {
-    const FIRST_PAGE_AVAILABLE = PAGE_HEIGHT_CM - PADDING_CM - HEADER_HEIGHT_CM - PARTIES_SECTION_CM - TABLE_HEADER_CM - ADD_BUTTON_CM;
-    const CONTINUATION_PAGE_AVAILABLE = PAGE_HEIGHT_CM - PADDING_CM - TABLE_HEADER_CM - ADD_BUTTON_CM;
-    const LAST_PAGE_FOOTER_SPACE = FOOTER_HEIGHT_CM;
+    const FIRST_PAGE_AVAILABLE = PAGE_HEIGHT_CM - PADDING_CM - HEADER_HEIGHT_CM - PARTIES_SECTION_CM - TABLE_HEADER_CM;
+    const CONTINUATION_PAGE_AVAILABLE = PAGE_HEIGHT_CM - PADDING_CM - TABLE_HEADER_CM;
     
     // Calculate max rows for each page type
-    const firstPageWithFooterRows = Math.floor((FIRST_PAGE_AVAILABLE - LAST_PAGE_FOOTER_SPACE) / ROW_HEIGHT_CM);
-    const firstPageWithoutFooterRows = Math.floor(FIRST_PAGE_AVAILABLE / ROW_HEIGHT_CM);
-    const continuationPageRows = Math.floor(CONTINUATION_PAGE_AVAILABLE / ROW_HEIGHT_CM);
-    const lastPageRows = Math.floor((CONTINUATION_PAGE_AVAILABLE - LAST_PAGE_FOOTER_SPACE) / ROW_HEIGHT_CM);
+    // First page must reserve space for footer + add button
+    // Use calculated values without artificial caps to allow more content on first page
+    const calculatedFirstPageRows = Math.floor((FIRST_PAGE_AVAILABLE - MIN_SPACE_BEFORE_FOOTER_CM) / ROW_HEIGHT_CM);
+    const firstPageWithFooterRows = calculatedFirstPageRows;
+    const calculatedFirstPageWithoutFooterRows = Math.floor((FIRST_PAGE_AVAILABLE - ADD_BUTTON_CM) / ROW_HEIGHT_CM);
+    const firstPageWithoutFooterRows = calculatedFirstPageWithoutFooterRows;
+    const continuationPageRows = Math.floor((CONTINUATION_PAGE_AVAILABLE - ADD_BUTTON_CM) / ROW_HEIGHT_CM);
+    const lastPageRows = Math.floor((CONTINUATION_PAGE_AVAILABLE - MIN_SPACE_BEFORE_FOOTER_CM) / ROW_HEIGHT_CM);
 
     const result = [];
     
@@ -173,7 +179,8 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert }) => {
       result.push({
         isFirstPage: true,
         items: [],
-        pageNumber: 1
+        pageNumber: 1,
+        hasFooter: true
       });
       return result;
     }
@@ -183,7 +190,8 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert }) => {
       result.push({
         isFirstPage: true,
         items: cargoItems,
-        pageNumber: 1
+        pageNumber: 1,
+        hasFooter: true
       });
       return result;
     }
@@ -209,22 +217,23 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert }) => {
       itemsForFirstPage = firstPageWithFooterRows;
     }
 
-    // Add first page
+    // Add first page with footer
     result.push({
       isFirstPage: true,
       items: cargoItems.slice(0, Math.min(totalItems, itemsForFirstPage)),
-      pageNumber: pageNumber
+      pageNumber: pageNumber,
+      hasFooter: true
     });
     currentIndex = Math.min(totalItems, itemsForFirstPage);
     pageNumber++;
 
-    // Add continuation pages
+    // Add continuation pages (footer always stays on first page)
     while (currentIndex < totalItems) {
       const remainingItems = totalItems - currentIndex;
       
-      // Check if remaining items fit on last page with footer
-      if (remainingItems <= lastPageRows) {
-        // This is the last page with footer
+      // Check if remaining items fit on a continuation page
+      if (remainingItems <= continuationPageRows) {
+        // Remaining items fit on one more page
         result.push({
           isFirstPage: false,
           items: cargoItems.slice(currentIndex, totalItems),
@@ -233,8 +242,7 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert }) => {
         break;
       } else {
         // Not the last page yet, add a middle page
-        // Reserve space for last page by not taking all remaining items
-        const itemsForPage = Math.min(continuationPageRows, remainingItems - 1);
+        const itemsForPage = Math.min(continuationPageRows, remainingItems);
         
         result.push({
           isFirstPage: false,
@@ -253,57 +261,37 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert }) => {
   return (
     <div className="document-pages">
       {pages.map((page, pageIndex) => (
-        <div key={pageIndex} className="transport-document">
+        <Document key={pageIndex} size="a4" orientation="portrait" padding={true}>
           {page.isFirstPage && (
             <>
-              <div className="document-header">
-                <h1>Transport Document</h1>
-                <div className="document-meta">
-                  <span className="document-number">TD-2025-001</span>
-                  <span className="document-meta-separator">·</span>
-                  <span className="document-date-wrapper">
-                    <span
-                      ref={dateRef}
-                      className="document-date"
-                      onClick={handleDateClick}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => e.key === 'Enter' && handleDateClick(e)}
-                    >
-                      {formatDate(documentDate)}
-                    </span>
-                    <DatePickerDropdown
-                      value={documentDate}
-                      onChange={handleDateChange}
-                      onClose={handleCloseDatePicker}
-                      isOpen={showDatePicker}
+              <DocumentTitle
+                title="Transport Document"
+                documentNumber="TD-2025-001"
+                date={documentDate}
+                onDateChange={handleDateChange}
+                showDatePicker={showDatePicker}
+                onDatePickerToggle={handleDatePickerToggle}
                     />
-                  </span>
-                </div>
-              </div>
               
-              <div className="parties-section">
-                <div className="document-section">
-                  <div className="party-info">
-                    <p>ABC Logistics Ltd.</p>
-                    <p>123 Warehouse St, Industrial Park</p>
-                    <p>+1 (555) 123-4567</p>
-                  </div>
-                </div>
-
-                <div className="document-section">
-                  <div className="party-info">
-                    <p>XYZ Distribution Co.</p>
-                    <p>456 Delivery Ave, Commerce District</p>
-                    <p>+1 (555) 987-6543</p>
-                  </div>
-                </div>
-              </div>
+              <FromTo
+                fromLabel="From"
+                toLabel="To"
+                fromAddress={[
+                  'ABC Logistics Ltd.',
+                  '123 Warehouse St, Industrial Park',
+                  '+1 (555) 123-4567'
+                ]}
+                toAddress={isEmpty ? [] : [
+                  'XYZ Distribution Co.',
+                  '456 Delivery Ave, Commerce District',
+                  '+1 (555) 987-6543'
+                ]}
+              />
             </>
           )}
 
-          <div className="document-section">
-            <GenericTable
+          <div className="document-content-section">
+            <DivTable
               items={page.items}
               columns={['Description', 'Quantity', 'Unit']}
               unitOptions={unitOptions}
@@ -314,24 +302,19 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert }) => {
               onResetRow={resetRow}
               onAddNewRow={pageIndex === pages.length - 1 ? addNewRow : undefined}
               showRulers={false}
+              totalItemsCount={cargoItems.length}
             />
           </div>
 
-          {pageIndex === pages.length - 1 && (
-            <div className="document-footer">
-              <div className="signature-section">
-                <div className="signature">
-                  <div className="signature-line"></div>
-                  <span>Shipper Signature</span>
-                </div>
-                <div className="signature">
-                  <div className="signature-line"></div>
-                  <span>Carrier Signature</span>
-                </div>
-              </div>
-            </div>
+          {page.hasFooter && (
+            <SignatureFooter
+              signatures={[
+                { label: 'Shipper Signature' },
+                { label: 'Carrier Signature' }
+              ]}
+            />
           )}
-        </div>
+        </Document>
       ))}
     </div>
   );

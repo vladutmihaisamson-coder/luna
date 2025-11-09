@@ -1,0 +1,64 @@
+@import '../../table/tokens/tableTokens.css';
+
+.div-table-header-cell {
+  text-align: left;
+  padding: var(--table-cell-padding-small) var(--table-cell-padding);
+  font-size: var(--table-font-size-small);
+  font-weight: var(--table-font-weight-bold);
+  color: var(--table-text-primary);
+  border-bottom: var(--table-border-width-thick) solid var(--table-border-dark);
+  position: relative;
+  flex: 1 1 0%;
+  flex-basis: 0;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* First header cell (description) should account for drag handle space */
+.div-table-header-row > .div-table-header-cell:first-child {
+  padding-left: calc(var(--table-cell-padding) + var(--table-control-offset));
+}
+
+/* Align unit header cell with unit cells below - match unit cell padding */
+.div-table-header-row .div-table-header-cell:last-child {
+  padding: var(--table-cell-padding-small) var(--spacing-md) var(--table-cell-padding-small) var(--spacing-md);
+  padding-right: 0;
+}
+
+/* Make the first header cell (description) wider to match the description column - 60% of space */
+.div-table-header-row > .div-table-header-cell:first-child {
+  flex: 3 1 0%;
+  flex-basis: 0;
+}
+
+.div-table-header-cell-content {
+  display: flex;
+  align-items: center;
+  gap: var(--table-control-spacing);
+  width: 100%;
+}
+
+.div-table-header-cell-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.div-table-header-cell-dropdown-button {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity var(--table-transition-normal), visibility var(--table-transition-normal);
+  flex-shrink: 0;
+}
+
+.div-table-header-cell:hover .div-table-header-cell-dropdown-button {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+

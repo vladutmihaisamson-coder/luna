@@ -68,11 +68,19 @@
   word-wrap: break-word;
 }
 
-.unit-cell-with-delete {
+.row-action-cell {
   position: relative;
   overflow: visible;
-  /* Ensure button space is accounted for - button extends beyond cell */
-  padding-right: 0;
+  padding: 0;
+  width: 0;
+  min-width: 0;
+}
+
+.row-action-header-cell {
+  padding: 0;
+  width: 0;
+  min-width: 0;
+  border: none;
 }
 
 /* Remove padding from cells that contain cell components */
@@ -97,10 +105,10 @@
 .table-container .reset-button.row-action-button,
 .cargo-table .delete-button.row-action-button,
 .cargo-table .reset-button.row-action-button,
-.table-container .unit-cell-with-delete .row-action-button,
-.cargo-table .unit-cell-with-delete .row-action-button,
-.table-container .unit-cell-with-delete button.row-action-button,
-.cargo-table .unit-cell-with-delete button.row-action-button {
+.table-container .row-action-cell .row-action-button,
+.cargo-table .row-action-cell .row-action-button,
+.table-container .row-action-cell button.row-action-button,
+.cargo-table .row-action-cell button.row-action-button {
   position: absolute !important;
   right: calc(-1 * var(--table-control-offset)) !important;
   top: 50% !important;
@@ -130,27 +138,27 @@
 .cargo-table tbody tr:hover .row-action-button,
 .cargo-table tbody tr.table-row:hover .row-action-button,
 .cargo-table tbody tr.table-row-with-delete:hover .row-action-button,
-.cargo-table tbody tr:hover .unit-cell-with-delete .row-action-button,
-.cargo-table tbody tr.table-row:hover .unit-cell-with-delete .row-action-button,
-.cargo-table tbody tr.table-row-with-delete:hover .unit-cell-with-delete .row-action-button,
+.cargo-table tbody tr:hover .row-action-cell .row-action-button,
+.cargo-table tbody tr.table-row:hover .row-action-cell .row-action-button,
+.cargo-table tbody tr.table-row-with-delete:hover .row-action-cell .row-action-button,
 .table-container .cargo-table tbody tr:hover .row-action-button,
 .table-container .cargo-table tbody tr.table-row:hover .row-action-button,
 .table-container .cargo-table tbody tr.table-row-with-delete:hover .row-action-button,
-.cargo-table tbody tr:hover .unit-cell-with-delete button.row-action-button,
-.cargo-table tbody tr.table-row:hover .unit-cell-with-delete button.row-action-button,
-.cargo-table tbody tr.table-row-with-delete:hover .unit-cell-with-delete button.row-action-button,
-.table-container .cargo-table tbody tr:hover .unit-cell-with-delete button.row-action-button,
-.table-container .cargo-table tbody tr.table-row:hover .unit-cell-with-delete button.row-action-button,
-.table-container .cargo-table tbody tr.table-row-with-delete:hover .unit-cell-with-delete button.row-action-button {
+.cargo-table tbody tr:hover .row-action-cell button.row-action-button,
+.cargo-table tbody tr.table-row:hover .row-action-cell button.row-action-button,
+.cargo-table tbody tr.table-row-with-delete:hover .row-action-cell button.row-action-button,
+.table-container .cargo-table tbody tr:hover .row-action-cell button.row-action-button,
+.table-container .cargo-table tbody tr.table-row:hover .row-action-cell button.row-action-button,
+.table-container .cargo-table tbody tr.table-row-with-delete:hover .row-action-cell button.row-action-button {
   opacity: 1 !important;
   pointer-events: auto !important;
   visibility: visible !important;
 }
 
-.unit-cell-with-delete:hover .row-action-button,
-.table-container .unit-cell-with-delete:hover .row-action-button,
-.unit-cell-with-delete:hover button.row-action-button,
-.table-container .unit-cell-with-delete:hover button.row-action-button {
+.row-action-cell:hover .row-action-button,
+.table-container .row-action-cell:hover .row-action-button,
+.row-action-cell:hover button.row-action-button,
+.table-container .row-action-cell:hover button.row-action-button {
   opacity: 1 !important;
   pointer-events: auto !important;
   visibility: visible !important;

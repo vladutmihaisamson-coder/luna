@@ -1,0 +1,72 @@
+@import './design-system/tokens/designTokens.css';
+
+.from-to {
+  display: flex;
+  gap: var(--spacing-2xl);
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-3xl);
+}
+
+.from-to-section {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.from-to-party {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.from-to-label-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  position: relative;
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.from-to-label {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+  padding: 0;
+  color: var(--color-text-primary);
+  display: inline;
+  line-height: 1;
+}
+
+.from-to-dropdown-button {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.from-to-label-wrapper:hover .from-to-dropdown-button {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.from-to-add-button {
+  opacity: 1;
+  pointer-events: auto;
+  margin-top: var(--spacing-xs);
+  align-self: flex-start;
+}
+
+.from-to-line {
+  font-size: var(--font-size-sm);
+  margin: 0;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+.from-to-line:not(:last-child) {
+  margin-bottom: 2px;
+}
+
+.from-to-placeholder {
+  color: var(--color-text-tertiary);
+  font-style: italic;
+}
+

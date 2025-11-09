@@ -17,6 +17,23 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.document-logo {
+  margin-bottom: var(--spacing-xl);
+  display: flex;
+  align-items: flex-start;
+}
+
+.document-logo-image {
+  max-width: 200px;
+  max-height: 80px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
 /* Document with padding */
@@ -38,8 +55,12 @@
   .document {
     box-shadow: none;
     margin: 0;
-    page-break-after: always;
     /* Use CSS mm units for print */
+  }
+  
+  /* Add page break after each document except the last one */
+  .document:not(:last-child) {
+    page-break-after: always;
   }
   
   .document-a4.document-portrait {

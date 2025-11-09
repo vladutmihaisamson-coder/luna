@@ -2,7 +2,7 @@
 
 .dropdown {
   position: absolute;
-  z-index: var(--z-index-dropdown);
+  z-index: 9999;
   min-width: 120px;
   max-width: 300px;
   max-height: 200px;
@@ -12,6 +12,7 @@
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-md);
   isolation: isolate;
+  animation: fadeInUp var(--duration-normal) var(--easing-subtle) forwards;
 }
 
 .dropdown-bottom {

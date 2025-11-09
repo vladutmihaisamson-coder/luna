@@ -1,30 +1,39 @@
-import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { BackButton } from '../components/BackButton';
 import { TransportDocument } from '../components/TransportDocument';
 import { FatturaDocument } from '../components/FatturaDocument';
+import { OfferDocument } from '../components/OfferDocument';
+import { ShareModal } from '../components/ShareModal';
+import { IconButton } from '../components/design-system/molecules/IconButton/IconButton';
+import { Button } from '../components/design-system/atoms/Button/Button';
 import html2pdf from 'html2pdf.js';
 import './DocumentViewPage.css';
 
 export const DocumentViewPage = () => {
   const { documentId } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
-  // Determine document type from documentId
+  // Determine document type from URL query parameter or documentId
   const getDocumentType = () => {
+    const typeParam = searchParams.get('type');
+    if (typeParam) return typeParam;
     if (documentId?.startsWith('fattura-')) return 'fattura';
     if (documentId?.startsWith('offer-')) return 'offer';
     return 'transport';
   };
 
   const documentType = getDocumentType();
+  const isNewDocument = documentId?.includes('-new-');
 
   const handlePrint = () => {
     window.print();
   };
 
-  const handleDownload = () => {
+  const handleDownload = useCallback(() => {
     const element = document.querySelector('.document-pages') || document.querySelector('.fattura-document');
     if (!element) return;
 
@@ -48,7 +57,18 @@ export const DocumentViewPage = () => {
     };
 
     html2pdf().set(opt).from(element).save();
-  };
+  }, [documentType, documentId]);
+
+  // Listen for download event from ShareModal
+  useEffect(() => {
+    const handleDownloadEvent = () => {
+      handleDownload();
+    };
+    window.addEventListener('downloadDocument', handleDownloadEvent);
+    return () => {
+      window.removeEventListener('downloadDocument', handleDownloadEvent);
+    };
+  }, [handleDownload]);
 
   const handleBack = () => {
     if (hasUnsavedChanges) {
@@ -79,65 +99,73 @@ export const DocumentViewPage = () => {
       <div className="action-buttons">
         {hasUnsavedChanges && (
           <>
-            <button 
-              className="action-button revert-button" 
+            <IconButton
+              icon="reset"
+              variant="default"
+              size="md"
               onClick={handleRevert}
               aria-label="Revert changes"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="1 4 1 10 7 10"/>
-                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
-              </svg>
-            </button>
-            <button 
-              className="action-button save-button" 
+            />
+            <IconButton
+              icon="save"
+              variant="primary"
+              size="md"
               onClick={handleSave}
               aria-label="Save changes"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                <polyline points="17 21 17 13 7 13 7 21"/>
-                <polyline points="7 3 7 8 15 8"/>
-              </svg>
-            </button>
+            />
             <div className="button-separator"></div>
           </>
         )}
-        <button 
-          className="action-button" 
+        <IconButton
+          icon="print"
+          variant="default"
+          size="md"
           onClick={handlePrint}
           aria-label="Print document"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="6 9 6 2 18 2 18 9"/>
-            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
-            <rect x="6" y="14" width="12" height="8"/>
-          </svg>
-        </button>
-        <button 
-          className="action-button" 
+        />
+        <IconButton
+          icon="download"
+          variant="default"
+          size="md"
           onClick={handleDownload}
           aria-label="Download document"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-        </button>
+        />
+        <IconButton
+          icon="share"
+          variant="default"
+          size="md"
+          onClick={() => setIsShareModalOpen(true)}
+          aria-label="Share document"
+        />
       </div>
+      
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        documentTitle={`${documentType}-${documentId}`}
+        documentUrl={window.location.href}
+      />
       
       {documentType === 'fattura' ? (
         <FatturaDocument 
           onHasChanges={setHasUnsavedChanges}
           onSave={handleSave}
           onRevert={handleRevert}
+          isEmpty={isNewDocument}
+        />
+      ) : documentType === 'offer' ? (
+        <OfferDocument 
+          onHasChanges={setHasUnsavedChanges}
+          onSave={handleSave}
+          onRevert={handleRevert}
+          isEmpty={isNewDocument}
         />
       ) : (
         <TransportDocument 
           onHasChanges={setHasUnsavedChanges}
           onSave={handleSave}
           onRevert={handleRevert}
+          isEmpty={isNewDocument}
         />
       )}
     </div>

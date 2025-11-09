@@ -1,0 +1,24 @@
+@import '../../design-system/tokens/designTokens.css';
+@import '../tokens/tableTokens.css';
+
+.total-cell {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.total-display {
+  font-size: 14px;
+  color: var(--table-text-primary);
+  font-weight: 500;
+  width: 100%;
+  text-align: left;
+}
+

@@ -1,0 +1,72 @@
+@import '../../design-system/tokens/designTokens.css';
+@import '../tokens/tableTokens.css';
+
+.price-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
+  box-sizing: border-box;
+  min-width: 0;
+  transition: background-color var(--table-transition-normal);
+}
+
+.price-cell:hover {
+  background-color: var(--table-bg-light);
+}
+
+.price-input-wrapper {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  box-sizing: border-box;
+  height: var(--size-button-md);
+  padding-top: 1px;
+}
+
+.price-input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  min-height: auto;
+  line-height: var(--line-height-normal);
+  vertical-align: middle;
+  transition: color var(--transition-normal);
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  outline: none;
+  text-align: left;
+  cursor: text;
+  box-sizing: border-box;
+}
+
+.price-input::-webkit-inner-spin-button,
+.price-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.price-input-highlighted {
+  color: var(--color-primary) !important;
+}
+
+.price-currency-symbol {
+  font-size: 14px;
+  color: var(--table-text-primary);
+  font-weight: 500;
+  flex-shrink: 0;
+  user-select: none;
+}
+

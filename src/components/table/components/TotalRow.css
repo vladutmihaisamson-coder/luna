@@ -1,0 +1,54 @@
+@import '../../design-system/tokens/designTokens.css';
+@import '../tokens/tableTokens.css';
+
+.total-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 24px;
+  margin-top: var(--spacing-xs);
+  padding-top: var(--spacing-xs);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.total-row-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--table-text-primary);
+  min-width: 100px;
+  text-align: right;
+}
+
+.total-row-value {
+  min-width: 120px;
+  text-align: right;
+}
+
+.total-row-value .total-cell {
+  justify-content: flex-end;
+  padding: 0;
+}
+
+.total-row-value .total-display {
+  text-align: right;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.total-row-final {
+  margin-top: var(--spacing-xs);
+  padding-top: var(--spacing-xs);
+  border-top: 2px solid var(--stroke-color-medium, #666);
+}
+
+.total-row-final .total-row-label {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.total-row-final .total-row-value .total-display {
+  font-weight: 700;
+  font-size: 18px;
+}
+

@@ -12,8 +12,18 @@
   padding-right: var(--spacing-md);
   box-sizing: border-box;
   z-index: 0;
-  isolation: isolate;
   transition: background-color var(--table-transition-normal);
+}
+
+.unit-cell.dropdown-open {
+  z-index: 9999 !important;
+  position: relative;
+}
+
+/* Ensure the parent cell also has high z-index when dropdown is open */
+.div-table-cell:has(.unit-cell.dropdown-open) {
+  z-index: 9999 !important;
+  position: relative;
 }
 
 .unit-cell:hover {
@@ -50,7 +60,10 @@
 .unit-dropdown {
   margin-top: var(--spacing-xs);
   min-width: 150px;
-  z-index: var(--z-index-dropdown);
+  z-index: 9999 !important;
+  max-height: none !important;
+  height: auto !important;
+  overflow-y: visible !important;
 }
 
 .unit-dropdown-controls {
@@ -74,7 +87,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: var(--z-index-base);
+  z-index: 1;
+}
+
+.unit-cell.dropdown-open .unit-dropdown-button-wrapper {
+  z-index: 10000;
 }
 
 .unit-dropdown-button {
