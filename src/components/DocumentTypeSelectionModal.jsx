@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { IconButton } from './design-system/molecules/IconButton/IconButton';
 import { DocumentOverview } from './DocumentOverview';
 import { Input } from './design-system/atoms/Input/Input';
+import { Select } from './design-system/atoms/Select/Select';
 import { Button } from './design-system/atoms/Button/Button';
 import './DocumentTypeSelectionModal.css';
 
@@ -203,44 +204,52 @@ export const DocumentTypeSelectionModal = ({
         <form onSubmit={handleClientSubmit} className="client-form">
           <div className="form-field">
             <label htmlFor="client-name">Client Name *</label>
-            <Input
-              id="client-name"
-              type="text"
-              value={clientName}
-              onChange={(value) => setClientName(value)}
-              placeholder="Enter client name"
-              required
-            />
+            <div className="form-input-wrapper">
+              <Input
+                id="client-name"
+                type="text"
+                value={clientName}
+                onChange={(value) => setClientName(value)}
+                placeholder="Enter client name"
+                required
+              />
+            </div>
           </div>
           <div className="form-field">
             <label htmlFor="client-address">Address</label>
-            <Input
-              id="client-address"
-              type="text"
-              value={clientAddress}
-              onChange={(value) => setClientAddress(value)}
-              placeholder="Enter client address"
-            />
+            <div className="form-input-wrapper">
+              <Input
+                id="client-address"
+                type="text"
+                value={clientAddress}
+                onChange={(value) => setClientAddress(value)}
+                placeholder="Enter client address"
+              />
+            </div>
           </div>
           <div className="form-field">
             <label htmlFor="client-email">Email</label>
-            <Input
-              id="client-email"
-              type="email"
-              value={clientEmail}
-              onChange={(value) => setClientEmail(value)}
-              placeholder="Enter client email"
-            />
+            <div className="form-input-wrapper">
+              <Input
+                id="client-email"
+                type="email"
+                value={clientEmail}
+                onChange={(value) => setClientEmail(value)}
+                placeholder="Enter client email"
+              />
+            </div>
           </div>
           <div className="form-field">
             <label htmlFor="client-phone">Phone</label>
-            <Input
-              id="client-phone"
-              type="tel"
-              value={clientPhone}
-              onChange={(value) => setClientPhone(value)}
-              placeholder="Enter client phone"
-            />
+            <div className="form-input-wrapper">
+              <Input
+                id="client-phone"
+                type="tel"
+                value={clientPhone}
+                onChange={(value) => setClientPhone(value)}
+                placeholder="Enter client phone"
+              />
+            </div>
           </div>
           <div className="form-actions">
             <Button type="button" variant="default" onClick={onClose}>
@@ -273,38 +282,44 @@ export const DocumentTypeSelectionModal = ({
         <form onSubmit={handleUserSubmit} className="user-form">
           <div className="form-field">
             <label htmlFor="user-name">Name *</label>
-            <Input
-              id="user-name"
-              type="text"
-              value={userName}
-              onChange={(value) => setUserName(value)}
-              placeholder="Enter user name"
-              required
-            />
+            <div className="form-input-wrapper">
+              <Input
+                id="user-name"
+                type="text"
+                value={userName}
+                onChange={(value) => setUserName(value)}
+                placeholder="Enter user name"
+                required
+              />
+            </div>
           </div>
           <div className="form-field">
             <label htmlFor="user-email">Email *</label>
-            <Input
-              id="user-email"
-              type="email"
-              value={userEmail}
-              onChange={(value) => setUserEmail(value)}
-              placeholder="Enter user email"
-              required
-            />
+            <div className="form-input-wrapper">
+              <Input
+                id="user-email"
+                type="email"
+                value={userEmail}
+                onChange={(value) => setUserEmail(value)}
+                placeholder="Enter user email"
+                required
+              />
+            </div>
           </div>
           <div className="form-field">
             <label htmlFor="user-role">Role</label>
-            <select
-              id="user-role"
-              value={userRole}
-              onChange={(e) => setUserRole(e.target.value)}
-              className="form-select"
-            >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-              <option value="manager">Manager</option>
-            </select>
+            <div className="form-input-wrapper">
+              <Select
+                id="user-role"
+                value={userRole}
+                onChange={(value) => setUserRole(value)}
+                options={[
+                  { value: 'user', label: 'User' },
+                  { value: 'admin', label: 'Admin' },
+                  { value: 'manager', label: 'Manager' }
+                ]}
+              />
+            </div>
           </div>
           <div className="form-actions">
             <Button type="button" variant="default" onClick={onClose}>

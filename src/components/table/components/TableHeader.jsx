@@ -4,7 +4,8 @@ import './TableHeader.css';
 
 export const TableHeader = ({
   columns = ['Description', 'Quantity', 'Unit'], // Array of strings or objects with { label, key, className, ... }
-  className = ''
+  className = '',
+  onColumnDelete
 }) => {
   return (
     <thead>
@@ -15,8 +16,14 @@ export const TableHeader = ({
           const columnKey = typeof column === 'string' ? column : column.key || index;
           const columnClassName = typeof column === 'string' ? '' : column.className || '';
           
+          const handleDelete = onColumnDelete ? () => onColumnDelete(index, columnKey) : undefined;
+          
           return (
-            <TableHeaderCell key={columnKey} className={columnClassName}>
+            <TableHeaderCell 
+              key={columnKey} 
+              className={columnClassName}
+              onDelete={handleDelete}
+            >
               {columnLabel}
             </TableHeaderCell>
           );

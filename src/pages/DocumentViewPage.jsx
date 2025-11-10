@@ -145,14 +145,14 @@ export const DocumentViewPage = () => {
             <IconButton
               icon="reset"
               variant="default"
-              size="md"
+              size="lg"
               onClick={handleRevert}
               aria-label="Revert changes"
             />
             <IconButton
               icon="save"
               variant="primary"
-              size="md"
+              size="lg"
               onClick={handleSave}
               aria-label="Save changes"
             />
@@ -162,21 +162,21 @@ export const DocumentViewPage = () => {
         <IconButton
           icon="print"
           variant="default"
-          size="md"
+          size="lg"
           onClick={handlePrint}
           aria-label="Print document"
         />
         <IconButton
           icon="download"
           variant="default"
-          size="md"
+          size="lg"
           onClick={handleDownload}
           aria-label="Download document"
         />
         <IconButton
           icon="share"
           variant="default"
-          size="md"
+          size="lg"
           onClick={() => setIsShareModalOpen(true)}
           aria-label="Share document"
         />

@@ -7,7 +7,7 @@ import './DivTable.css';
 
 export const DivTable = ({ 
   items: controlledItems,
-  columns = ['Description', 'Quantity', 'Unit'], // Array of strings or objects with { label, key, ... }
+  columns: controlledColumns = ['Description', 'Quantity', 'Unit'], // Array of strings or objects with { label, key, ... }
   renderRow, // Optional custom row renderer function: (item, index, items) => ReactNode
   unitOptions: controlledUnitOptions,
   onUpdateItem,
@@ -16,6 +16,7 @@ export const DivTable = ({
   onDeleteItem,
   onResetRow,
   onAddNewRow,
+  onColumnDelete,
   showRulers = false,
   className = '',
   defaultValues = { description: '', quantity: 1, unit: 'boxes' },
@@ -29,8 +30,13 @@ export const DivTable = ({
       ...defaultValues
     }
   ]);
-
+  
+  // Internal state for columns if not controlled
+  const [internalColumns, setInternalColumns] = useState(controlledColumns);
+  
   const items = controlledItems || internalItems;
+  // Use controlled columns if provided, otherwise use internal state
+  const columns = controlledColumns !== undefined ? controlledColumns : internalColumns;
   const unitOptions = controlledUnitOptions || ['boxes', 'pallets', 'pieces', 'units', 'sets', 'set', 'unit', 'kg', 'tons', 'liters'];
 
   const updateItem = (id, field, value) => {
@@ -106,13 +112,31 @@ export const DivTable = ({
     }
   };
 
+  const handleColumnDelete = (index, columnKey) => {
+    // Prevent deleting if only one column remains
+    if (columns.length <= 1) {
+      return;
+    }
+    
+    if (onColumnDelete) {
+      onColumnDelete(index, columnKey);
+    } else {
+      // Internal column deletion
+      setInternalColumns(prevColumns => {
+        const newColumns = [...prevColumns];
+        newColumns.splice(index, 1);
+        return newColumns;
+      });
+    }
+  };
+
   // Extract column labels if columns is an array of objects
   const columnLabels = columns.map(col => typeof col === 'string' ? col : col.label || col.key || '');
 
   const tableContent = (
     <div ref={containerRef} className={`div-table-container ${className}`}>
       <div className="div-cargo-table">
-        <DivTableHeader columns={columnLabels} />
+        <DivTableHeader columns={columnLabels} onColumnDelete={handleColumnDelete} />
         <div className="div-table-body">
           {items.map((item, index) => {
             // If custom renderRow function is provided, use it

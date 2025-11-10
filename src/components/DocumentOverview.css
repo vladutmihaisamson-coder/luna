@@ -3,13 +3,13 @@
 .document-overview {
   display: inline-block;
   width: 100%;
-  max-width: 300px;
+  max-width: 360px;
 }
 
 .document-preview {
   position: relative;
   width: 100%;
-  max-width: 300px;
+  max-width: 360px;
   aspect-ratio: 21 / 20;
   background: var(--color-bg-white);
   border-radius: var(--border-radius-lg);
@@ -50,7 +50,7 @@
   align-items: flex-start;
   justify-content: center;
   overflow: visible;
-  padding: var(--spacing-sm);
+  padding: var(--spacing-md);
   box-sizing: border-box;
 }
 
@@ -60,14 +60,14 @@
 }
 
 .document-info {
-  margin-top: var(--spacing-md);
+  margin-top: var(--spacing-xl);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-md);
 }
 
 .document-title {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
   margin: 0 !important;
@@ -79,16 +79,16 @@
 .document-metadata {
   display: flex;
   flex-direction: row;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
   align-items: center;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-md);
   margin: 0;
   padding: 0;
 }
 
 .document-id {
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-normal);
   background: none;
   padding: 0;
@@ -98,13 +98,13 @@
 .metadata-separator {
   color: var(--color-text-secondary);
   user-select: none;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-normal);
 }
 
 .document-date {
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-normal);
   outline: none;
   border: none;
@@ -117,9 +117,9 @@
 
 .document-total {
   color: var(--color-text-primary);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
-  margin-top: var(--spacing-xs);
+  margin-top: var(--spacing-md);
 }
 
 .search-highlight {
@@ -130,9 +130,9 @@
 }
 
 .document-content-preview {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
-  margin-top: var(--spacing-xs);
+  margin-top: var(--spacing-md);
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -159,8 +159,8 @@
 }
 
 .document-checkbox {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   cursor: pointer;
   accent-color: var(--color-primary);
   pointer-events: auto;
@@ -190,10 +190,10 @@
 .document-checkbox:checked::after {
   content: '';
   position: absolute;
-  left: 6px;
-  top: 2px;
-  width: 5px;
-  height: 10px;
+  left: 7px;
+  top: 3px;
+  width: 6px;
+  height: 12px;
   border: solid white;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);

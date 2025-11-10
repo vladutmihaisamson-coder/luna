@@ -4,7 +4,8 @@ import './DivTableHeader.css';
 
 export const DivTableHeader = ({
   columns = ['Description', 'Quantity', 'Unit'], // Array of strings or objects with { label, key, className, ... }
-  className = ''
+  className = '',
+  onColumnDelete
 }) => {
   return (
     <div className={`div-table-header ${className}`}>
@@ -15,8 +16,14 @@ export const DivTableHeader = ({
           const columnKey = typeof column === 'string' ? column : column.key || index;
           const columnClassName = typeof column === 'string' ? '' : column.className || '';
           
+          const handleDelete = onColumnDelete ? () => onColumnDelete(index, columnKey) : undefined;
+          
           return (
-            <DivTableHeaderCell key={columnKey} className={columnClassName}>
+            <DivTableHeaderCell 
+              key={columnKey} 
+              className={columnClassName}
+              onDelete={handleDelete}
+            >
               {columnLabel}
             </DivTableHeaderCell>
           );

@@ -48,15 +48,23 @@
   white-space: nowrap;
 }
 
-.div-table-header-cell-dropdown-button {
+.div-table-header-cell-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--table-control-spacing);
+  flex-shrink: 0;
+}
+
+.div-table-header-cell-dropdown-button,
+.div-table-header-cell-delete-button {
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
   transition: opacity var(--table-transition-normal), visibility var(--table-transition-normal);
-  flex-shrink: 0;
 }
 
-.div-table-header-cell:hover .div-table-header-cell-dropdown-button {
+.div-table-header-cell:hover .div-table-header-cell-dropdown-button,
+.div-table-header-cell:hover .div-table-header-cell-delete-button {
   opacity: 1;
   pointer-events: auto;
   visibility: visible;
