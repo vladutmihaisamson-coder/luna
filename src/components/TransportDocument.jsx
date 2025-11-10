@@ -10,18 +10,14 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert, isEmpty = fa
   const initialCargoItems = isEmpty ? [
     { id: 1, description: '', quantity: 1, unit: 'boxes' }
   ] : [
-    { id: 1, description: 'Electronic Equipment', quantity: 25, unit: 'boxes' },
-    { id: 2, description: 'Office Supplies', quantity: 10, unit: 'boxes' },
-    { id: 3, description: 'Furniture Pieces', quantity: 5, unit: 'pallets' },
-    { id: 4, description: 'Raw Materials', quantity: 150, unit: 'kg' },
-    { id: 5, description: 'Packaging Materials', quantity: 8, unit: 'pallets' },
-    { id: 6, description: 'Machinery Parts', quantity: 12, unit: 'pieces' },
-    { id: 7, description: 'Textile Goods', quantity: 200, unit: 'kg' },
-    { id: 8, description: 'Automotive Components', quantity: 30, unit: 'boxes' },
-    { id: 9, description: 'Construction Materials', quantity: 3, unit: 'tons' },
-    { id: 10, description: 'Medical Supplies', quantity: 15, unit: 'boxes' },
-    { id: 11, description: 'Food Products', quantity: 50, unit: 'boxes' },
-    { id: 12, description: 'Chemical Containers', quantity: 20, unit: 'liters' }
+    { id: 1, description: 'Hydraulic Press HPC-300 Unit', quantity: 1, unit: 'piece' },
+    { id: 2, description: 'Hydraulic System Components', quantity: 1, unit: 'set' },
+    { id: 3, description: 'Control Panel Assembly', quantity: 1, unit: 'piece' },
+    { id: 4, description: 'Installation Tools', quantity: 1, unit: 'set' },
+    { id: 5, description: 'Press Tooling', quantity: 1, unit: 'set' },
+    { id: 6, description: 'Spare Parts Package', quantity: 1, unit: 'box' },
+    { id: 7, description: 'Technical Documentation', quantity: 1, unit: 'package' },
+    { id: 8, description: 'Safety Equipment', quantity: 1, unit: 'set' }
   ];
   const initialDate = new Date().toISOString().split('T')[0];
 

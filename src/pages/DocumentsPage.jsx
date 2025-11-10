@@ -1,15 +1,18 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { BackButton } from '../components/BackButton';
 import { DocumentOverview } from '../components/DocumentOverview';
 import { TransportDocument } from '../components/TransportDocument';
 import { OfferDocument } from '../components/OfferDocument';
 import { FatturaDocument } from '../components/FatturaDocument';
+import { AgreementDocument } from '../components/AgreementDocument';
+import { PurchaseOrderDocument } from '../components/PurchaseOrderDocument';
 import { IconButton } from '../components/design-system/molecules/IconButton/IconButton';
 import { Icon } from '../components/design-system/atoms/Icon/Icon';
 import { Button } from '../components/design-system/atoms/Button/Button';
 import { Dropdown } from '../components/design-system/organisms/Dropdown/Dropdown';
 import { DocumentTypeSelectionModal } from '../components/DocumentTypeSelectionModal';
+import { PDFUploadModal } from '../components/PDFUploadModal';
+import { ExtractedDocumentViewer } from '../components/ExtractedDocumentViewer';
 import { textContainsQuery } from '../utils/textHighlight';
 import './DocumentsPage.css';
 
@@ -19,9 +22,11 @@ export const DocumentsPage = () => {
   const [documentFilter, setDocumentFilter] = useState('all'); // 'all', 'in', 'out'
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isPDFUploadModalOpen, setIsPDFUploadModalOpen] = useState(false);
+  const [extractedDocument, setExtractedDocument] = useState(null);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [itemsToShow, setItemsToShow] = useState(12); // Initial number of documents to show
+  const [itemsToShow, setItemsToShow] = useState(24); // Initial number of documents to show
   const [openDropdown, setOpenDropdown] = useState(null); // 'received' | 'when' | 'who' | 'category' | null
   const [selectedFilters, setSelectedFilters] = useState({
     received: null,
@@ -150,24 +155,40 @@ export const DocumentsPage = () => {
       who: isIn
         ? [
             { value: 'all', label: 'All Senders' },
-            { value: 'client-1', label: 'XYZ Distribution Co.' },
-            { value: 'client-2', label: 'Global Enterprises Ltd.' },
-            { value: 'client-3', label: 'Innovation Tech SpA' },
+            { value: 'client-1', label: 'Metal Powder Industries' },
+            { value: 'client-2', label: 'Ceramic Manufacturing Co.' },
+            { value: 'client-3', label: 'Advanced Materials Ltd.' },
+            { value: 'client-4', label: 'Powder Tech Solutions' },
+            { value: 'client-5', label: 'Industrial Parts Supply Co.' },
+            { value: 'client-6', label: 'Equipment Parts Distributor' },
+            { value: 'client-7', label: 'Manufacturing Components Ltd.' },
+            { value: 'client-8', label: 'Hydraulic Components Inc.' },
+            { value: 'client-9', label: 'Industrial Supplies Co.' },
           ]
         : isOut
         ? [
             { value: 'all', label: 'All Recipients' },
-            { value: 'client-1', label: 'ABC Logistics Inc.' },
-            { value: 'client-2', label: 'Premium Shipping Ltd.' },
-            { value: 'client-3', label: 'Fast Track Solutions' },
+            { value: 'client-1', label: 'Metal Powder Industries' },
+            { value: 'client-2', label: 'Ceramic Manufacturing Co.' },
+            { value: 'client-3', label: 'Advanced Materials Ltd.' },
+            { value: 'client-4', label: 'Powder Tech Solutions' },
+            { value: 'client-5', label: 'Industrial Parts Supply Co.' },
+            { value: 'client-6', label: 'Equipment Parts Distributor' },
+            { value: 'client-7', label: 'Manufacturing Components Ltd.' },
+            { value: 'client-8', label: 'Hydraulic Components Inc.' },
+            { value: 'client-9', label: 'Industrial Supplies Co.' },
           ]
         : [
             { value: 'all', label: 'All Contacts' },
-            { value: 'client-1', label: 'XYZ Distribution Co.' },
-            { value: 'client-2', label: 'Global Enterprises Ltd.' },
-            { value: 'client-3', label: 'Innovation Tech SpA' },
-            { value: 'client-4', label: 'ABC Logistics Inc.' },
-            { value: 'client-5', label: 'Premium Shipping Ltd.' },
+            { value: 'client-1', label: 'Metal Powder Industries' },
+            { value: 'client-2', label: 'Ceramic Manufacturing Co.' },
+            { value: 'client-3', label: 'Advanced Materials Ltd.' },
+            { value: 'client-4', label: 'Powder Tech Solutions' },
+            { value: 'client-5', label: 'Industrial Parts Supply Co.' },
+            { value: 'client-6', label: 'Equipment Parts Distributor' },
+            { value: 'client-7', label: 'Manufacturing Components Ltd.' },
+            { value: 'client-8', label: 'Hydraulic Components Inc.' },
+            { value: 'client-9', label: 'Industrial Supplies Co.' },
           ],
       category: isIn
         ? [
@@ -175,6 +196,8 @@ export const DocumentsPage = () => {
             { value: 'transport', label: 'Transport' },
             { value: 'offer', label: 'Offer' },
             { value: 'invoice', label: 'Invoice' },
+            { value: 'agreement', label: 'Agreement' },
+            { value: 'purchase-order', label: 'Purchase Order' },
           ]
         : isOut
         ? [
@@ -182,12 +205,16 @@ export const DocumentsPage = () => {
             { value: 'transport', label: 'Transport' },
             { value: 'offer', label: 'Offer' },
             { value: 'invoice', label: 'Invoice' },
+            { value: 'agreement', label: 'Agreement' },
+            { value: 'purchase-order', label: 'Purchase Order' },
           ]
         : [
             { value: 'all', label: 'All Types' },
             { value: 'transport', label: 'Transport' },
             { value: 'offer', label: 'Offer' },
             { value: 'invoice', label: 'Invoice' },
+            { value: 'agreement', label: 'Agreement' },
+            { value: 'purchase-order', label: 'Purchase Order' },
           ],
     };
 
@@ -273,36 +300,43 @@ export const DocumentsPage = () => {
   };
 
   const documents = [
-    { documentId: "transport-001", title: "XYZ Distribution Co.", documentNumber: "TD-2025-001", date: "Nov 6, 2025", dateObj: parseDate("Nov 6, 2025"), documentType: "Transport", clientId: "client-1", direction: "in", content: "Office furniture delivery to warehouse. Premium office chairs, ergonomic desks, monitor stands, keyboard sets, wireless mice, desk lamps.", previewContent: <TransportDocument /> },
-    { documentId: "offer-001", title: "Global Enterprises Ltd.", documentNumber: "OF-2025-001", date: "Nov 5, 2025", dateObj: parseDate("Nov 5, 2025"), documentType: "Offer", clientId: "client-2", direction: "in", total: 7750.00, content: "Premium office chairs, ergonomic desks, monitor stands, keyboard sets, wireless mice, desk lamps. Professional workspace solutions.", previewContent: <OfferDocument /> },
-    { documentId: "fattura-001", title: "Innovation Tech SpA", documentNumber: "FT-2025-001", date: "Nov 4, 2025", dateObj: parseDate("Nov 4, 2025"), documentType: "Fattura", clientId: "client-3", direction: "in", total: 11736.40, content: "Web development services, UI/UX design consultation, API integration, database optimization, code review and testing.", previewContent: <FatturaDocument /> },
-    { documentId: "transport-002", title: "ABC Manufacturing Inc.", documentNumber: "TD-2025-002", date: "Nov 3, 2025", dateObj: parseDate("Nov 3, 2025"), documentType: "Transport", clientId: "client-1", direction: "out", content: "Industrial equipment shipment. Heavy machinery, production tools, assembly line components.", previewContent: <TransportDocument /> },
-    { documentId: "offer-002", title: "Premium Retail Group", documentNumber: "OF-2025-002", date: "Nov 2, 2025", dateObj: parseDate("Nov 2, 2025"), documentType: "Offer", clientId: "client-2", direction: "out", total: 7750.00, content: "Retail furniture and fixtures. Display shelves, checkout counters, storage solutions for retail spaces.", previewContent: <OfferDocument /> },
-    { documentId: "fattura-002", title: "Creative Agency Milano", documentNumber: "FT-2025-002", date: "Nov 1, 2025", dateObj: parseDate("Nov 1, 2025"), documentType: "Fattura", clientId: "client-3", direction: "out", total: 11736.40, content: "Brand identity design, marketing materials, social media graphics, website design and development.", previewContent: <FatturaDocument /> },
-    { documentId: "transport-003", title: "Pacific Shipping Co.", documentNumber: "TD-2025-003", date: "Oct 30, 2025", dateObj: parseDate("Oct 30, 2025"), documentType: "Transport", clientId: "client-1", direction: "in", previewContent: <TransportDocument /> },
-    { documentId: "offer-003", title: "Metro Business Solutions", documentNumber: "OF-2025-003", date: "Oct 29, 2025", dateObj: parseDate("Oct 29, 2025"), documentType: "Offer", clientId: "client-2", direction: "in", total: 7750.00, previewContent: <OfferDocument /> },
-    { documentId: "fattura-003", title: "Studio Design Roma", documentNumber: "FT-2025-003", date: "Oct 28, 2025", dateObj: parseDate("Oct 28, 2025"), documentType: "Fattura", clientId: "client-3", direction: "in", total: 11736.40, previewContent: <FatturaDocument /> },
-    { documentId: "transport-004", title: "North American Logistics", documentNumber: "TD-2025-004", date: "Oct 27, 2025", dateObj: parseDate("Oct 27, 2025"), documentType: "Transport", clientId: "client-1", direction: "out", previewContent: <TransportDocument /> },
-    { documentId: "offer-004", title: "Enterprise Solutions Group", documentNumber: "OF-2025-004", date: "Oct 26, 2025", dateObj: parseDate("Oct 26, 2025"), documentType: "Offer", clientId: "client-2", direction: "out", total: 7750.00, previewContent: <OfferDocument /> },
-    { documentId: "fattura-004", title: "Tech Consulting Italia", documentNumber: "FT-2025-004", date: "Oct 25, 2025", dateObj: parseDate("Oct 25, 2025"), documentType: "Fattura", clientId: "client-3", direction: "out", total: 11736.40, previewContent: <FatturaDocument /> },
-    { documentId: "transport-005", title: "Global Freight Services", documentNumber: "TD-2025-005", date: "Oct 24, 2025", dateObj: parseDate("Oct 24, 2025"), documentType: "Transport", clientId: "client-1", direction: "in", previewContent: <TransportDocument /> },
-    { documentId: "offer-005", title: "Corporate Office Supplies", documentNumber: "OF-2025-005", date: "Oct 23, 2025", dateObj: parseDate("Oct 23, 2025"), documentType: "Offer", clientId: "client-2", direction: "in", total: 7750.00, previewContent: <OfferDocument /> },
-    { documentId: "fattura-005", title: "Digital Solutions Srl", documentNumber: "FT-2025-005", date: "Oct 22, 2025", dateObj: parseDate("Oct 22, 2025"), documentType: "Fattura", clientId: "client-3", direction: "in", total: 11736.40, previewContent: <FatturaDocument /> },
-    { documentId: "transport-006", title: "International Cargo Ltd.", documentNumber: "TD-2025-006", date: "Oct 21, 2025", dateObj: parseDate("Oct 21, 2025"), documentType: "Transport", clientId: "client-1", direction: "out", previewContent: <TransportDocument /> },
-    { documentId: "offer-006", title: "Premium Services Inc.", documentNumber: "OF-2025-006", date: "Oct 20, 2025", dateObj: parseDate("Oct 20, 2025"), documentType: "Offer", clientId: "client-2", direction: "out", total: 7750.00, previewContent: <OfferDocument /> },
-    { documentId: "fattura-006", title: "Creative Studio Torino", documentNumber: "FT-2025-006", date: "Oct 19, 2025", dateObj: parseDate("Oct 19, 2025"), documentType: "Fattura", clientId: "client-3", direction: "out", total: 11736.40, previewContent: <FatturaDocument /> },
-    { documentId: "transport-007", title: "Express Logistics Group", documentNumber: "TD-2025-007", date: "Oct 18, 2025", dateObj: parseDate("Oct 18, 2025"), documentType: "Transport", clientId: "client-1", direction: "in", previewContent: <TransportDocument /> },
-    { documentId: "offer-007", title: "Business Partners Co.", documentNumber: "OF-2025-007", date: "Oct 17, 2025", dateObj: parseDate("Oct 17, 2025"), documentType: "Offer", clientId: "client-2", direction: "in", total: 7750.00, previewContent: <OfferDocument /> },
-    { documentId: "fattura-007", title: "Marketing Agency Firenze", documentNumber: "FT-2025-007", date: "Oct 16, 2025", dateObj: parseDate("Oct 16, 2025"), documentType: "Fattura", clientId: "client-3", direction: "in", total: 11736.40, previewContent: <FatturaDocument /> },
-    { documentId: "transport-008", title: "Worldwide Shipping Corp.", documentNumber: "TD-2025-008", date: "Oct 15, 2025", dateObj: parseDate("Oct 15, 2025"), documentType: "Transport", clientId: "client-1", direction: "out", previewContent: <TransportDocument /> },
-    { documentId: "offer-008", title: "Strategic Consulting LLC", documentNumber: "OF-2025-008", date: "Oct 14, 2025", dateObj: parseDate("Oct 14, 2025"), documentType: "Offer", clientId: "client-2", direction: "out", total: 7750.00, previewContent: <OfferDocument /> },
-    { documentId: "fattura-008", title: "Legal Services Napoli", documentNumber: "FT-2025-008", date: "Oct 13, 2025", dateObj: parseDate("Oct 13, 2025"), documentType: "Fattura", clientId: "client-3", direction: "out", total: 11736.40, previewContent: <FatturaDocument /> },
-    { documentId: "transport-009", title: "Fast Track Delivery", documentNumber: "TD-2025-009", date: "Oct 12, 2025", dateObj: parseDate("Oct 12, 2025"), documentType: "Transport", clientId: "client-1", direction: "in", previewContent: <TransportDocument /> },
-    { documentId: "offer-009", title: "Innovation Hub Ltd.", documentNumber: "OF-2025-009", date: "Oct 11, 2025", dateObj: parseDate("Oct 11, 2025"), documentType: "Offer", clientId: "client-2", direction: "in", total: 7750.00, previewContent: <OfferDocument /> },
-    { documentId: "fattura-009", title: "Architecture Studio Venezia", documentNumber: "FT-2025-009", date: "Oct 10, 2025", dateObj: parseDate("Oct 10, 2025"), documentType: "Fattura", clientId: "client-3", direction: "in", total: 11736.40, previewContent: <FatturaDocument /> },
-    { documentId: "transport-010", title: "Continental Transport", documentNumber: "TD-2025-010", date: "Oct 9, 2025", dateObj: parseDate("Oct 9, 2025"), documentType: "Transport", clientId: "client-1", direction: "out", previewContent: <TransportDocument /> },
-    { documentId: "offer-010", title: "Global Trade Solutions", documentNumber: "OF-2025-010", date: "Oct 8, 2025", dateObj: parseDate("Oct 8, 2025"), documentType: "Offer", clientId: "client-2", direction: "out", total: 7750.00, previewContent: <OfferDocument /> },
-    { documentId: "fattura-010", title: "Engineering Firm Bologna", documentNumber: "FT-2025-010", date: "Oct 7, 2025", dateObj: parseDate("Oct 7, 2025"), documentType: "Fattura", clientId: "client-3", direction: "out", total: 11736.40, previewContent: <FatturaDocument /> },
+    { documentId: "offer-001", title: "Metal Powder Industries", documentNumber: "OF-2025-001", date: "Nov 7, 2025", dateObj: parseDate("Nov 7, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 125000.00, content: "Hydraulic Powder Compaction Press HPC-500, Automated Control System, Press Tooling Set, Installation Service, Spare Parts Package, Technical Documentation.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-001", title: "Ceramic Manufacturing Co.", documentNumber: "FT-2025-001", date: "Nov 6, 2025", dateObj: parseDate("Nov 6, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 87500.00, content: "Mechanical Press Rebuild Service, Control System Upgrade, New Hydraulic Pumps, Safety Interlocks Installation, Operator Training.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-001", title: "Advanced Materials Ltd.", documentNumber: "TD-2025-001", date: "Nov 5, 2025", dateObj: parseDate("Nov 5, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Hydraulic Press HPC-300 Unit, Hydraulic System Components, Control Panel Assembly, Installation Tools, Press Tooling, Spare Parts Package, Technical Documentation, Safety Equipment.", previewContent: <TransportDocument /> },
+    { documentId: "agreement-001", title: "Powder Tech Solutions", documentNumber: "AG-2025-001", date: "Nov 4, 2025", dateObj: parseDate("Nov 4, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 6, content: "Retrofitting agreement for mechanical press upgrade. Includes modernization of control system, safety upgrades, and performance optimization.", previewContent: <AgreementDocument /> },
+    { documentId: "offer-002", title: "Industrial Press Systems", documentNumber: "OF-2025-002", date: "Nov 3, 2025", dateObj: parseDate("Nov 3, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 95000.00, content: "Used mechanical powder compaction press MPC-400. Recently rebuilt, includes full documentation and 6-month warranty.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-002", title: "Compaction Equipment Inc.", documentNumber: "FT-2025-002", date: "Nov 2, 2025", dateObj: parseDate("Nov 2, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 45000.00, content: "Press retrofitting service. Control system upgrade, new hydraulic pumps, safety interlocks installation, operator training.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-002", title: "Material Processing Corp.", documentNumber: "TD-2025-002", date: "Nov 1, 2025", dateObj: parseDate("Nov 1, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Shipment of new hydraulic compaction press HPC-600. Complete system with tooling, spare parts package, and technical documentation.", previewContent: <TransportDocument /> },
+    { documentId: "offer-003", title: "Precision Press Manufacturing", documentNumber: "OF-2025-003", date: "Oct 31, 2025", dateObj: parseDate("Oct 31, 2025"), documentType: "Offer", clientId: "client-1", direction: "in", total: 65000.00, content: "Purchase offer for used hydraulic press HPC-250. Includes inspection, dismantling, and transport to our facility.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-003", title: "Press Rebuild Services", documentNumber: "FT-2025-003", date: "Oct 30, 2025", dateObj: parseDate("Oct 30, 2025"), documentType: "Invoice", clientId: "client-2", direction: "in", total: 32000.00, content: "Invoice for press rebuild service received. Complete overhaul of mechanical press including new components and testing.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-003", title: "Heavy Equipment Logistics", documentNumber: "TD-2025-003", date: "Oct 29, 2025", dateObj: parseDate("Oct 29, 2025"), documentType: "Transport", clientId: "client-3", direction: "in", content: "Received shipment of used mechanical press MPC-350. Press requires inspection and rebuild before resale.", previewContent: <TransportDocument /> },
+    { documentId: "agreement-002", title: "Custom Press Solutions", documentNumber: "AG-2025-002", date: "Oct 28, 2025", dateObj: parseDate("Oct 28, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 5, content: "Construction agreement for custom hydraulic press. Design specifications, manufacturing timeline, delivery terms, and warranty conditions.", previewContent: <AgreementDocument /> },
+    { documentId: "offer-004", title: "Powder Processing Equipment", documentNumber: "OF-2025-004", date: "Oct 27, 2025", dateObj: parseDate("Oct 27, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 78000.00, content: "Rebuilt mechanical press MPC-500. Complete restoration with new bearings, seals, and updated control system. Ready for immediate use.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-004", title: "Compaction Systems Ltd.", documentNumber: "FT-2025-004", date: "Oct 26, 2025", dateObj: parseDate("Oct 26, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 55000.00, content: "Retrofitting service invoice. Modernization of hydraulic press control system, installation of new safety features, and performance testing.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-004", title: "Industrial Machinery Transport", documentNumber: "TD-2025-004", date: "Oct 25, 2025", dateObj: parseDate("Oct 25, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Delivery of retrofitted hydraulic press HPC-400. Includes updated control panel, new hydraulic components, and installation support.", previewContent: <TransportDocument /> },
+    { documentId: "offer-005", title: "Press Equipment Suppliers", documentNumber: "OF-2025-005", date: "Oct 24, 2025", dateObj: parseDate("Oct 24, 2025"), documentType: "Offer", clientId: "client-1", direction: "in", total: 42000.00, content: "Offer to purchase used mechanical press MPC-200. Press requires rebuild but has good structural condition and original tooling.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-005", title: "Equipment Restoration Services", documentNumber: "FT-2025-005", date: "Oct 23, 2025", dateObj: parseDate("Oct 23, 2025"), documentType: "Invoice", clientId: "client-2", direction: "in", total: 28000.00, content: "Received invoice for press inspection and assessment service. Complete evaluation of mechanical press condition and rebuild recommendations.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-005", title: "Specialized Cargo Services", documentNumber: "TD-2025-005", date: "Oct 22, 2025", dateObj: parseDate("Oct 22, 2025"), documentType: "Transport", clientId: "client-3", direction: "in", content: "Received hydraulic press HPC-180 for rebuild. Press includes original documentation and tooling. Scheduled for complete restoration.", previewContent: <TransportDocument /> },
+    { documentId: "agreement-003", title: "Press Modernization Partners", documentNumber: "AG-2025-003", date: "Oct 21, 2025", dateObj: parseDate("Oct 21, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 7, content: "Service agreement for press modernization project. Includes design review, component upgrades, installation, and operator training program.", previewContent: <AgreementDocument /> },
+    { documentId: "po-001", title: "Industrial Parts Supply Co.", documentNumber: "PO-2025-001", date: "Nov 8, 2025", dateObj: parseDate("Nov 8, 2025"), documentType: "Purchase Order", clientId: "client-5", direction: "in", itemCount: 12, content: "Hydraulic Cylinder Seal Kit, Pressure Relief Valve, Control Panel Circuit Board, Hydraulic Oil Filter Element, Pneumatic Fittings Set, Steel Guide Rails, Safety Interlock Switch, Hydraulic Pump Replacement, Electrical Cable Harness, Tooling Inserts, Lubrication System Components, Control Software License.", previewContent: <PurchaseOrderDocument /> },
+    { documentId: "po-002", title: "Equipment Parts Distributor", documentNumber: "PO-2025-002", date: "Nov 5, 2025", dateObj: parseDate("Nov 5, 2025"), documentType: "Purchase Order", clientId: "client-6", direction: "in", itemCount: 15, content: "Hydraulic Seals, Pressure Gauges, Control Valves, Oil Filters, Pneumatic Cylinders, Steel Bearings, Safety Switches, Hydraulic Pumps, Electrical Connectors, Tooling Components, Lubrication Pumps, Control Modules, Sensor Arrays, Actuator Systems, Maintenance Kits.", previewContent: <PurchaseOrderDocument /> },
+    { documentId: "po-003", title: "Manufacturing Components Ltd.", documentNumber: "PO-2025-003", date: "Nov 2, 2025", dateObj: parseDate("Nov 2, 2025"), documentType: "Purchase Order", clientId: "client-7", direction: "in", itemCount: 10, content: "Hydraulic Hoses, Pressure Sensors, Control Panels, Filter Housings, Pneumatic Valves, Guide Rails, Safety Relays, Pump Motors, Cable Assemblies, Tooling Fixtures.", previewContent: <PurchaseOrderDocument /> },
+    { documentId: "po-004", title: "Hydraulic Components Inc.", documentNumber: "PO-2025-004", date: "Oct 30, 2025", dateObj: parseDate("Oct 30, 2025"), documentType: "Purchase Order", clientId: "client-8", direction: "in", itemCount: 14, content: "Hydraulic Cylinders, Pressure Switches, Control Valves, Filter Cartridges, Pneumatic Fittings, Steel Rods, Safety Sensors, Pump Assemblies, Electrical Wires, Tooling Plates, Lubrication Systems, Control Boards, Position Sensors, Actuator Motors.", previewContent: <PurchaseOrderDocument /> },
+    { documentId: "po-005", title: "Industrial Supplies Co.", documentNumber: "PO-2025-005", date: "Oct 28, 2025", dateObj: parseDate("Oct 28, 2025"), documentType: "Purchase Order", clientId: "client-9", direction: "in", itemCount: 11, content: "Hydraulic Fittings, Pressure Transducers, Control Modules, Oil Filters, Pneumatic Actuators, Guide Blocks, Safety Buttons, Hydraulic Motors, Cable Ties, Tooling Clamps, Lubrication Pumps.", previewContent: <PurchaseOrderDocument /> },
+    { documentId: "offer-006", title: "Advanced Compaction Systems", documentNumber: "OF-2025-006", date: "Oct 20, 2025", dateObj: parseDate("Oct 20, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 135000.00, content: "New hydraulic powder compaction press HPC-700. Latest model with advanced control system, automated tooling, and comprehensive warranty.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-006", title: "Press Maintenance Experts", documentNumber: "FT-2025-006", date: "Oct 19, 2025", dateObj: parseDate("Oct 19, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 38000.00, content: "Press rebuild service completed. Full restoration including new hydraulic system, updated controls, safety upgrades, and performance certification.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-006", title: "Heavy Machinery Haulers", documentNumber: "TD-2025-006", date: "Oct 18, 2025", dateObj: parseDate("Oct 18, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Delivery of custom-built mechanical press MPC-600. Special order with enhanced features, includes installation and commissioning services.", previewContent: <TransportDocument /> },
+    { documentId: "offer-007", title: "Used Press Marketplace", documentNumber: "OF-2025-007", date: "Oct 17, 2025", dateObj: parseDate("Oct 17, 2025"), documentType: "Offer", clientId: "client-1", direction: "in", total: 35000.00, content: "Purchase offer for mechanical press MPC-150. Press requires rebuild but includes original tooling and technical documentation.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-007", title: "Equipment Inspection Services", documentNumber: "FT-2025-007", date: "Oct 16, 2025", dateObj: parseDate("Oct 16, 2025"), documentType: "Invoice", clientId: "client-2", direction: "in", total: 15000.00, content: "Received invoice for press evaluation service. Technical assessment, condition report, and rebuild cost estimate for hydraulic press.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-007", title: "Industrial Transport Solutions", documentNumber: "TD-2025-007", date: "Oct 15, 2025", dateObj: parseDate("Oct 15, 2025"), documentType: "Transport", clientId: "client-3", direction: "in", content: "Received used hydraulic press HPC-200 for rebuild. Press arrives with partial documentation. Scheduled for complete restoration and upgrade.", previewContent: <TransportDocument /> },
+    { documentId: "agreement-004", title: "Press Construction Services", documentNumber: "AG-2025-004", date: "Oct 14, 2025", dateObj: parseDate("Oct 14, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 8, content: "Construction agreement for new mechanical press. Custom specifications, manufacturing schedule, quality standards, delivery terms, and warranty coverage.", previewContent: <AgreementDocument /> },
+    { documentId: "offer-008", title: "Rebuilt Press Specialists", documentNumber: "OF-2025-008", date: "Oct 13, 2025", dateObj: parseDate("Oct 13, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 68000.00, content: "Fully rebuilt mechanical press MPC-300. Complete restoration with new components, updated safety systems, and 12-month warranty included.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-008", title: "Press Retrofit Solutions", documentNumber: "FT-2025-008", date: "Oct 12, 2025", dateObj: parseDate("Oct 12, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 52000.00, content: "Retrofitting service invoice. Control system modernization, hydraulic upgrades, safety enhancements, and comprehensive testing completed.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-008", title: "Machinery Delivery Services", documentNumber: "TD-2025-008", date: "Oct 11, 2025", dateObj: parseDate("Oct 11, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Delivery of rebuilt hydraulic press HPC-450. Includes updated control system, new hydraulic components, tooling, and installation support.", previewContent: <TransportDocument /> },
+    { documentId: "offer-009", title: "Press Equipment Brokers", documentNumber: "OF-2025-009", date: "Oct 10, 2025", dateObj: parseDate("Oct 10, 2025"), documentType: "Offer", clientId: "client-1", direction: "in", total: 48000.00, content: "Purchase offer for used hydraulic press HPC-350. Press requires rebuild but has complete tooling set and original documentation.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-009", title: "Press Rebuild Contractors", documentNumber: "FT-2025-009", date: "Oct 9, 2025", dateObj: parseDate("Oct 9, 2025"), documentType: "Invoice", clientId: "client-2", direction: "in", total: 25000.00, content: "Received invoice for press rebuild service. Complete overhaul including new bearings, seals, hydraulic components, and control system updates.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-009", title: "Heavy Equipment Movers", documentNumber: "TD-2025-009", date: "Oct 8, 2025", dateObj: parseDate("Oct 8, 2025"), documentType: "Transport", clientId: "client-3", direction: "in", content: "Received mechanical press MPC-250 for restoration. Press includes original tooling and technical manuals. Scheduled for complete rebuild.", previewContent: <TransportDocument /> },
+    { documentId: "agreement-005", title: "Press Engineering Services", documentNumber: "AG-2025-005", date: "Oct 7, 2025", dateObj: parseDate("Oct 7, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 6, content: "Retrofitting agreement for hydraulic press upgrade. Includes design modifications, component replacement, installation, and operator training.", previewContent: <AgreementDocument /> },
   ];
 
   // Filter documents based on selected filters
@@ -391,7 +425,9 @@ export const DocumentsPage = () => {
       const typeMap = {
         'transport': 'Transport',
         'offer': 'Offer',
-        'invoice': 'Fattura'
+        'invoice': 'Invoice',
+        'agreement': 'Agreement',
+        'purchase-order': 'Purchase Order'
       };
       const documentType = typeMap[selectedFilters.category];
       if (documentType) {
@@ -410,7 +446,7 @@ export const DocumentsPage = () => {
     const groups = {
       Transport: [],
       Offer: [],
-      Fattura: []
+      Invoice: []
     };
     
     visibleDocuments.forEach(doc => {
@@ -440,14 +476,37 @@ export const DocumentsPage = () => {
     });
   };
 
+  const handleUnselectAll = () => {
+    setSelectedDocuments(new Set());
+  };
+
+  const handlePDFUpload = () => {
+    setIsPDFUploadModalOpen(true);
+  };
+
+  const handleDocumentExtracted = (extractedData) => {
+    setExtractedDocument(extractedData);
+    setIsPDFUploadModalOpen(false);
+  };
+
+  const handleExtractedDocumentSave = (documentData) => {
+    // Here you can save the extracted document to your documents list
+    // For now, we'll just close the viewer
+    console.log('Saving extracted document:', documentData);
+    setExtractedDocument(null);
+  };
+
+  const handleExtractedDocumentClose = () => {
+    setExtractedDocument(null);
+  };
+
   // Reset pagination when filters change
   useEffect(() => {
-    setItemsToShow(12);
+    setItemsToShow(24);
   }, [documentFilter, selectedFilters, searchQuery]);
 
   return (
     <div className="documents-page">
-      <BackButton />
       <div className="documents-toggle-selector">
         <button
           className={`toggle-option ${documentFilter === 'all' ? 'active' : ''}`}
@@ -459,12 +518,14 @@ export const DocumentsPage = () => {
           className={`toggle-option ${documentFilter === 'in' ? 'active' : ''}`}
           onClick={() => setDocumentFilter('in')}
         >
+          <Icon name="inbox" size="xs" variant="outline" />
           IN
         </button>
         <button
           className={`toggle-option ${documentFilter === 'out' ? 'active' : ''}`}
           onClick={() => setDocumentFilter('out')}
         >
+          <Icon name="send" size="xs" variant="outline" />
           OUT
         </button>
       </div>
@@ -605,7 +666,7 @@ export const DocumentsPage = () => {
         <div className="more-options-wrapper" ref={moreButtonRef}>
           <IconButton
             icon="more"
-            variant="default"
+            variant="ghost"
             size="md"
             onClick={handleMoreMenuToggle}
             aria-label="More options"
@@ -634,6 +695,18 @@ export const DocumentsPage = () => {
       </div>
       {viewMode === 'grid' ? (
         <>
+          {selectedDocuments.size > 0 && (
+            <div className="documents-selection-bar">
+              <button 
+                className="documents-unselect-button"
+                onClick={handleUnselectAll}
+                aria-label="Unselect all documents"
+              >
+                <Icon name="x" size="sm" variant="outline" />
+                <span>Unselect ({selectedDocuments.size})</span>
+              </button>
+            </div>
+          )}
           <div className="documents-page-grid">
             {visibleDocuments.map((doc) => (
               <DocumentOverview
@@ -650,6 +723,8 @@ export const DocumentsPage = () => {
                 onSelect={handleDocumentSelect}
                 searchQuery={searchQuery}
                 content={doc.content}
+                itemCount={doc.itemCount}
+                direction={doc.direction}
               />
             ))}
           </div>
@@ -702,6 +777,13 @@ export const DocumentsPage = () => {
           aria-label="Profile"
         />
         <IconButton
+          icon="upload"
+          variant="default"
+          size="lg"
+          onClick={handlePDFUpload}
+          aria-label="Upload PDF document"
+        />
+        <IconButton
           icon="plus"
           variant="primary"
           size="lg"
@@ -714,6 +796,20 @@ export const DocumentsPage = () => {
         onClose={() => setIsCreateModalOpen(false)}
         onSelectDocumentType={handleSelectDocumentType}
       />
+      
+      <PDFUploadModal
+        isOpen={isPDFUploadModalOpen}
+        onClose={() => setIsPDFUploadModalOpen(false)}
+        onDocumentExtracted={handleDocumentExtracted}
+      />
+
+      {extractedDocument && (
+        <ExtractedDocumentViewer
+          extractedData={extractedDocument}
+          onSave={handleExtractedDocumentSave}
+          onClose={handleExtractedDocumentClose}
+        />
+      )}
     </div>
   );
 };

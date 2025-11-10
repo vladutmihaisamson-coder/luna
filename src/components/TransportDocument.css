@@ -228,7 +228,6 @@
   background-color: var(--color-bg-hover);
 }
 
-.cargo-table th,
 .cargo-table td {
   padding: var(--spacing-md);
   text-align: left;
@@ -236,14 +235,10 @@
   vertical-align: top;
 }
 
+/* th styles are handled by TableHeaderCell component */
 .cargo-table th {
-  overflow: visible;
-  text-align: left;
-  padding: var(--spacing-sm) var(--spacing-md);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  border-bottom: var(--border-width-thick) solid var(--color-border-dark);
+  padding: 0;
+  border: none;
 }
 
 .cargo-table td {
@@ -262,15 +257,7 @@
   font-weight: var(--font-weight-semibold);
 }
 
-.cargo-table th:nth-child(2),
-.cargo-table td:nth-child(2) {
-  width: 18%;
-}
-
-.cargo-table th:nth-child(3),
-.cargo-table td:nth-child(3) {
-  width: 18%;
-}
+/* All cells fill width proportionally - no specific width constraints */
 
 .unit-cell-with-delete {
   position: relative;

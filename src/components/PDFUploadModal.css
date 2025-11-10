@@ -1,0 +1,143 @@
+@import './design-system/tokens/designTokens.css';
+
+.pdf-upload-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-lg);
+  animation: fadeIn var(--duration-fast) var(--easing-subtle) forwards;
+}
+
+.pdf-upload-modal {
+  background: var(--color-bg-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1001;
+  position: relative;
+  animation: scaleIn var(--duration-normal) var(--easing-subtle) forwards;
+}
+
+.pdf-upload-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xl);
+  border-bottom: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+}
+
+.pdf-upload-modal-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.pdf-upload-modal-content {
+  padding: var(--spacing-xl);
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.pdf-upload-error {
+  background: var(--color-error-light);
+  color: var(--color-error);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-lg);
+  width: 100%;
+  text-align: center;
+  font-size: var(--font-size-sm);
+}
+
+.pdf-upload-processing {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.pdf-upload-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--color-bg-light);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.pdf-upload-progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  transition: width var(--duration-normal) var(--easing-subtle);
+  border-radius: 9999px;
+}
+
+.pdf-upload-progress-text {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.pdf-upload-progress-detail {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.pdf-upload-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+  width: 100%;
+  padding: var(--spacing-xl);
+  border: 2px dashed var(--stroke-color-subtle);
+  border-radius: var(--border-radius-lg);
+  background: var(--color-bg-light);
+  transition: var(--transition-all);
+}
+
+.pdf-upload-dropzone:hover {
+  border-color: var(--color-primary);
+  background: var(--color-bg-white);
+}
+
+.pdf-upload-icon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.pdf-upload-instructions {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin: 0;
+  text-align: center;
+}
+
+.pdf-upload-hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+  text-align: center;
+}
+

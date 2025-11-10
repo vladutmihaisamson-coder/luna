@@ -16,12 +16,12 @@ export const OfferDocument = ({ onHasChanges, onSave, onRevert, isEmpty = false 
   const initialOfferItems = isEmpty ? [
     { id: 1, description: '', quantity: 1, unitPrice: 0, total: 0 }
   ] : [
-    { id: 1, description: 'Premium Office Chairs', quantity: 12, unitPrice: 125.00, total: 1500.00 },
-    { id: 2, description: 'Ergonomic Desks', quantity: 8, unitPrice: 350.00, total: 2800.00 },
-    { id: 3, description: 'Monitor Stands', quantity: 15, unitPrice: 45.00, total: 675.00 },
-    { id: 4, description: 'Keyboard Sets', quantity: 20, unitPrice: 85.00, total: 1700.00 },
-    { id: 5, description: 'Wireless Mice', quantity: 25, unitPrice: 35.00, total: 875.00 },
-    { id: 6, description: 'Desk Lamps', quantity: 10, unitPrice: 55.00, total: 550.00 }
+    { id: 1, description: 'Hydraulic Powder Compaction Press HPC-500', quantity: 1, unitPrice: 125000.00, total: 125000.00 },
+    { id: 2, description: 'Automated Control System', quantity: 1, unitPrice: 15000.00, total: 15000.00 },
+    { id: 3, description: 'Press Tooling Set', quantity: 1, unitPrice: 8500.00, total: 8500.00 },
+    { id: 4, description: 'Installation Service', quantity: 1, unitPrice: 5000.00, total: 5000.00 },
+    { id: 5, description: 'Spare Parts Package', quantity: 1, unitPrice: 3500.00, total: 3500.00 },
+    { id: 6, description: 'Technical Documentation', quantity: 1, unitPrice: 500.00, total: 500.00 }
   ];
   const initialDate = new Date().toISOString().split('T')[0];
 

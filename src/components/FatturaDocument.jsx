@@ -16,11 +16,11 @@ export const FatturaDocument = ({ onHasChanges, onSave, onRevert, isEmpty = fals
   const initialInvoiceItems = isEmpty ? [
     { id: 1, description: '', quantity: 1, unitPrice: 0, vatPercentage: 22, total: 0 }
   ] : [
-    { id: 1, description: 'Web Development Services', quantity: 40, unitPrice: 85.00, vatPercentage: 22, total: 4148.00 },
-    { id: 2, description: 'UI/UX Design Consultation', quantity: 15, unitPrice: 120.00, vatPercentage: 22, total: 2196.00 },
-    { id: 3, description: 'API Integration', quantity: 20, unitPrice: 95.00, vatPercentage: 22, total: 2318.00 },
-    { id: 4, description: 'Database Optimization', quantity: 8, unitPrice: 150.00, vatPercentage: 22, total: 1464.00 },
-    { id: 5, description: 'Code Review & Testing', quantity: 12, unitPrice: 110.00, vatPercentage: 22, total: 1610.40 }
+    { id: 1, description: 'Mechanical Press Rebuild Service', quantity: 1, unitPrice: 45000.00, vatPercentage: 22, total: 54900.00 },
+    { id: 2, description: 'Control System Upgrade', quantity: 1, unitPrice: 12000.00, vatPercentage: 22, total: 14640.00 },
+    { id: 3, description: 'New Hydraulic Pumps', quantity: 2, unitPrice: 3500.00, vatPercentage: 22, total: 8540.00 },
+    { id: 4, description: 'Safety Interlocks Installation', quantity: 1, unitPrice: 4500.00, vatPercentage: 22, total: 5490.00 },
+    { id: 5, description: 'Operator Training', quantity: 1, unitPrice: 2500.00, vatPercentage: 22, total: 3050.00 }
   ];
   const initialDate = new Date().toISOString().split('T')[0];
 
@@ -370,7 +370,7 @@ export const FatturaDocument = ({ onHasChanges, onSave, onRevert, isEmpty = fals
           {page.isFirstPage && (
             <>
               <DocumentTitle
-                title="Fattura"
+                title="Invoice"
                 documentNumber="FT-2025-001"
                 date={documentDate}
                 onDateChange={handleDateChange}

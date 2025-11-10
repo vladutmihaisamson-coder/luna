@@ -1,0 +1,11 @@
+@import './design-system/tokens/designTokens.css';
+
+.purchase-order-document {
+  /* Inherits most styles from .document in Document.css */
+}
+
+.po-description-cell {
+  flex: 1;
+  min-width: 0;
+}
+

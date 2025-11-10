@@ -4,7 +4,10 @@ import { BackButton } from '../components/BackButton';
 import { TransportDocument } from '../components/TransportDocument';
 import { FatturaDocument } from '../components/FatturaDocument';
 import { OfferDocument } from '../components/OfferDocument';
+import { AgreementDocument } from '../components/AgreementDocument';
+import { PurchaseOrderDocument } from '../components/PurchaseOrderDocument';
 import { ShareModal } from '../components/ShareModal';
+import { SaveWarningModal } from '../components/SaveWarningModal';
 import { IconButton } from '../components/design-system/molecules/IconButton/IconButton';
 import { Button } from '../components/design-system/atoms/Button/Button';
 import html2pdf from 'html2pdf.js';
@@ -16,6 +19,7 @@ export const DocumentViewPage = () => {
   const navigate = useNavigate();
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isSaveWarningModalOpen, setIsSaveWarningModalOpen] = useState(false);
 
   // Determine document type from URL query parameter or documentId
   const getDocumentType = () => {
@@ -23,6 +27,8 @@ export const DocumentViewPage = () => {
     if (typeParam) return typeParam;
     if (documentId?.startsWith('fattura-')) return 'fattura';
     if (documentId?.startsWith('offer-')) return 'offer';
+    if (documentId?.startsWith('agreement-')) return 'agreement';
+    if (documentId?.startsWith('po-') || documentId?.startsWith('purchase-order-')) return 'purchase-order';
     return 'transport';
   };
 
@@ -81,6 +87,18 @@ export const DocumentViewPage = () => {
   };
 
   const handleSave = () => {
+    // If it's a new document, save directly
+    if (isNewDocument) {
+      if (window.__documentSave) {
+        window.__documentSave();
+      }
+    } else {
+      // For existing documents, show warning modal
+      setIsSaveWarningModalOpen(true);
+    }
+  };
+
+  const handleConfirmSave = () => {
     if (window.__documentSave) {
       window.__documentSave();
     }
@@ -90,6 +108,31 @@ export const DocumentViewPage = () => {
     if (window.__documentRevert) {
       window.__documentRevert();
     }
+  };
+
+  // Mock file details - in a real app, this would come from an API
+  const fileDetails = {
+    createdBy: 'John Doe',
+    createdAt: new Date().toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }),
+    size: '2.4 MB',
+    lastModified: new Date(Date.now() - 86400000).toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }),
+    history: [
+      { action: 'Created', by: 'John Doe', date: new Date().toLocaleDateString() },
+      { action: 'Modified', by: 'Jane Smith', date: new Date(Date.now() - 86400000).toLocaleDateString() },
+      { action: 'Viewed', by: 'John Doe', date: new Date(Date.now() - 172800000).toLocaleDateString() },
+    ]
   };
 
   return (
@@ -139,6 +182,93 @@ export const DocumentViewPage = () => {
         />
       </div>
       
+      <div className="document-view-content">
+        <div className="document-view-main">
+          {documentType === 'fattura' ? (
+            <FatturaDocument 
+              onHasChanges={setHasUnsavedChanges}
+              onSave={handleSave}
+              onRevert={handleRevert}
+              isEmpty={isNewDocument}
+            />
+          ) : documentType === 'offer' ? (
+            <OfferDocument 
+              onHasChanges={setHasUnsavedChanges}
+              onSave={handleSave}
+              onRevert={handleRevert}
+              isEmpty={isNewDocument}
+            />
+          ) : documentType === 'agreement' ? (
+            <AgreementDocument 
+              onHasChanges={setHasUnsavedChanges}
+              onSave={handleSave}
+              onRevert={handleRevert}
+              isEmpty={isNewDocument}
+            />
+          ) : documentType === 'purchase-order' ? (
+            <PurchaseOrderDocument 
+              onHasChanges={setHasUnsavedChanges}
+              onSave={handleSave}
+              onRevert={handleRevert}
+              isEmpty={isNewDocument}
+            />
+          ) : (
+            <TransportDocument 
+              onHasChanges={setHasUnsavedChanges}
+              onSave={handleSave}
+              onRevert={handleRevert}
+              isEmpty={isNewDocument}
+            />
+          )}
+        </div>
+        
+        <div className="document-view-sidebar">
+          <div className="file-details-section">
+            <h3 className="file-details-title">File Details</h3>
+            <div className="file-details-item">
+              <span className="file-details-label">Created by</span>
+              <span className="file-details-value">{fileDetails.createdBy}</span>
+            </div>
+            <div className="file-details-item">
+              <span className="file-details-label">Created at</span>
+              <span className="file-details-value">{fileDetails.createdAt}</span>
+            </div>
+            <div className="file-details-item">
+              <span className="file-details-label">Size</span>
+              <span className="file-details-value">{fileDetails.size}</span>
+            </div>
+            <div className="file-details-item">
+              <span className="file-details-label">Last modified</span>
+              <span className="file-details-value">{fileDetails.lastModified}</span>
+            </div>
+          </div>
+          
+          <div className="file-history-section">
+            <h3 className="file-details-title">History</h3>
+            <div className="file-history-list">
+              {fileDetails.history.map((entry, index) => (
+                <div key={index} className="file-history-item">
+                  <div className="file-history-content">
+                    <div className="file-history-action">{entry.action}</div>
+                    <div className="file-history-meta">
+                      <span className="file-history-by">{entry.by}</span>
+                      <span className="file-history-date">{entry.date}</span>
+                    </div>
+                  </div>
+                  <a href="#" className="file-history-view-link" onClick={(e) => {
+                    e.preventDefault();
+                    // TODO: Implement view version functionality
+                    console.log('View version:', index);
+                  }}>
+                    View version
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <ShareModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
@@ -146,28 +276,12 @@ export const DocumentViewPage = () => {
         documentUrl={window.location.href}
       />
       
-      {documentType === 'fattura' ? (
-        <FatturaDocument 
-          onHasChanges={setHasUnsavedChanges}
-          onSave={handleSave}
-          onRevert={handleRevert}
-          isEmpty={isNewDocument}
-        />
-      ) : documentType === 'offer' ? (
-        <OfferDocument 
-          onHasChanges={setHasUnsavedChanges}
-          onSave={handleSave}
-          onRevert={handleRevert}
-          isEmpty={isNewDocument}
-        />
-      ) : (
-        <TransportDocument 
-          onHasChanges={setHasUnsavedChanges}
-          onSave={handleSave}
-          onRevert={handleRevert}
-          isEmpty={isNewDocument}
-        />
-      )}
+      <SaveWarningModal
+        isOpen={isSaveWarningModalOpen}
+        onClose={() => setIsSaveWarningModalOpen(false)}
+        onConfirm={handleConfirmSave}
+        documentTitle={`${documentType}-${documentId}`}
+      />
     </div>
   );
 };

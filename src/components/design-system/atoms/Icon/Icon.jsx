@@ -12,6 +12,7 @@ import {
   FiChevronDown,
   FiChevronUp,
   FiChevronLeft,
+  FiChevronRight,
   FiEdit2,
   FiX,
   FiFolder,
@@ -25,7 +26,10 @@ import {
   FiUser,
   FiPrinter,
   FiDownload,
-  FiSave
+  FiSave,
+  FiUpload,
+  FiInbox,
+  FiSend
 } from 'react-icons/fi';
 
 // Material Design Icons (filled) - verified to exist
@@ -38,6 +42,7 @@ import {
   MdDragHandle,
   MdKeyboardArrowDown,
   MdKeyboardArrowLeft,
+  MdKeyboardArrowRight,
   MdEdit,
   MdClose,
   MdFolder,
@@ -51,7 +56,10 @@ import {
   MdPerson,
   MdPrint,
   MdDownload,
-  MdSave
+  MdSave,
+  MdUpload,
+  MdInbox,
+  MdSend
 } from 'react-icons/md';
 
 // Bootstrap Icons (for drag handle filled) - verified to exist
@@ -98,6 +106,10 @@ const iconMap = {
   'chevron-left': {
     outline: FiChevronLeft,
     filled: MdKeyboardArrowLeft,
+  },
+  'chevron-right': {
+    outline: FiChevronRight,
+    filled: MdKeyboardArrowRight,
   },
   edit: {
     outline: FiEdit2,
@@ -162,6 +174,18 @@ const iconMap = {
   save: {
     outline: FiSave,
     filled: MdSave,
+  },
+  upload: {
+    outline: FiUpload,
+    filled: MdUpload,
+  },
+  inbox: {
+    outline: FiInbox,
+    filled: MdInbox,
+  },
+  send: {
+    outline: FiSend,
+    filled: MdSend,
   },
 };
 

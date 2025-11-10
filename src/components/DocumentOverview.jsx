@@ -1,9 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { DocumentTag } from './DocumentTag';
-import { highlightText } from '../utils/textHighlight';
+import { DocumentPreviewSimplified } from './DocumentPreviewSimplified';
 import './DocumentOverview.css';
 
-export const DocumentOverview = ({ documentId, title, previewContent, documentNumber, date, documentType, total, currencySymbol = '€', isSelected, onSelect, searchQuery, content }) => {
+export const DocumentOverview = ({ documentId, title, previewContent, documentNumber, date, documentType, total, currencySymbol = '€', isSelected, onSelect, searchQuery, content, itemCount, direction }) => {
   const navigate = useNavigate();
 
   const handleClick = (e) => {
@@ -48,35 +47,18 @@ export const DocumentOverview = ({ documentId, title, previewContent, documentNu
           />
         </div>
         <div className="document-preview-content">
-          {previewContent}
+          <DocumentPreviewSimplified
+            documentNumber={documentNumber}
+            date={date}
+            documentType={documentType}
+            title={title}
+            total={total}
+            currencySymbol={currencySymbol}
+            itemCount={itemCount}
+            direction={direction}
+            content={content}
+          />
         </div>
-        {documentType && (
-          <DocumentTag documentType={documentType}>
-            {documentType}
-          </DocumentTag>
-        )}
-      </div>
-      <div className="document-info">
-        <h3 className="document-title">
-          {searchQuery && title ? highlightText(String(title), searchQuery) : title}
-        </h3>
-        <div className="document-metadata">
-          <span className="document-id">
-            {searchQuery && documentNumber ? highlightText(String(documentNumber), searchQuery) : documentNumber}
-          </span>
-          <span className="metadata-separator">·</span>
-          <span className="document-date">{date}</span>
-        </div>
-        {content && searchQuery && (
-          <div className="document-content-preview">
-            {highlightText(String(content), searchQuery)}
-          </div>
-        )}
-        {total !== undefined && total !== null && (
-          <div className="document-total">
-            {currencySymbol}{formatCurrency(total)}
-          </div>
-        )}
       </div>
     </div>
   );

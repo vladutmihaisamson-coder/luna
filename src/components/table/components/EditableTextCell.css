@@ -5,6 +5,8 @@
   position: relative;
   width: 100%;
   min-height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .editable-text-cell {
@@ -28,14 +30,14 @@
   left: 0;
   opacity: 0;
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
 }
 
 .editable-text-cell.is-editing {
   position: relative;
   opacity: 1;
   pointer-events: auto;
-  z-index: 1;
+  z-index: 2;
 }
 
 /* Formatted display for non-focused state */
@@ -62,6 +64,8 @@
   z-index: 1;
   transition: background-color var(--table-transition-normal);
   background-color: transparent;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .editable-text-cell-display:hover {

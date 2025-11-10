@@ -8,6 +8,7 @@
   color: var(--table-text-primary);
   border-bottom: var(--table-border-width-thick) solid var(--table-border-dark);
   position: relative;
+  width: auto;
 }
 
 .table-header-cell-content {

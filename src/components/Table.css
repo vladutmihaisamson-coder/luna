@@ -13,12 +13,24 @@
   width: 100%;
   max-width: 100%;
   border-collapse: collapse;
-  table-layout: auto;
+  table-layout: fixed;
   position: relative;
   font-size: 14px;
   overflow: visible;
   /* Ensure table doesn't exceed container width, accounting for button space */
   box-sizing: border-box;
+}
+
+/* Make all cells fill width proportionally */
+.cargo-table th,
+.cargo-table td {
+  width: auto;
+}
+
+/* Remove specific width constraints to allow proportional distribution */
+.cargo-table .table-header-cell,
+.cargo-table td {
+  width: auto;
 }
 
 .cargo-table tbody {
@@ -37,7 +49,6 @@
   background-color: #fafafa;
 }
 
-.cargo-table th,
 .cargo-table td {
   padding: 12px;
   text-align: left;
@@ -46,13 +57,10 @@
   overflow: visible;
 }
 
+/* th styles are handled by TableHeaderCell component */
 .cargo-table th {
-  text-align: left;
-  padding: 8px 12px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #1a1a1a;
-  border-bottom: 2px solid #666;
+  padding: 0;
+  border: none;
 }
 
 .cargo-table td {

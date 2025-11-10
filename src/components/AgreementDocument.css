@@ -1,0 +1,11 @@
+@import './design-system/tokens/designTokens.css';
+
+.agreement-text-section {
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.agreement-text-section .editable-text-cell-wrapper {
+  min-height: 80px;
+}
+

@@ -7,7 +7,9 @@ import './FromTo.css';
 export const FromTo = ({
   fromLabel = 'From',
   toLabel = 'To',
+  fromName = '',
   fromAddress = [],
+  toName = '',
   toAddress = [],
   onFromAddressChange,
   onToAddressChange,
@@ -18,15 +20,17 @@ export const FromTo = ({
   const [isFromModalOpen, setIsFromModalOpen] = useState(false);
   const [isToModalOpen, setIsToModalOpen] = useState(false);
 
-  const handleFromSave = (newAddress) => {
+  const handleFromSave = (clientData) => {
     if (onFromAddressChange) {
-      onFromAddressChange(newAddress);
+      // clientData is now an object with { name, address }
+      onFromAddressChange(clientData);
     }
   };
 
-  const handleToSave = (newAddress) => {
+  const handleToSave = (clientData) => {
     if (onToAddressChange) {
-      onToAddressChange(newAddress);
+      // clientData is now an object with { name, address }
+      onToAddressChange(clientData);
     }
   };
 
@@ -116,6 +120,7 @@ export const FromTo = ({
         isOpen={isFromModalOpen}
         onClose={() => setIsFromModalOpen(false)}
         label={fromLabel}
+        name={fromName}
         address={fromAddress}
         onSave={handleFromSave}
         onSearch={onFromSearch}
@@ -125,6 +130,7 @@ export const FromTo = ({
         isOpen={isToModalOpen}
         onClose={() => setIsToModalOpen(false)}
         label={toLabel}
+        name={toName}
         address={toAddress}
         onSave={handleToSave}
         onSearch={onToSearch}

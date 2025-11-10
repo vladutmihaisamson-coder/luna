@@ -29,8 +29,20 @@ export const DocumentTag = ({
 
   const displayText = getDisplayText(children);
 
+  // Get document type class for color styling
+  const getDocumentTypeClass = () => {
+    if (!documentType) return '';
+    const normalizedType = documentType.toLowerCase();
+    if (normalizedType.includes('transport')) return 'document-tag-transport';
+    if (normalizedType.includes('offer')) return 'document-tag-offer';
+    if (normalizedType.includes('fattura') || normalizedType.includes('invoice')) return 'document-tag-invoice';
+    if (normalizedType.includes('agreement')) return 'document-tag-agreement';
+    if (normalizedType.includes('purchase') || normalizedType.includes('order')) return 'document-tag-purchase-order';
+    return '';
+  };
+
   return (
-    <div className={`document-tag ${className}`} {...props}>
+    <div className={`document-tag ${getDocumentTypeClass()} ${className}`} {...props}>
       <Badge variant="outline" size="sm">
         <span className="document-tag-text">{displayText}</span>
       </Badge>
