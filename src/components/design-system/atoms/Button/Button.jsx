@@ -27,7 +27,7 @@ export const Button = ({
 
   const iconElement = icon ? (
     <span className="button-icon">
-      <Icon name={icon} size={size === 'sm' ? 'sm' : size === 'md' ? 'md' : 'md'} variant={iconVariant} />
+      <Icon name={icon} size={size === 'sm' ? 'sm' : size === 'md' ? 'md' : size === 'lg' ? 'lg' : size === 'xl' ? 'xl' : 'md'} variant={iconVariant} />
     </span>
   ) : null;
 

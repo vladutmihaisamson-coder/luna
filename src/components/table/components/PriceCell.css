@@ -63,7 +63,7 @@
 }
 
 .price-currency-symbol {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--table-text-primary);
   font-weight: 500;
   flex-shrink: 0;

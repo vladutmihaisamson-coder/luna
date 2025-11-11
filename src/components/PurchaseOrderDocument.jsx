@@ -7,10 +7,12 @@ import { SignatureFooter } from './SignatureFooter';
 import { EditableTextCell } from './table/components/EditableTextCell';
 import { QuantityCell } from './table/components/QuantityCell';
 import { UnitCell } from './table/components/UnitCell';
-import { RowActionButtons } from './table/components/RowActionButtons';
+import { DeleteButton } from './design-system/molecules/DeleteButton/DeleteButton';
+import { ResetButton } from './design-system/molecules/ResetButton/ResetButton';
+import { DragHandle } from './table/components/DragHandle';
 import './PurchaseOrderDocument.css';
 
-export const PurchaseOrderDocument = ({ onHasChanges, onSave, onRevert, isEmpty = false }) => {
+export const PurchaseOrderDocument = ({ onHasChanges, onSave, onRevert, isEmpty = false, useWebPPI = false }) => {
   const initialPOItems = isEmpty ? [
     { id: 1, description: '', quantity: 1, unit: 'pieces' }
   ] : [
@@ -133,33 +135,52 @@ export const PurchaseOrderDocument = ({ onHasChanges, onSave, onRevert, isEmpty 
     ));
   };
 
-  const renderPORow = (item, index) => (
-    <>
-      <EditableTextCell
-        value={item.description}
-        onChange={(value) => updateItem(item.id, 'description', value)}
-        className="po-description-cell"
-      />
-      <QuantityCell
-        value={item.quantity}
-        onChange={(value) => updateItem(item.id, 'quantity', value)}
-        onIncrement={() => incrementQuantity(item.id)}
-        onDecrement={() => decrementQuantity(item.id)}
-      />
-      <UnitCell
-        value={item.unit}
-        onChange={(value) => updateItem(item.id, 'unit', value)}
-        options={unitOptions}
-      />
-      <RowActionButtons
-        itemId={item.id}
-        onDelete={deleteItem}
-        onReset={resetRow}
-        showDelete={poItems.length > 1}
-        showReset={item.description !== '' || item.quantity !== 1 || item.unit !== 'pieces'}
-      />
-    </>
-  );
+  const renderPORow = (item, index, items) => {
+    const totalCount = items.length;
+    const actionButton = totalCount > 1 ? 'delete' : 'reset';
+    const defaultValues = { description: '', quantity: 1, unit: 'pieces' };
+    const isDefault = 
+      item.description === defaultValues.description &&
+      item.quantity === defaultValues.quantity &&
+      item.unit === defaultValues.unit;
+
+    return (
+      <>
+        <div className="div-drag-handle-cell">
+          <DragHandle />
+        </div>
+        <div className="div-table-cell">
+          <EditableTextCell
+            value={item.description}
+            onChange={(value) => updateItem(item.id, 'description', value)}
+            className="po-description-cell"
+          />
+        </div>
+        <div className="div-table-cell">
+          <QuantityCell
+            value={item.quantity}
+            onChange={(value) => updateItem(item.id, 'quantity', value)}
+            onIncrement={() => incrementQuantity(item.id)}
+            onDecrement={() => decrementQuantity(item.id)}
+          />
+        </div>
+        <div className="div-table-cell">
+          <UnitCell
+            value={item.unit}
+            onChange={(value) => updateItem(item.id, 'unit', value)}
+            options={unitOptions}
+          />
+        </div>
+        <div className="div-row-action-cell">
+          {actionButton === 'delete' ? (
+            <DeleteButton onClick={() => deleteItem(item.id)} className="row-action-button" />
+          ) : actionButton === 'reset' && !isDefault ? (
+            <ResetButton onClick={() => resetRow(item.id)} className="row-action-button" />
+          ) : null}
+        </div>
+      </>
+    );
+  };
 
   const CM_PER_ROW = 1.0;
   const FOOTER_HEIGHT_CM = 3.0;
@@ -231,7 +252,7 @@ export const PurchaseOrderDocument = ({ onHasChanges, onSave, onRevert, isEmpty 
   return (
     <div className="document-pages">
       {pages.map((page, pageIndex) => (
-        <Document key={pageIndex} size="a4" orientation="portrait" padding={true}>
+        <Document key={pageIndex} size="a4" orientation="portrait" padding={true} useWebPPI={useWebPPI}>
           {page.isFirstPage && (
             <>
               <DocumentTitle
@@ -252,7 +273,7 @@ export const PurchaseOrderDocument = ({ onHasChanges, onSave, onRevert, isEmpty 
                   'City, State, ZIP',
                   'Country'
                 ]}
-                toName={isEmpty ? '' : 'Industrial Parts Supply Co.'}
+                toName={isEmpty ? '' : 'Bosch Rexroth'}
                 toAddress={isEmpty ? [] : [
                   '456 Industrial Avenue',
                   'Manufacturing District, State, ZIP',

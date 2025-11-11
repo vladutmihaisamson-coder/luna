@@ -16,28 +16,37 @@
   box-sizing: border-box;
 }
 
-/* First header cell (description) should account for drag handle space */
+/* First header cell (description) should have equal width with other cells */
 .div-table-header-row > .div-table-header-cell:first-child {
-  padding-left: calc(var(--table-cell-padding) + var(--table-control-offset));
+  /* No extra padding needed - headers don't have drag handles */
 }
 
 /* Align unit header cell with unit cells below - match unit cell padding */
-.div-table-header-row .div-table-header-cell:last-child {
+/* Target the last data column, not the row action header cell */
+.div-table-header-row .div-table-header-cell:not(.div-row-action-header-cell):last-child {
   padding: var(--table-cell-padding-small) var(--spacing-md) var(--table-cell-padding-small) var(--spacing-md);
   padding-right: 0;
 }
 
-/* Make the first header cell (description) wider to match the description column - 60% of space */
+/* Make the first header cell (description) equal width with other cells */
 .div-table-header-row > .div-table-header-cell:first-child {
-  flex: 3 1 0%;
+  flex: 1 1 0%; /* Equal width with other cells */
   flex-basis: 0;
+}
+
+/* Row action header cell should match row action cell proportions */
+.div-row-action-header-cell {
+  flex: 0 0 auto;
+  width: 0;
+  min-width: 0;
 }
 
 .div-table-header-cell-content {
   display: flex;
   align-items: center;
-  gap: var(--table-control-spacing);
+  gap: var(--spacing-md); /* Increased gap between label and buttons */
   width: 100%;
+  min-width: 0; /* Allow content to shrink if needed */
 }
 
 .div-table-header-cell-label {

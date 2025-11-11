@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { DivTableRow } from './div-table/components/DivTableRow.jsx';
-import { DivTableHeader } from './div-table/components/DivTableHeader.jsx';
+import { TableHeaderCell } from './table/components/TableHeaderCell.jsx';
 import { Button } from './design-system/atoms/Button/Button';
 import { Rulers } from './design-system/organisms/Rulers/Rulers';
 import './DivTable.css';
@@ -136,7 +136,18 @@ export const DivTable = ({
   const tableContent = (
     <div ref={containerRef} className={`div-table-container ${className}`}>
       <div className="div-cargo-table">
-        <DivTableHeader columns={columnLabels} onColumnDelete={handleColumnDelete} />
+        <div className="table-header">
+          <div className="div-table-header-row">
+            {columnLabels.map((columnLabel, index) => {
+              const handleDelete = handleColumnDelete ? () => handleColumnDelete(index, columnLabel) : undefined;
+              return (
+                <TableHeaderCell key={index} onDelete={handleDelete}>
+                  {columnLabel}
+                </TableHeaderCell>
+              );
+            })}
+          </div>
+        </div>
         <div className="div-table-body">
           {items.map((item, index) => {
             // If custom renderRow function is provided, use it

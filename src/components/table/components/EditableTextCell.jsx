@@ -39,12 +39,64 @@ export const EditableTextCell = ({
     setIsFocused(false);
   };
 
-  // Sync display height with textarea height
+  // Sync display height with textarea height and wrapper height
   useEffect(() => {
-    if (!isFocused && textareaRef.current && displayRef.current) {
-      displayRef.current.style.height = textareaRef.current.scrollHeight + 'px';
-    }
+    const syncHeight = () => {
+      if (textareaRef.current) {
+        // Always sync textarea height to content
+        textareaRef.current.style.height = 'auto';
+        const scrollHeight = textareaRef.current.scrollHeight;
+        textareaRef.current.style.height = scrollHeight + 'px';
+        
+        // Sync display height when not focused
+        if (!isFocused && displayRef.current) {
+          displayRef.current.style.height = 'auto';
+          displayRef.current.style.height = scrollHeight + 'px';
+        }
+        
+        // Sync wrapper height to content
+        const wrapper = textareaRef.current.closest('.editable-text-cell-wrapper');
+        if (wrapper) {
+          wrapper.style.height = 'auto';
+          wrapper.style.height = scrollHeight + 'px';
+        }
+      }
+    };
+
+    // Use requestAnimationFrame to ensure DOM is ready
+    requestAnimationFrame(() => {
+      syncHeight();
+    });
   }, [value, isFocused]);
+
+  // Initial height calculation on mount
+  useEffect(() => {
+    const syncInitialHeight = () => {
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto';
+        const scrollHeight = textareaRef.current.scrollHeight;
+        textareaRef.current.style.height = scrollHeight + 'px';
+        
+        if (displayRef.current) {
+          displayRef.current.style.height = 'auto';
+          displayRef.current.style.height = scrollHeight + 'px';
+        }
+        
+        const wrapper = textareaRef.current.closest('.editable-text-cell-wrapper');
+        if (wrapper) {
+          wrapper.style.height = 'auto';
+          wrapper.style.height = scrollHeight + 'px';
+        }
+      }
+    };
+
+    // Small delay to ensure DOM is fully rendered
+    const timeoutId = setTimeout(() => {
+      requestAnimationFrame(syncInitialHeight);
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   const formattedLines = formatTextWithBullets(value || '');
 

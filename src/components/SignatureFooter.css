@@ -1,21 +1,13 @@
 @import './design-system/tokens/designTokens.css';
 
 .signature-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: relative;
+  width: 100%;
   padding: var(--spacing-xl) var(--spacing-lg);
   border-top: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
   background: var(--color-bg-white);
   z-index: 1;
-}
-
-.document-content > .signature-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  margin-top: auto;
 }
 
 .signature-footer-section {
@@ -40,7 +32,7 @@
 }
 
 .signature-footer-label {
-  font-size: var(--font-size-md);
+  font-size: calc(var(--font-size-md) * 1.15);
   color: var(--color-text-secondary);
   font-weight: var(--font-weight-medium);
   text-align: center;

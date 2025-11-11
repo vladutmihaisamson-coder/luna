@@ -6,7 +6,6 @@ import { DocumentTitle } from '../components/DocumentTitle';
 import { FromTo } from '../components/FromTo';
 import { SignatureFooter } from '../components/SignatureFooter';
 import { DocumentOverview } from '../components/DocumentOverview';
-import { TableHeader } from '../components/table/components/TableHeader.jsx';
 import { TableHeaderCell } from '../components/table/components/TableHeaderCell.jsx';
 import { EditableTextCell } from '../components/table/components/EditableTextCell.jsx';
 import { QuantityCell } from '../components/table/components/QuantityCell.jsx';
@@ -14,7 +13,9 @@ import { UnitCell } from '../components/table/components/UnitCell.jsx';
 import { PriceCell } from '../components/table/components/PriceCell.jsx';
 import { TotalCell } from '../components/table/components/TotalCell.jsx';
 import { TotalRow } from '../components/table/components/TotalRow.jsx';
-import { Button, IconButton, Document } from '../components/design-system';
+import { Button, IconButton, Document, FilterPillGroup } from '../components/design-system';
+import { Icon } from '../components/design-system/atoms/Icon/Icon';
+import '../pages/DocumentsPage.css';
 import './TestTablePage.css';
 
 export const TestTablePage = () => {
@@ -25,6 +26,52 @@ export const TestTablePage = () => {
   const [cellExampleTotal, setCellExampleTotal] = useState(500.00);
   const [documentTitleDate, setDocumentTitleDate] = useState(new Date().toISOString().split('T')[0]);
   const [showDocumentTitleDatePicker, setShowDocumentTitleDatePicker] = useState(false);
+  const [filterPillGroupFilters, setFilterPillGroupFilters] = useState([
+    {
+      id: 'received',
+      title: 'Received',
+      placeholder: 'When it was received?',
+      options: [
+        { value: 'today', label: 'Today' },
+        { value: 'this-week', label: 'This Week' },
+        { value: 'this-month', label: 'This Month' },
+        { value: 'this-year', label: 'This Year' },
+      ],
+      selectedValue: null,
+    },
+    {
+      id: 'when',
+      title: 'When',
+      placeholder: 'When it was received?',
+      options: [
+        { value: 'today', label: 'Today' },
+        { value: 'yesterday', label: 'Yesterday' },
+        { value: 'this-week', label: 'This Week' },
+        { value: 'last-week', label: 'Last Week' },
+        { value: 'this-month', label: 'This Month' },
+      ],
+      selectedValue: null,
+    },
+    {
+      id: 'category',
+      title: 'Category',
+      placeholder: 'What type of doc it is?',
+      options: [
+        { value: 'transport', label: 'Transport' },
+        { value: 'invoice', label: 'Invoice' },
+        { value: 'offer', label: 'Offer' },
+        { value: 'agreement', label: 'Agreement' },
+        { value: 'purchase-order', label: 'Purchase Order' },
+      ],
+      selectedValue: null,
+    },
+  ]);
+  const [filterPillGroupSearchValue, setFilterPillGroupSearchValue] = useState('');
+  const [isFilterPillGroupSearchExpanded, setIsFilterPillGroupSearchExpanded] = useState(false);
+  const [filterPillGroupMoreMenuItems] = useState([
+    { id: 'view-mode', label: 'Grid View', icon: 'grid', iconVariant: 'filled' },
+    { id: 'test-table', label: 'Test Table', icon: 'file-text', iconVariant: 'outline' },
+  ]);
 
   const unitOptions = ['boxes', 'pallets', 'pieces', 'units', 'sets', 'set', 'unit', 'kg', 'tons', 'liters'];
 
@@ -68,8 +115,9 @@ export const TestTablePage = () => {
                 <IconButton icon="plus" variant="default" size="sm" aria-label="Small" />
                 <IconButton icon="plus" variant="default" size="md" aria-label="Medium" />
                 <IconButton icon="plus" variant="default" size="lg" aria-label="Large" />
+                <IconButton icon="plus" variant="default" size="xl" aria-label="Extra Large" />
               </div>
-              <p className="icon-button-example-value">sm, md, lg</p>
+              <p className="icon-button-example-value">sm, md, lg, xl</p>
             </div>
             
             <div className="icon-button-example-item">
@@ -85,6 +133,54 @@ export const TestTablePage = () => {
                 <IconButton icon="x" variant="ghost" size="md" aria-label="Close" />
               </div>
               <p className="icon-button-example-value">plus, minus, delete, reset, filter, chevron-down, chevron-left, x</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="button-example">
+          <h2>Button Component Examples</h2>
+          <p>Button component with text labels, different variants, sizes, and optional icons.</p>
+          <div className="button-example-container">
+            <div className="button-example-item">
+              <h3>Variants</h3>
+              <div className="button-example-wrapper">
+                <Button variant="default">Default</Button>
+                <Button variant="primary">Primary</Button>
+                <Button variant="ghost">Ghost</Button>
+                <Button variant="danger">Danger</Button>
+              </div>
+              <p className="button-example-value">default, primary, ghost, danger</p>
+            </div>
+            
+            <div className="button-example-item">
+              <h3>Sizes</h3>
+              <div className="button-example-wrapper">
+                <Button variant="default" size="sm">Small</Button>
+                <Button variant="default" size="md">Medium</Button>
+                <Button variant="default" size="lg">Large</Button>
+                <Button variant="default" size="xl">Extra Large</Button>
+              </div>
+              <p className="button-example-value">sm, md, lg, xl</p>
+            </div>
+            
+            <div className="button-example-item">
+              <h3>With Icons</h3>
+              <div className="button-example-wrapper">
+                <Button variant="default" icon="plus" iconPosition="left">Add Item</Button>
+                <Button variant="primary" icon="upload" iconPosition="left">Upload</Button>
+                <Button variant="default" icon="chevron-right" iconPosition="right">Next</Button>
+                <Button variant="ghost" icon="x" iconPosition="right">Close</Button>
+              </div>
+              <p className="button-example-value">Icons can be positioned left or right</p>
+            </div>
+            
+            <div className="button-example-item">
+              <h3>States</h3>
+              <div className="button-example-wrapper">
+                <Button variant="default">Normal</Button>
+                <Button variant="default" disabled>Disabled</Button>
+              </div>
+              <p className="button-example-value">normal, disabled</p>
             </div>
           </div>
         </div>
@@ -177,13 +273,13 @@ export const TestTablePage = () => {
             <div className="cell-example-item">
               <h3>TableHeaderCell</h3>
               <div className="cell-example-wrapper">
-                <table className="cargo-table">
-                  <thead>
-                    <tr>
+                <div className="div-cargo-table">
+                  <div className="table-header">
+                    <div className="table-header-row">
                       <TableHeaderCell>Title</TableHeaderCell>
-                    </tr>
-                  </thead>
-                </table>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -191,11 +287,17 @@ export const TestTablePage = () => {
 
         <div className="table-header-example">
           <h2>TableHeader Component Example</h2>
-          <p>Table header component with customizable columns.</p>
+          <p>Table header component with customizable columns (using TableHeaderCell directly).</p>
           <div className="table-header-example-container">
-            <table className="cargo-table">
-              <TableHeader columns={['Description', 'Quantity', 'Unit']} />
-            </table>
+            <div className="div-cargo-table">
+              <div className="table-header">
+                <div className="table-header-row">
+                  <TableHeaderCell>Description</TableHeaderCell>
+                  <TableHeaderCell>Quantity</TableHeaderCell>
+                  <TableHeaderCell>Unit</TableHeaderCell>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -315,7 +417,7 @@ export const TestTablePage = () => {
           <h2>Document Component Example</h2>
           <p>Generic document component with A4 real-life size that can contain different types of atoms, molecules, or text.</p>
           <div className="document-component-example-container">
-            <Document>
+            <Document useWebPPI={true}>
               <DocumentTitle
                 title="Sample Document"
                 documentNumber="DOC-2025-001"
@@ -391,6 +493,90 @@ export const TestTablePage = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="filter-pill-example">
+          <h2>Filter Pill Component Example</h2>
+          <p>Filter pill component used for filtering documents with title, description, and dropdown functionality.</p>
+          <div className="filter-pill-example-container">
+            <div className="filter-pill-example-item">
+              <h3>Default State</h3>
+              <div className="filter-pill-example-wrapper">
+                <div className="filter-pill-wrapper">
+                  <button className="filter-pill" aria-expanded="false">
+                    <span className="filter-pill-title">Received</span>
+                    <span className="filter-pill-description">When it was received?</span>
+                    <Icon name="chevron-down" size="sm" variant="outline" className="filter-pill-chevron" />
+                  </button>
+                </div>
+              </div>
+              <p className="filter-pill-example-value">Default filter pill with placeholder text</p>
+            </div>
+            
+            <div className="filter-pill-example-item">
+              <h3>Active State</h3>
+              <div className="filter-pill-example-wrapper">
+                <div className="filter-pill-wrapper">
+                  <button className="filter-pill" aria-expanded="false">
+                    <span className="filter-pill-title">When</span>
+                    <span className="filter-pill-description filter-pill-description-active">Last 7 days</span>
+                    <Icon name="chevron-down" size="sm" variant="outline" className="filter-pill-chevron" />
+                  </button>
+                </div>
+              </div>
+              <p className="filter-pill-example-value">Filter pill with selected value</p>
+            </div>
+            
+            <div className="filter-pill-example-item">
+              <h3>Expanded State</h3>
+              <div className="filter-pill-example-wrapper">
+                <div className="filter-pill-wrapper">
+                  <button className="filter-pill" aria-expanded="true">
+                    <span className="filter-pill-title">Category</span>
+                    <span className="filter-pill-description filter-pill-description-active">Invoice</span>
+                    <Icon name="chevron-down" size="sm" variant="outline" className="filter-pill-chevron" />
+                  </button>
+                </div>
+              </div>
+              <p className="filter-pill-example-value">Filter pill with expanded dropdown (chevron rotated)</p>
+            </div>
+          </div>
+          
+          <div className="filter-pill-example-item" style={{ width: '100%', marginTop: '24px' }}>
+            <h3>FilterPillGroup Component</h3>
+            <div className="filter-pill-example-wrapper" style={{ padding: '16px', justifyContent: 'center' }}>
+              <FilterPillGroup
+                filters={filterPillGroupFilters}
+                onFilterChange={(filterId, value) => {
+                  setFilterPillGroupFilters(prev => 
+                    prev.map(filter => 
+                      filter.id === filterId 
+                        ? { ...filter, selectedValue: value }
+                        : filter
+                    )
+                  );
+                }}
+                onReset={() => {
+                  setFilterPillGroupFilters(prev => 
+                    prev.map(filter => ({ ...filter, selectedValue: null }))
+                  );
+                  setFilterPillGroupSearchValue('');
+                }}
+                showResetButton={true}
+                showSearchButton={true}
+                searchValue={filterPillGroupSearchValue}
+                onSearchChange={setFilterPillGroupSearchValue}
+                onSearchToggle={setIsFilterPillGroupSearchExpanded}
+                isSearchExpanded={isFilterPillGroupSearchExpanded}
+                showMoreButton={true}
+                moreMenuItems={filterPillGroupMoreMenuItems}
+                onMoreMenuItemClick={(item) => {
+                  console.log('More menu item clicked:', item);
+                }}
+              />
+            </div>
+            <p className="filter-pill-example-value">Complete filter pill group with multiple filters, search, and reset functionality</p>
           </div>
         </div>
 

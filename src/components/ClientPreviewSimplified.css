@@ -1,0 +1,100 @@
+@import './design-system/tokens/designTokens.css';
+
+.client-preview-simplified {
+  width: 100%;
+  min-height: fit-content;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  box-sizing: border-box;
+  position: relative;
+  background: var(--color-bg-white);
+}
+
+.client-preview-simplified-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.client-preview-simplified-name {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.client-preview-simplified-id {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-tight);
+}
+
+.client-preview-simplified-info,
+.client-preview-simplified-total,
+.client-preview-simplified-date,
+.client-preview-simplified-types {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-md);
+  margin-top: var(--spacing-xs);
+  padding-top: var(--spacing-md);
+  padding-left: 0;
+  padding-right: 0;
+  border-top: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+}
+
+.client-preview-simplified-label {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-normal);
+}
+
+.client-preview-simplified-value {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.client-preview-simplified-total .client-preview-simplified-value {
+  font-size: var(--font-size-lg);
+}
+
+.client-preview-simplified-contact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-md);
+  padding-left: 0;
+  padding-right: 0;
+  border-top: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  font-size: var(--font-size-sm);
+}
+
+.client-preview-simplified-contact-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.client-preview-simplified-contact-label {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-sm);
+}
+
+.client-preview-simplified-contact-value {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  word-break: break-word;
+}
+

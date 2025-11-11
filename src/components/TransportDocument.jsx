@@ -2,11 +2,12 @@ import { useState, useMemo, useEffect } from 'react';
 import { Document } from './design-system/organisms/Document/Document';
 import { DocumentTitle } from './DocumentTitle';
 import { FromTo } from './FromTo';
+import { TransportReason } from './TransportReason';
 import { DivTable } from './DivTable';
 import { SignatureFooter } from './SignatureFooter';
 import './TransportDocument.css';
 
-export const TransportDocument = ({ onHasChanges, onSave, onRevert, isEmpty = false }) => {
+export const TransportDocument = ({ onHasChanges, onSave, onRevert, isEmpty = false, useWebPPI = false }) => {
   const initialCargoItems = isEmpty ? [
     { id: 1, description: '', quantity: 1, unit: 'boxes' }
   ] : [
@@ -23,8 +24,10 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert, isEmpty = fa
 
   const [cargoItems, setCargoItems] = useState(initialCargoItems);
   const [documentDate, setDocumentDate] = useState(initialDate);
+  const [transportReason, setTransportReason] = useState(isEmpty ? '' : 'conto-vendita');
   const [savedCargoItems, setSavedCargoItems] = useState(initialCargoItems);
   const [savedDate, setSavedDate] = useState(initialDate);
+  const [savedTransportReason, setSavedTransportReason] = useState(isEmpty ? '' : 'conto-vendita');
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const unitOptions = ['boxes', 'pallets', 'pieces', 'kg', 'tons', 'liters', 'units'];
@@ -41,8 +44,9 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert, isEmpty = fa
   const hasChanges = useMemo(() => {
     const dateChanged = documentDate !== savedDate;
     const itemsChanged = JSON.stringify(cargoItems) !== JSON.stringify(savedCargoItems);
-    return dateChanged || itemsChanged;
-  }, [cargoItems, savedCargoItems, documentDate, savedDate]);
+    const reasonChanged = transportReason !== savedTransportReason;
+    return dateChanged || itemsChanged || reasonChanged;
+  }, [cargoItems, savedCargoItems, documentDate, savedDate, transportReason, savedTransportReason]);
 
   // Notify parent component about changes
   useEffect(() => {
@@ -55,6 +59,7 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert, isEmpty = fa
   const saveChanges = () => {
     setSavedCargoItems(JSON.parse(JSON.stringify(cargoItems)));
     setSavedDate(documentDate);
+    setSavedTransportReason(transportReason);
     if (onSave) onSave();
   };
 
@@ -62,6 +67,7 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert, isEmpty = fa
   const revertChanges = () => {
     setCargoItems(JSON.parse(JSON.stringify(savedCargoItems)));
     setDocumentDate(savedDate);
+    setTransportReason(savedTransportReason);
     if (onRevert) onRevert();
   };
 
@@ -257,7 +263,7 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert, isEmpty = fa
   return (
     <div className="document-pages">
       {pages.map((page, pageIndex) => (
-        <Document key={pageIndex} size="a4" orientation="portrait" padding={true}>
+        <Document key={pageIndex} size="a4" orientation="portrait" padding={true} useWebPPI={useWebPPI}>
           {page.isFirstPage && (
             <>
               <DocumentTitle
@@ -282,6 +288,12 @@ export const TransportDocument = ({ onHasChanges, onSave, onRevert, isEmpty = fa
                   '456 Delivery Ave, Commerce District',
                   '+1 (555) 987-6543'
                 ]}
+              />
+              
+              <TransportReason
+                value={transportReason}
+                onChange={setTransportReason}
+                isEmpty={isEmpty}
               />
             </>
           )}

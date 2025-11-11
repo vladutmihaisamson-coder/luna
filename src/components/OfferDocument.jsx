@@ -9,10 +9,11 @@ import { QuantityCell } from './table/components/QuantityCell';
 import { PriceCell } from './table/components/PriceCell';
 import { TotalRow } from './table/components/TotalRow';
 import { DragHandle } from './table/components/DragHandle';
-import { RowActionButtons } from './table/components/RowActionButtons';
+import { DeleteButton } from './design-system/molecules/DeleteButton/DeleteButton';
+import { ResetButton } from './design-system/molecules/ResetButton/ResetButton';
 import './OfferDocument.css';
 
-export const OfferDocument = ({ onHasChanges, onSave, onRevert, isEmpty = false }) => {
+export const OfferDocument = ({ onHasChanges, onSave, onRevert, isEmpty = false, useWebPPI = false }) => {
   const initialOfferItems = isEmpty ? [
     { id: 1, description: '', quantity: 1, unitPrice: 0, total: 0 }
   ] : [
@@ -202,8 +203,10 @@ export const OfferDocument = ({ onHasChanges, onSave, onRevert, isEmpty = false 
 
     return (
       <>
-        <div className="div-description-cell-with-handle">
+        <div className="div-drag-handle-cell">
           <DragHandle />
+        </div>
+        <div className="div-table-cell">
           <EditableTextCell
             value={item.description}
             onChange={(value) => handleDescriptionChange(item.id, value)}
@@ -228,12 +231,11 @@ export const OfferDocument = ({ onHasChanges, onSave, onRevert, isEmpty = false 
           />
         </div>
         <div className="div-row-action-cell">
-          <RowActionButtons
-            actionButton={actionButton}
-            onDelete={() => deleteItem(item.id)}
-            onReset={() => resetRow(item.id)}
-            isDefault={isDefault}
-          />
+          {actionButton === 'delete' ? (
+            <DeleteButton onClick={() => deleteItem(item.id)} className="row-action-button" />
+          ) : actionButton === 'reset' && !isDefault ? (
+            <ResetButton onClick={() => resetRow(item.id)} className="row-action-button" />
+          ) : null}
         </div>
       </>
     );
@@ -337,7 +339,7 @@ export const OfferDocument = ({ onHasChanges, onSave, onRevert, isEmpty = false 
   return (
     <div className="document-pages">
       {pages.map((page, pageIndex) => (
-        <Document key={pageIndex} size="a4" orientation="portrait" padding={true}>
+        <Document key={pageIndex} size="a4" orientation="portrait" padding={true} useWebPPI={useWebPPI}>
           {page.isFirstPage && (
             <>
               <DocumentTitle
@@ -377,33 +379,34 @@ export const OfferDocument = ({ onHasChanges, onSave, onRevert, isEmpty = false 
               showRulers={false}
               totalItemsCount={offerItems.length}
             />
-            {pageIndex === pages.length - 1 && (() => {
-              const subtotal = offerItems.reduce((sum, item) => sum + (item.total || 0), 0);
-              const vatAmount = (subtotal * vatPercentage) / 100;
-              const total = subtotal + vatAmount;
-              
-              return (
-                <>
-                  <TotalRow
-                    label="Subtotal"
-                    value={subtotal}
-                    currencySymbol="€"
-                  />
-                  <TotalRow
-                    label={`VAT (${vatPercentage}%)`}
-                    value={vatAmount}
-                    currencySymbol="€"
-                  />
-                  <TotalRow
-                    label="Total"
-                    value={total}
-                    currencySymbol="€"
-                    isFinal={true}
-                  />
-                </>
-              );
-            })()}
           </div>
+
+          {pageIndex === pages.length - 1 && (() => {
+            const subtotal = offerItems.reduce((sum, item) => sum + (item.total || 0), 0);
+            const vatAmount = (subtotal * vatPercentage) / 100;
+            const total = subtotal + vatAmount;
+            
+            return (
+              <>
+                <TotalRow
+                  label="Subtotal"
+                  value={subtotal}
+                  currencySymbol="€"
+                />
+                <TotalRow
+                  label={`VAT (${vatPercentage}%)`}
+                  value={vatAmount}
+                  currencySymbol="€"
+                />
+                <TotalRow
+                  label="Total"
+                  value={total}
+                  currencySymbol="€"
+                  isFinal={true}
+                />
+              </>
+            );
+          })()}
 
           {page.hasFooter && (
             <SignatureFooter

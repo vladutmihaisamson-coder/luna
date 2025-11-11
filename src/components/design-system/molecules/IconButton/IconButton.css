@@ -34,6 +34,13 @@
   min-height: var(--size-button-lg);
 }
 
+.icon-button.button-xl {
+  width: var(--size-button-xl);
+  height: var(--size-button-xl);
+  min-width: var(--size-button-xl);
+  min-height: var(--size-button-xl);
+}
+
 .icon-button > * {
   display: flex;
   align-items: center;

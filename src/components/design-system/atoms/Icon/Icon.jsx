@@ -29,7 +29,10 @@ import {
   FiSave,
   FiUpload,
   FiInbox,
-  FiSend
+  FiSend,
+  FiArchive,
+  FiSliders,
+  FiSettings
 } from 'react-icons/fi';
 
 // Material Design Icons (filled) - verified to exist
@@ -59,7 +62,9 @@ import {
   MdSave,
   MdUpload,
   MdInbox,
-  MdSend
+  MdSend,
+  MdArchive,
+  MdTune
 } from 'react-icons/md';
 
 // Bootstrap Icons (for drag handle filled) - verified to exist
@@ -187,6 +192,18 @@ const iconMap = {
     outline: FiSend,
     filled: MdSend,
   },
+  archive: {
+    outline: FiArchive,
+    filled: MdArchive,
+  },
+  sliders: {
+    outline: FiSliders,
+    filled: MdTune,
+  },
+  settings: {
+    outline: FiSettings,
+    filled: MdTune, // Using MdTune as filled variant for settings
+  },
 };
 
 export const Icon = ({ 
@@ -216,6 +233,7 @@ export const Icon = ({
     sm: 14,
     md: 16,
     lg: 18,
+    xl: 22,
   }[size] || 16;
 
   // If no color is provided, let CSS handle it via the .icon class

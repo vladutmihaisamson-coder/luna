@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { DocumentPreviewSimplified } from './DocumentPreviewSimplified';
 import './DocumentOverview.css';
 
-export const DocumentOverview = ({ documentId, title, previewContent, documentNumber, date, documentType, total, currencySymbol = '€', isSelected, onSelect, searchQuery, content, itemCount, direction }) => {
+export const DocumentOverview = ({ documentId, title, previewContent, documentNumber, date, documentType, total, currencySymbol = '€', isSelected, onSelect, searchQuery, content, itemCount, direction, needsAttention, signatureStatus, lastModified, isEditable }) => {
   const navigate = useNavigate();
 
   const handleClick = (e) => {
@@ -27,10 +27,21 @@ export const DocumentOverview = ({ documentId, title, previewContent, documentNu
     }).format(value);
   };
 
+  const getDocumentTypeClass = () => {
+    if (!documentType) return '';
+    const normalizedType = documentType.toLowerCase();
+    if (normalizedType.includes('transport')) return 'document-preview-transport';
+    if (normalizedType.includes('offer')) return 'document-preview-offer';
+    if (normalizedType.includes('fattura') || normalizedType.includes('invoice')) return 'document-preview-invoice';
+    if (normalizedType.includes('agreement')) return 'document-preview-agreement';
+    if (normalizedType.includes('purchase') || normalizedType.includes('order')) return 'document-preview-purchase-order';
+    return '';
+  };
+
   return (
     <div className="document-overview">
       <div 
-        className="document-preview" 
+        className={`document-preview ${getDocumentTypeClass()}`}
         onClick={handleClick}
         role="button"
         tabIndex={0}
@@ -57,6 +68,9 @@ export const DocumentOverview = ({ documentId, title, previewContent, documentNu
             itemCount={itemCount}
             direction={direction}
             content={content}
+            signatureStatus={signatureStatus}
+            lastModified={lastModified}
+            isEditable={isEditable}
           />
         </div>
       </div>

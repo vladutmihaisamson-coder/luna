@@ -1,10 +1,6 @@
 @import '../../design-system/tokens/designTokens.css';
 
 .drag-handle {
-  position: absolute;
-  left: calc(-1 * var(--table-control-offset));
-  top: 50%;
-  transform: translateY(-50%);
   cursor: grab;
   opacity: 0;
   pointer-events: none;
@@ -14,6 +10,25 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+}
+
+/* For old table-based tables, use absolute positioning */
+.table-row .drag-handle,
+.table-row-with-delete .drag-handle,
+.cargo-table tbody tr .drag-handle {
+  position: absolute;
+  left: calc(-1 * var(--table-control-offset));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* For div-based tables, the drag handle is centered by its flex container */
+.div-drag-handle-cell .drag-handle {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  /* The cell itself is absolutely positioned, so the button just needs to be centered */
 }
 
 .drag-handle:active {

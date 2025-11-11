@@ -3,13 +3,22 @@
 .document {
   position: relative;
   background: var(--color-bg-white);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
+  border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  border-radius: 0;
   margin: var(--document-margin) auto;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: hidden; /* Clip hover elements that extend outside */
   /* Dimensions will be set via inline styles based on actual screen DPI */
   flex-shrink: 0;
+  /* Don't constrain - let inline styles from component control dimensions */
   min-width: 0;
+  /* Ensure width from inline styles is respected - inline styles will override */
+  width: auto;
+  height: auto;
+  /* Height will be set via inline styles to maintain A4 proportions */
+  /* Content can push height beyond initial value if needed */
+  /* Important: inline styles set in component will override these defaults */
 }
 
 /* Document content wrapper */
@@ -20,6 +29,21 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  font-size: 1.15em; /* Increase base font size by 15% */
+  overflow: hidden; /* Clip content that exceeds page boundaries */
+  /* Ensure footer can be positioned at bottom of first page */
+  padding-bottom: 0;
+}
+
+/* For first page documents with footer, ensure footer stays at bottom of A4 height */
+.document:has(.signature-footer) {
+  /* Ensure document maintains its min-height for footer positioning */
+  position: relative;
+}
+
+.document:has(.signature-footer) .document-content {
+  /* Ensure content wrapper respects document min-height for footer positioning */
+  min-height: 100%;
 }
 
 .document-logo {
@@ -41,8 +65,8 @@
   padding: var(--document-padding);
 }
 
-/* Responsive behavior */
-@media (max-width: 900px) {
+/* Responsive behavior - only apply on very small screens */
+@media (max-width: 600px) {
   .document {
     width: 100% !important;
     max-width: 100%;

@@ -40,7 +40,7 @@
 .button-sm {
   height: var(--size-button-sm);
   min-width: var(--size-button-sm);
-  padding: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
 }
 
 .button-md {
@@ -55,6 +55,13 @@
   padding: var(--spacing-sm) var(--spacing-md);
 }
 
+.button-xl {
+  height: var(--size-button-xl);
+  min-width: var(--size-button-xl);
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-lg);
+}
+
 /* Variants */
 .button-default {
   border-color: var(--stroke-color-subtle);
@@ -63,7 +70,7 @@
 
 .button-default:hover:not(:disabled) {
   background: var(--color-bg-light);
-  border-color: var(--color-border-medium);
+  border-color: var(--color-text-tertiary);
 }
 
 .button-primary {
@@ -94,25 +101,37 @@
 
 .button-ghost:hover:not(:disabled) {
   background: var(--color-bg-white);
-  border-color: var(--stroke-color-subtle);
+  border-color: var(--color-text-tertiary);
 }
 
 .button-icon {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  line-height: 1;
+  vertical-align: middle;
 }
 
 .button-content {
+  display: inline-flex;
+  align-items: center;
   flex-shrink: 1;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1;
+  vertical-align: middle;
 }
 
 .button-with-icon {
   flex-wrap: nowrap;
+}
+
+.button-with-icon .button-icon,
+.button-with-icon .button-content {
+  display: inline-flex;
+  align-items: center;
 }
 

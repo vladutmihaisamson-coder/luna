@@ -6,10 +6,11 @@ import { DivTable } from './DivTable';
 import { SignatureFooter } from './SignatureFooter';
 import { EditableTextCell } from './table/components/EditableTextCell';
 import { DragHandle } from './table/components/DragHandle';
-import { RowActionButtons } from './table/components/RowActionButtons';
+import { DeleteButton } from './design-system/molecules/DeleteButton/DeleteButton';
+import { ResetButton } from './design-system/molecules/ResetButton/ResetButton';
 import './AgreementDocument.css';
 
-export const AgreementDocument = ({ onHasChanges, onSave, onRevert, isEmpty = false }) => {
+export const AgreementDocument = ({ onHasChanges, onSave, onRevert, isEmpty = false, useWebPPI = false }) => {
   const initialAgreementText = isEmpty 
     ? 'This agreement is entered into between the parties listed below...'
     : 'This agreement is entered into between the parties listed below. The terms and conditions of this agreement shall be binding upon both parties and their respective successors and assigns.';
@@ -113,11 +114,18 @@ export const AgreementDocument = ({ onHasChanges, onSave, onRevert, isEmpty = fa
     }
   };
 
-  const renderAgreementRow = (item) => {
+  const renderAgreementRow = (item, index, items) => {
+    const totalCount = items.length;
+    const actionButton = totalCount > 1 ? 'delete' : 'reset';
+    const defaultValues = { description: '' };
+    const isDefault = item.description === defaultValues.description;
+
     return (
-      <div key={item.id} className="div-table-row">
-        <DragHandle />
-        <div className="div-table-cell div-description-cell-with-handle">
+      <>
+        <div className="div-drag-handle-cell">
+          <DragHandle />
+        </div>
+        <div className="div-table-cell">
           <EditableTextCell
             value={item.description}
             onChange={(value) => updateItem(item.id, 'description', value)}
@@ -125,17 +133,18 @@ export const AgreementDocument = ({ onHasChanges, onSave, onRevert, isEmpty = fa
           />
         </div>
         <div className="div-row-action-cell">
-          <RowActionButtons
-            onDelete={items.length > 1 ? () => deleteItem(item.id) : undefined}
-            onReset={JSON.stringify(item) !== JSON.stringify(savedItems.find(saved => saved.id === item.id)) ? () => resetRow(item.id) : undefined}
-          />
+          {actionButton === 'delete' ? (
+            <DeleteButton onClick={() => deleteItem(item.id)} className="row-action-button" />
+          ) : actionButton === 'reset' && !isDefault ? (
+            <ResetButton onClick={() => resetRow(item.id)} className="row-action-button" />
+          ) : null}
         </div>
-      </div>
+      </>
     );
   };
 
   return (
-    <Document size="a4" orientation="portrait" padding={true}>
+    <Document size="a4" orientation="portrait" padding={true} useWebPPI={useWebPPI}>
       <DocumentTitle
         title="Agreement"
         documentNumber="AG-2025-001"

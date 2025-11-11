@@ -1,6 +1,5 @@
 import React from 'react';
 import { DocumentTag } from './DocumentTag';
-import { Icon } from './design-system/atoms/Icon/Icon';
 import './DocumentPreviewSimplified.css';
 
 export const DocumentPreviewSimplified = ({ 
@@ -12,7 +11,10 @@ export const DocumentPreviewSimplified = ({
   currencySymbol = '€',
   itemCount,
   direction,
-  content
+  content,
+  signatureStatus,
+  lastModified,
+  isEditable
 }) => {
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-US', {
@@ -30,15 +32,6 @@ export const DocumentPreviewSimplified = ({
               {documentType}
             </DocumentTag>
           </div>
-          {direction && (
-            <div className="document-preview-simplified-direction-icon">
-              <Icon 
-                name={direction === 'in' ? 'inbox' : 'send'} 
-                size="xs" 
-                variant="outline"
-              />
-            </div>
-          )}
         </div>
       )}
       
@@ -72,9 +65,25 @@ export const DocumentPreviewSimplified = ({
         </div>
       )}
       
-      <div className="document-preview-simplified-footer">
-        <div className="document-preview-simplified-line"></div>
-        <div className="document-preview-simplified-line"></div>
+      <div className="document-preview-simplified-metadata">
+        {signatureStatus && (
+          <div className="document-preview-simplified-signature">
+            <span className="document-preview-simplified-label">Signature:</span>
+            <span className={`document-preview-simplified-signature-status signature-${signatureStatus.toLowerCase().replace(/\s+/g, '-')}`}>
+              {signatureStatus}
+            </span>
+          </div>
+        )}
+        <div className="document-preview-simplified-modified">
+          <span className="document-preview-simplified-label">Last changed:</span>
+          <span className="document-preview-simplified-value">{lastModified || date}</span>
+        </div>
+        {isEditable === false && (
+          <div className="document-preview-simplified-locked">
+            <span className="document-preview-simplified-label">Status:</span>
+            <span className="document-preview-simplified-value">Locked</span>
+          </div>
+        )}
       </div>
     </div>
   );

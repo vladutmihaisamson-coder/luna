@@ -3,7 +3,8 @@ import { EditableTextCell } from '../../table/components/EditableTextCell.jsx';
 import { QuantityCell } from '../../table/components/QuantityCell.jsx';
 import { UnitCell } from '../../table/components/UnitCell.jsx';
 import { DragHandle } from '../../table/components/DragHandle.jsx';
-import { RowActionButtons } from '../../table/components/RowActionButtons.jsx';
+import { DeleteButton } from '../../design-system/molecules/DeleteButton/DeleteButton';
+import { ResetButton } from '../../design-system/molecules/ResetButton/ResetButton';
 import './DivTableRow.css';
 
 export const DivTableRow = ({
@@ -64,8 +65,10 @@ export const DivTableRow = ({
     <div 
       className={`div-table-row div-table-row-with-delete ${className}`}
     >
-      <div className="div-description-cell-with-handle">
+      <div className="div-drag-handle-cell">
         <DragHandle />
+      </div>
+      <div className="div-table-cell">
         <EditableTextCell
           value={item.description}
           onChange={handleDescriptionChange}
@@ -90,16 +93,15 @@ export const DivTableRow = ({
         />
       </div>
       <div className="div-row-action-cell">
-        <RowActionButtons
-          actionButton={actionButton}
-          onDelete={handleDelete}
-          onReset={handleReset}
-          isDefault={
-            item.description === defaultValues.description &&
-            item.quantity === defaultValues.quantity &&
-            item.unit === defaultValues.unit
-          }
-        />
+        {actionButton === 'delete' ? (
+          <DeleteButton onClick={handleDelete} className="row-action-button" />
+        ) : actionButton === 'reset' && !(
+          item.description === defaultValues.description &&
+          item.quantity === defaultValues.quantity &&
+          item.unit === defaultValues.unit
+        ) ? (
+          <ResetButton onClick={handleReset} className="row-action-button" />
+        ) : null}
       </div>
     </div>
   );

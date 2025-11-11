@@ -23,7 +23,7 @@ export const IconButton = ({
       aria-label={ariaLabel}
       {...props}
     >
-      <Icon name={icon} size={size === 'sm' ? 'sm' : size === 'md' ? 'md' : 'md'} />
+      <Icon name={icon} size={size === 'sm' ? 'sm' : size === 'md' ? 'md' : size === 'lg' ? 'lg' : size === 'xl' ? 'xl' : 'md'} />
     </Button>
   );
 };

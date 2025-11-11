@@ -28,8 +28,6 @@ export const DivTableHeader = ({
             </DivTableHeaderCell>
           );
         })}
-        {/* Empty header cell for action column (delete/reset buttons) */}
-        <DivTableHeaderCell className="div-row-action-header-cell" />
       </div>
     </div>
   );

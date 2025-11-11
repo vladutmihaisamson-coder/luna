@@ -175,6 +175,7 @@
 /* Add Row Button */
 .table-add-row-container {
   margin-top: 16px;
+  margin-bottom: 16px;
   min-height: 60px;
   padding: 10px 0;
   display: flex;

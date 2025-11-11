@@ -103,6 +103,68 @@
   font-family: monospace;
 }
 
+.button-example {
+  margin-bottom: 60px;
+  overflow: visible;
+  position: relative;
+}
+
+.button-example h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.button-example > p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+}
+
+.button-example-container {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.button-example-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.button-example-item h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.button-example-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  min-height: 48px;
+  padding: 12px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.button-example-value {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  font-family: monospace;
+}
+
 .table-cells-example {
   margin-bottom: 60px;
   overflow: visible;
@@ -684,6 +746,8 @@
   flex: 1;
   min-height: 0;
   margin-bottom: 0;
+  width: 100%;
+  overflow: visible;
 }
 
 .document-overview-example {
@@ -734,4 +798,68 @@
   width: 100%;
   min-width: 300px;
   box-sizing: border-box;
+}
+
+.filter-pill-example {
+  margin-bottom: 60px;
+  overflow: visible;
+  position: relative;
+}
+
+.filter-pill-example h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.filter-pill-example > p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+}
+
+.filter-pill-example-container {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.filter-pill-example-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-pill-example-item h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.filter-pill-example-wrapper {
+  min-height: 48px;
+  width: 100%;
+  min-width: 200px;
+  padding: 12px;
+  box-sizing: border-box;
+  background: #fafafa;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.filter-pill-example-value {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  font-family: monospace;
 }

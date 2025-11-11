@@ -5,6 +5,7 @@ import ComponentShowcase from './pages/ComponentShowcase';
 import TransactionsPage from './pages/TransactionsPage';
 import { DocumentsPage } from './pages/DocumentsPage';
 import { DocumentViewPage } from './pages/DocumentViewPage';
+import { ClientViewPage } from './pages/ClientViewPage';
 import { TestTablePage } from './pages/TestTablePage';
 import { TableComponentsShowcasePage } from './pages/TableComponentsShowcasePage';
 import './App.css'
@@ -19,6 +20,7 @@ function App() {
         <Route path="/transactions" element={<TransactionsPage />} />
         <Route path="/documents" element={<DocumentsPage />} />
         <Route path="/document/:documentId" element={<DocumentViewPage />} />
+        <Route path="/client/:clientId" element={<ClientViewPage />} />
         <Route path="/table-components-showcase" element={<TableComponentsShowcasePage />} />
         <Route path="/test-table" element={<TestTablePage />} />
       </Routes>

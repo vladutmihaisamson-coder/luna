@@ -24,8 +24,8 @@
   --table-icon-size: 10px;
   
   /* Typography */
-  --table-font-size: 14px;
-  --table-font-size-small: 13px;
+  --table-font-size: 16px; /* Increased from 14px */
+  --table-font-size-small: 15px; /* Increased from 13px */
   --table-font-weight-normal: 400;
   --table-font-weight-bold: 600;
   

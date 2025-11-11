@@ -13,7 +13,7 @@
   width: 100%;
   max-width: 100%;
   position: relative;
-  font-size: 14px;
+  font-size: 16px;
   overflow: visible;
   box-sizing: border-box;
   display: flex;
@@ -27,34 +27,31 @@
 
 .div-table-header-row {
   display: flex;
+  flex-direction: row;
   position: relative;
-  width: 100%;
+  width: 100%; /* Fill full width of container */
   box-sizing: border-box;
-  margin-left: 0;
-  margin-right: 0;
-  padding-left: 0;
-  padding-right: 0;
+  margin-right: calc(-1 * var(--table-control-offset));
+  min-width: 0; /* Allow row to shrink if needed */
 }
 
 .div-table-body {
   position: relative;
   overflow: visible;
+  width: 100%; /* Fill full width */
 }
 
 .div-table-row {
   display: flex;
+  flex-direction: row;
   position: relative;
   overflow: visible;
-  width: calc(100% + var(--table-control-offset));
+  width: 100%; /* Fill full width of container */
   box-sizing: border-box;
   min-height: 48px;
+  min-width: 0; /* Allow row to shrink if needed */
   transition: background-color 0.15s ease;
   /* No border on row - border will be on cells only */
-  /* Extend the hoverable area with margin/padding to include button areas */
-  margin-left: calc(-1 * var(--table-control-offset));
-  margin-right: 0;
-  padding-left: var(--table-control-offset);
-  padding-right: 0;
 }
 
 /* Ensure row container allows drag handle to be positioned outside */
@@ -64,43 +61,14 @@
   overflow: visible;
 }
 
-/* Extend hover area to include button wrappers on left and right */
-.div-table-row::before,
-.div-table-row::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: var(--table-control-offset);
-  background-color: transparent;
-  transition: background-color 0.15s ease;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.div-table-row::before {
-  left: calc(-1 * var(--table-control-offset));
-}
-
-.div-table-row::after {
-  right: calc(-1 * var(--table-control-offset));
-}
-
-/* Extend hover state to pseudo-elements */
-.div-table-row:hover,
-.div-table-row:hover::before,
-.div-table-row:hover::after {
+/* Row hover state */
+.div-table-row:hover {
   background-color: #fafafa;
 }
 
 /* Ensure row hover is maintained when hovering over button areas */
 .div-table-row:has(.drag-handle:hover),
 .div-table-row:has(.row-action-button:hover) {
-  background-color: #fafafa;
-}
-
-.div-table-row:has(.drag-handle:hover)::before,
-.div-table-row:has(.row-action-button:hover)::after {
   background-color: #fafafa;
 }
 
@@ -122,53 +90,47 @@
   position: relative;
   vertical-align: top;
   overflow: visible;
-  flex: 1 1 0%;
+  flex: 1 1 0%; /* Fill available width equally */
   flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
   display: flex;
-  align-items: stretch;
+  align-items: flex-start; /* Align to start so content can hug */
   min-width: 0;
+  width: 0; /* Force flex to distribute width */
   box-sizing: border-box;
   /* Border only on cells, not on button areas */
   border-bottom: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
 }
 
-/* Cell classes used by DivTableRow component */
-.div-description-cell-with-handle {
-  position: relative;
-  overflow: visible;
-  word-wrap: break-word;
-  padding: 13px 12px 12px 12px;
-  flex: 3 1 0%; /* Larger width for description column - 60% of space */
-  flex-basis: 0;
-  display: flex;
-  align-items: stretch;
-  gap: 8px;
-  min-width: 0;
-  box-sizing: border-box;
-  /* Border only on cells, not on button areas */
-  border-bottom: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
-  /* No styling - no background and no stroke */
-  background: none !important;
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* Ensure drag handle is positioned correctly relative to description cell */
-.div-description-cell-with-handle .drag-handle {
+/* Drag handle cell - absolutely positioned outside the row on the left */
+.div-drag-handle-cell {
   position: absolute;
   left: calc(-1 * var(--table-control-offset));
   top: 50%;
   transform: translateY(-50%);
+  overflow: visible;
+  padding: 0;
+  width: auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Remove from flex layout - absolutely positioned */
+  /* No border on action cell - border is only on data cells */
+  border: none !important;
+  /* No styling - no background and no stroke */
+  background: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  z-index: var(--z-index-controls);
 }
 
-/* Remove all styling from description cell wrapper in all states */
-.div-description-cell-with-handle:hover,
-.div-description-cell-with-handle:focus,
-.div-description-cell-with-handle:active,
-.div-description-cell-with-handle:focus-visible {
+/* Remove all styling from drag handle cell wrapper in all states */
+.div-drag-handle-cell:hover,
+.div-drag-handle-cell:focus,
+.div-drag-handle-cell:active,
+.div-drag-handle-cell:focus-visible {
   background: none !important;
   border: none !important;
   outline: none !important;
@@ -176,18 +138,22 @@
 }
 
 .div-row-action-cell {
-  position: relative;
+  position: absolute;
+  right: calc(-1 * var(--table-control-offset));
+  top: 50%;
+  transform: translateY(-50%);
   overflow: visible;
   padding: 0;
-  width: 0;
+  width: auto;
   min-width: 0;
-  flex: 0 0 auto;
+  /* Remove from flex layout - absolutely positioned */
   /* No border on action cell - border is only on data cells */
   border: none !important;
   /* No styling - no background and no stroke */
   background: none !important;
   outline: none !important;
   box-shadow: none !important;
+  z-index: var(--z-index-controls);
 }
 
 /* Remove all styling from action cell wrapper in all states */
@@ -210,27 +176,24 @@
 }
 
 /* Remove padding from cells that contain cell components */
-.div-table-cell:has(.editable-text-cell),
-.div-table-cell:has(.textarea),
-.div-description-cell-with-handle:has(.editable-text-cell),
-.div-description-cell-with-handle:has(.textarea) {
+.div-table-cell:has(.editable-text-cell-wrapper),
+.div-table-cell:has(.textarea) {
   padding: 0;
   overflow: visible;
 }
 
-/* Ensure description cell with handle maintains gap when padding is removed */
-.div-description-cell-with-handle:has(.editable-text-cell),
-.div-description-cell-with-handle:has(.textarea) {
-  gap: 8px;
-}
-
 .div-table-cell:has(.quantity-cell) {
   padding: 0;
-  padding-right: var(--table-control-offset, 36px);
 }
 
 .div-table-cell:has(.unit-cell) {
   padding: 0;
+}
+
+/* Remove right padding from last data cell to match header alignment */
+/* Since row-action-cell is always last, use nth-last-child(2) to get the last data cell */
+.div-table-row > .div-table-cell:nth-last-child(2) {
+  padding-right: 0;
 }
 
 .div-table-cell:has(.price-cell) {
@@ -258,23 +221,19 @@
   align-self: stretch;
 }
 
-.div-table-cell .editable-text-cell,
-.div-description-cell-with-handle .editable-text-cell {
-  height: 100%;
-  min-height: 100%;
+.div-table-cell .editable-text-cell-wrapper {
+  height: auto; /* Hug content instead of filling cell */
+  min-height: auto; /* Hug content instead of filling cell */
+  width: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  align-self: stretch;
-}
-
-.div-description-cell-with-handle .editable-text-cell {
-  flex: 1;
+  align-self: flex-start; /* Align to start instead of stretch */
 }
 
 /* Ensure textarea inside editable-text-cell aligns to top */
-.div-table-cell .editable-text-cell textarea,
-.div-description-cell-with-handle .editable-text-cell textarea {
+.div-table-cell .editable-text-cell-wrapper textarea {
   align-self: flex-start;
 }
 
@@ -289,16 +248,20 @@
 .div-cargo-table .div-row-action-cell .row-action-button,
 .div-table-container .div-row-action-cell button.row-action-button,
 .div-cargo-table .div-row-action-cell button.row-action-button {
-  position: absolute !important;
-  right: calc(-1 * var(--table-control-offset)) !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
+  position: relative !important;
+  right: 0 !important;
+  top: 0 !important;
+  transform: none !important;
   z-index: var(--z-index-controls) !important;
   pointer-events: none;
   opacity: 0;
-  visibility: hidden;
-  transition: opacity var(--transition-normal) 0.2s, visibility var(--transition-normal) 0.2s;
+  transition: opacity var(--transition-normal) 0.1s;
   margin: 0 !important;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 /* Keep button visible when hovering over the button itself */
@@ -310,24 +273,26 @@
 .div-cargo-table .reset-button.row-action-button:hover {
   opacity: 1 !important;
   pointer-events: auto !important;
-  visibility: visible !important;
   transition-delay: 0s !important;
 }
 
 /* Row action buttons visibility on hover - applied directly to buttons */
+.div-table-row:hover .row-action-button,
+.div-table-row-with-delete:hover .row-action-button,
 .div-cargo-table .div-table-body .div-table-row:hover .row-action-button,
 .div-cargo-table .div-table-body .div-table-row-with-delete:hover .row-action-button,
-.div-cargo-table .div-table-body .div-table-row:hover .div-row-action-cell .row-action-button,
-.div-cargo-table .div-table-body .div-table-row-with-delete:hover .div-row-action-cell .row-action-button,
 .div-table-container .div-cargo-table .div-table-body .div-table-row:hover .row-action-button,
 .div-table-container .div-cargo-table .div-table-body .div-table-row-with-delete:hover .row-action-button,
+.div-cargo-table .div-table-body .div-table-row:hover .div-row-action-cell .row-action-button,
+.div-cargo-table .div-table-body .div-table-row-with-delete:hover .div-row-action-cell .row-action-button,
+.div-table-container .div-cargo-table .div-table-body .div-table-row:hover .div-row-action-cell .row-action-button,
+.div-table-container .div-cargo-table .div-table-body .div-table-row-with-delete:hover .div-row-action-cell .row-action-button,
 .div-cargo-table .div-table-body .div-table-row:hover .div-row-action-cell button.row-action-button,
 .div-cargo-table .div-table-body .div-table-row-with-delete:hover .div-row-action-cell button.row-action-button,
 .div-table-container .div-cargo-table .div-table-body .div-table-row:hover .div-row-action-cell button.row-action-button,
 .div-table-container .div-cargo-table .div-table-body .div-table-row-with-delete:hover .div-row-action-cell button.row-action-button {
-  opacity: 1 !important;
-  pointer-events: auto !important;
-  visibility: visible !important;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .div-row-action-cell:hover .row-action-button,
@@ -336,12 +301,13 @@
 .div-table-container .div-row-action-cell:hover button.row-action-button {
   opacity: 1 !important;
   pointer-events: auto !important;
-  visibility: visible !important;
+  transition-delay: 0s !important;
 }
 
 /* Add Row Button */
 .div-table-add-row-container {
   margin-top: 16px;
+  margin-bottom: 16px;
   min-height: 60px;
   padding: 10px 0;
   display: flex;
@@ -360,7 +326,7 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   color: #333;
   transition: opacity 0.15s ease, visibility 0.15s ease, background 0.2s ease, border-color 0.2s ease;
   opacity: 0;
@@ -403,7 +369,7 @@
   pointer-events: auto;
 }
 
-.div-description-cell-with-handle:hover .drag-handle {
+.div-drag-handle-cell:hover .drag-handle {
   opacity: 1 !important;
   pointer-events: auto !important;
   transition-delay: 0s !important;

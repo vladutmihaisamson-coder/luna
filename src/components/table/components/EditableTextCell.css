@@ -4,9 +4,12 @@
 .editable-text-cell-wrapper {
   position: relative;
   width: 100%;
-  min-height: 100%;
+  min-height: auto; /* Hug content instead of filling cell */
+  height: auto; /* Hug contents on height */
   overflow: hidden;
   box-sizing: border-box;
+  /* Ensure initial height is minimal to prevent layout shift */
+  min-height: 0;
 }
 
 .editable-text-cell {
@@ -16,8 +19,14 @@
   padding-bottom: 12px !important;
   padding-left: var(--spacing-md) !important;
   padding-right: var(--spacing-md) !important;
+  font-size: var(--table-font-size) !important;
   transition: background-color var(--table-transition-normal);
   position: relative;
+  /* Ensure textarea starts with minimal height */
+  min-height: 0;
+  height: auto;
+  overflow: hidden;
+  resize: none;
 }
 
 .editable-text-cell:hover:not(.is-hidden) {
@@ -46,13 +55,14 @@
   top: 0;
   left: 0;
   width: 100%;
-  min-height: 100%;
+  min-height: auto; /* Hug content instead of filling cell */
+  height: auto; /* Allow height to adjust to content */
   padding-top: 12px;
   padding-bottom: 12px;
   padding-left: var(--spacing-md);
   padding-right: var(--spacing-md);
   font-family: var(--font-family);
-  font-size: var(--font-size-md);
+  font-size: var(--table-font-size);
   color: var(--color-text-primary);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-normal);

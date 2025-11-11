@@ -1,5 +1,46 @@
 @import '../tokens/tableTokens.css';
 
-/* TableHeader styles are handled by the parent table CSS */
-/* This file is kept for potential future header-specific styles */
+.table-header {
+  width: 100%;
+  position: relative;
+}
+
+.table-header-row {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  width: 100%; /* Fill full width of container */
+  box-sizing: border-box;
+  margin-right: calc(-1 * var(--table-control-offset));
+  padding-right: var(--table-control-offset);
+}
+
+/* First header cell (description) should have equal width with other cells */
+.table-header-row > .table-header-cell:first-child {
+  flex: 1 1 0%; /* Equal width with other cells */
+  flex-basis: 0;
+}
+
+/* Align unit header cell with unit cells below - match unit cell padding */
+/* Target the last data column, not the row action header cell */
+.table-header-row .table-header-cell:not(.row-action-header-cell):last-child {
+  padding: var(--table-cell-padding-small) var(--spacing-md) var(--table-cell-padding-small) var(--spacing-md);
+  padding-right: 0;
+}
+
+/* Row action header cell should match row action cell proportions */
+.row-action-header-cell {
+  flex: 0 0 auto;
+  width: 0;
+  min-width: 0;
+  padding: 0;
+  border: none;
+}
+
+/* Ensure table-header works within div-table-container */
+.div-table-container .table-header,
+.div-cargo-table .table-header {
+  width: 100%;
+  position: relative;
+}
 

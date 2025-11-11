@@ -44,11 +44,17 @@ export const PriceCell = ({
     }
   };
 
-  // Format value for display
+  // Format value for display - remove .00 for whole numbers
   const formatValue = (val) => {
     if (val === '' || val === 0 || val === '0') return '';
     if (typeof val === 'number') {
-      return val.toFixed(2);
+      // Check if it's a whole number (no decimal part)
+      if (Number.isInteger(val)) {
+        return val.toString();
+      }
+      // For decimals, format to 2 decimal places then remove trailing zeros
+      const formatted = val.toFixed(2).replace(/\.?0+$/, '');
+      return formatted;
     }
     return val;
   };

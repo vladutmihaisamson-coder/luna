@@ -8,6 +8,7 @@ import { AgreementDocument } from '../components/AgreementDocument';
 import { PurchaseOrderDocument } from '../components/PurchaseOrderDocument';
 import { ShareModal } from '../components/ShareModal';
 import { SaveWarningModal } from '../components/SaveWarningModal';
+import { ScreenCalibration } from '../components/ScreenCalibration';
 import { IconButton } from '../components/design-system/molecules/IconButton/IconButton';
 import { Button } from '../components/design-system/atoms/Button/Button';
 import html2pdf from 'html2pdf.js';
@@ -20,6 +21,8 @@ export const DocumentViewPage = () => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isSaveWarningModalOpen, setIsSaveWarningModalOpen] = useState(false);
+  const [isCalibrationOpen, setIsCalibrationOpen] = useState(false);
+  const [calibrationKey, setCalibrationKey] = useState(0); // Force re-render on calibration
 
   // Determine document type from URL query parameter or documentId
   const getDocumentType = () => {
@@ -34,6 +37,28 @@ export const DocumentViewPage = () => {
 
   const documentType = getDocumentType();
   const isNewDocument = documentId?.includes('-new-');
+
+  // Check for calibration on first load
+  useEffect(() => {
+    const hasCalibrated = localStorage.getItem('calibratedPPI');
+    const skipCalibration = localStorage.getItem('skipCalibration');
+    
+    // Show calibration if not calibrated and not skipped
+    if (!hasCalibrated && !skipCalibration) {
+      // Delay slightly to let page render first
+      setTimeout(() => {
+        setIsCalibrationOpen(true);
+      }, 500);
+    }
+  }, []);
+
+  const handleCalibrate = (ppi) => {
+    // Calibration is stored in localStorage by ScreenCalibration component
+    // Force document components to recalculate by updating key
+    setCalibrationKey(prev => prev + 1);
+    // Mark that user has seen calibration (even if skipped)
+    localStorage.setItem('skipCalibration', 'true');
+  };
 
   const handlePrint = () => {
     window.print();
@@ -152,7 +177,7 @@ export const DocumentViewPage = () => {
             <IconButton
               icon="save"
               variant="primary"
-              size="lg"
+              size="xl"
               onClick={handleSave}
               aria-label="Save changes"
             />
@@ -180,47 +205,58 @@ export const DocumentViewPage = () => {
           onClick={() => setIsShareModalOpen(true)}
           aria-label="Share document"
         />
+        <IconButton
+          icon="settings"
+          variant="ghost"
+          size="lg"
+          onClick={() => setIsCalibrationOpen(true)}
+          aria-label="Calibrate screen"
+          title="Calibrate screen for accurate document sizing"
+        />
       </div>
       
       <div className="document-view-content">
-        <div className="document-view-main">
-          {documentType === 'fattura' ? (
-            <FatturaDocument 
-              onHasChanges={setHasUnsavedChanges}
-              onSave={handleSave}
-              onRevert={handleRevert}
-              isEmpty={isNewDocument}
-            />
-          ) : documentType === 'offer' ? (
-            <OfferDocument 
-              onHasChanges={setHasUnsavedChanges}
-              onSave={handleSave}
-              onRevert={handleRevert}
-              isEmpty={isNewDocument}
-            />
-          ) : documentType === 'agreement' ? (
-            <AgreementDocument 
-              onHasChanges={setHasUnsavedChanges}
-              onSave={handleSave}
-              onRevert={handleRevert}
-              isEmpty={isNewDocument}
-            />
-          ) : documentType === 'purchase-order' ? (
-            <PurchaseOrderDocument 
-              onHasChanges={setHasUnsavedChanges}
-              onSave={handleSave}
-              onRevert={handleRevert}
-              isEmpty={isNewDocument}
-            />
-          ) : (
-            <TransportDocument 
-              onHasChanges={setHasUnsavedChanges}
-              onSave={handleSave}
-              onRevert={handleRevert}
-              isEmpty={isNewDocument}
-            />
-          )}
-        </div>
+        {documentType === 'fattura' ? (
+          <FatturaDocument 
+            onHasChanges={setHasUnsavedChanges}
+            onSave={handleSave}
+            onRevert={handleRevert}
+            isEmpty={isNewDocument}
+            useWebPPI={true}
+          />
+        ) : documentType === 'offer' ? (
+          <OfferDocument 
+            onHasChanges={setHasUnsavedChanges}
+            onSave={handleSave}
+            onRevert={handleRevert}
+            isEmpty={isNewDocument}
+            useWebPPI={true}
+          />
+        ) : documentType === 'agreement' ? (
+          <AgreementDocument 
+            onHasChanges={setHasUnsavedChanges}
+            onSave={handleSave}
+            onRevert={handleRevert}
+            isEmpty={isNewDocument}
+            useWebPPI={true}
+          />
+        ) : documentType === 'purchase-order' ? (
+          <PurchaseOrderDocument 
+            onHasChanges={setHasUnsavedChanges}
+            onSave={handleSave}
+            onRevert={handleRevert}
+            isEmpty={isNewDocument}
+            useWebPPI={true}
+          />
+        ) : (
+          <TransportDocument 
+            onHasChanges={setHasUnsavedChanges}
+            onSave={handleSave}
+            onRevert={handleRevert}
+            isEmpty={isNewDocument}
+            useWebPPI={true}
+          />
+        )}
         
         <div className="document-view-sidebar">
           <div className="file-details-section">
@@ -281,6 +317,12 @@ export const DocumentViewPage = () => {
         onClose={() => setIsSaveWarningModalOpen(false)}
         onConfirm={handleConfirmSave}
         documentTitle={`${documentType}-${documentId}`}
+      />
+      
+      <ScreenCalibration
+        isOpen={isCalibrationOpen}
+        onClose={() => setIsCalibrationOpen(false)}
+        onCalibrate={handleCalibrate}
       />
     </div>
   );

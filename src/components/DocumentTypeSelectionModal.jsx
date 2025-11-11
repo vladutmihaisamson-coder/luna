@@ -57,7 +57,7 @@ export const DocumentTypeSelectionModal = ({
       preview: (
         <DocumentOverview
           documentId="preview-transport"
-          title="Metal Powder Industries"
+          title="SACME"
           documentNumber="TD-2025-001"
           date="Nov 7, 2025"
           documentType="Transport"
@@ -74,7 +74,7 @@ export const DocumentTypeSelectionModal = ({
       preview: (
         <DocumentOverview
           documentId="preview-offer"
-          title="Ceramic Manufacturing Co."
+          title="Brembo S.p.A."
           documentNumber="OF-2025-001"
           date="Nov 7, 2025"
           documentType="Offer"
@@ -92,7 +92,7 @@ export const DocumentTypeSelectionModal = ({
       preview: (
         <DocumentOverview
           documentId="preview-fattura"
-          title="Advanced Materials Ltd."
+          title="Thyssenkrupp Materials"
           documentNumber="FT-2025-001"
           date="Nov 6, 2025"
           documentType="Invoice"
@@ -110,7 +110,7 @@ export const DocumentTypeSelectionModal = ({
       preview: (
         <DocumentOverview
           documentId="preview-agreement"
-          title="Powder Tech Solutions"
+          title="Schaeffler Group"
           documentNumber="AG-2025-001"
           date="Nov 4, 2025"
           documentType="Agreement"
@@ -127,7 +127,7 @@ export const DocumentTypeSelectionModal = ({
       preview: (
         <DocumentOverview
           documentId="preview-po"
-          title="Industrial Parts Supply Co."
+          title="Bosch Rexroth"
           documentNumber="PO-2025-001"
           date="Nov 8, 2025"
           documentType="Purchase Order"

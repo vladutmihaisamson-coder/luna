@@ -31,6 +31,17 @@
   font-weight: 400;
 }
 
+.home-filter-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  width: 100%;
+  max-width: calc((300px * 6) + (var(--spacing-md) * 5));
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .home-toggle-selector {
   display: inline-flex;
   align-items: center;

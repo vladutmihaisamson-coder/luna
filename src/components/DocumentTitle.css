@@ -5,7 +5,7 @@
 }
 
 .document-title-text {
-  font-size: var(--font-size-2xl);
+  font-size: calc(var(--font-size-2xl) * 1.15);
   font-weight: var(--font-weight-bold);
   margin: 0 0 var(--spacing-md) 0;
   color: var(--color-text-primary);
@@ -17,7 +17,7 @@
   flex-direction: row;
   gap: var(--spacing-sm);
   align-items: center;
-  font-size: var(--font-size-md);
+  font-size: calc(var(--font-size-md) * 1.15);
 }
 
 .document-title-number {

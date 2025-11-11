@@ -21,9 +21,11 @@ export { Guideline } from './atoms/Guideline/Guideline';
 export { IconButton } from './molecules/IconButton/IconButton';
 export { DeleteButton } from './molecules/DeleteButton/DeleteButton';
 export { ResetButton } from './molecules/ResetButton/ResetButton';
+export { FilterPill } from './molecules/FilterPill/FilterPill';
 
 // Organisms
 export { Dropdown } from './organisms/Dropdown/Dropdown';
 export { Rulers } from './organisms/Rulers/Rulers';
 export { Document } from './organisms/Document/Document';
+export { FilterPillGroup } from './organisms/FilterPillGroup/FilterPillGroup';
 
