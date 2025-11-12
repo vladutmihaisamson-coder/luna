@@ -550,24 +550,64 @@ export const DocumentViewPage = () => {
       
       <div className="document-view-content">
         {documentType === 'fattura' ? (
-          <FatturaDocument 
-            key={documentId}
-            onHasChanges={setHasUnsavedChanges}
-            onSave={handleSave}
-            onRevert={handleRevert}
-            isEmpty={isNewDocument}
-            useWebPPI={true}
-          />
+          <>
+            <div className="document-wrapper">
+              <FatturaDocument 
+                key={documentId}
+                onHasChanges={setHasUnsavedChanges}
+                onSave={handleSave}
+                onRevert={handleRevert}
+                isEmpty={isNewDocument}
+                useWebPPI={true}
+              />
+              {!isNewDocument && (
+                <div className="document-generate-button-wrapper">
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    icon="receipt"
+                    iconVariant="outline"
+                    onClick={() => {
+                      // TODO: Implement generate receipt functionality
+                      console.log('Generate receipt from invoice');
+                    }}
+                    className="document-generate-button"
+                  >
+                    Generate Receipt
+                  </Button>
+                </div>
+              )}
+            </div>
+          </>
         ) : documentType === 'offer' ? (
           <>
-            <OfferDocument 
-              key={documentId}
-              onHasChanges={setHasUnsavedChanges}
-              onSave={handleSave}
-              onRevert={handleRevert}
-              isEmpty={isNewDocument}
-              useWebPPI={true}
-            />
+            <div className="document-wrapper offer-document-wrapper">
+              <OfferDocument 
+                key={documentId}
+                onHasChanges={setHasUnsavedChanges}
+                onSave={handleSave}
+                onRevert={handleRevert}
+                isEmpty={isNewDocument}
+                useWebPPI={true}
+              />
+              {!isNewDocument && (
+                <div className="offer-generate-invoice-button-wrapper">
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    icon="file-text"
+                    iconVariant="outline"
+                    onClick={() => {
+                      // TODO: Implement generate invoice functionality
+                      console.log('Generate invoice from offer');
+                    }}
+                    className="offer-generate-invoice-button"
+                  >
+                    Generate Invoice
+                  </Button>
+                </div>
+              )}
+            </div>
             {documentId === 'offer-001' && (
               <div className="offer-invoice-reference">
                 <div className="offer-invoice-reference-label">Related Invoice:</div>
@@ -586,76 +626,141 @@ export const DocumentViewPage = () => {
             )}
           </>
         ) : documentType === 'agreement' ? (
-          <AgreementDocument 
-            key={documentId}
-            onHasChanges={setHasUnsavedChanges}
-            onSave={handleSave}
-            onRevert={handleRevert}
-            isEmpty={isNewDocument}
-            useWebPPI={true}
-          />
+          <>
+            <div className="document-wrapper">
+              <AgreementDocument 
+                key={documentId}
+                onHasChanges={setHasUnsavedChanges}
+                onSave={handleSave}
+                onRevert={handleRevert}
+                isEmpty={isNewDocument}
+                useWebPPI={true}
+              />
+              {!isNewDocument && (
+                <div className="document-generate-button-wrapper">
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    icon="file-text"
+                    iconVariant="outline"
+                    onClick={() => {
+                      // TODO: Implement generate invoice from agreement functionality
+                      console.log('Generate invoice from agreement');
+                    }}
+                    className="document-generate-button"
+                  >
+                    Generate Invoice
+                  </Button>
+                </div>
+              )}
+            </div>
+          </>
         ) : documentType === 'purchase-order' ? (
-          <PurchaseOrderDocument 
-            key={documentId}
-            onHasChanges={setHasUnsavedChanges}
-            onSave={handleSave}
-            onRevert={handleRevert}
-            isEmpty={isNewDocument}
-            useWebPPI={true}
-          />
+          <>
+            <div className="document-wrapper">
+              <PurchaseOrderDocument 
+                key={documentId}
+                onHasChanges={setHasUnsavedChanges}
+                onSave={handleSave}
+                onRevert={handleRevert}
+                isEmpty={isNewDocument}
+                useWebPPI={true}
+              />
+              {!isNewDocument && (
+                <div className="document-generate-button-wrapper">
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    icon="file-text"
+                    iconVariant="outline"
+                    onClick={() => {
+                      // TODO: Implement generate receipt from purchase order functionality
+                      console.log('Generate receipt from purchase order');
+                    }}
+                    className="document-generate-button"
+                  >
+                    Generate Receipt
+                  </Button>
+                </div>
+              )}
+            </div>
+          </>
         ) : (
-          <TransportDocument 
-            key={documentId}
-            onHasChanges={setHasUnsavedChanges}
-            onSave={handleSave}
-            onRevert={handleRevert}
-            isEmpty={isNewDocument}
-            useWebPPI={true}
-          />
+          <>
+            <div className="document-wrapper">
+              <TransportDocument 
+                key={documentId}
+                onHasChanges={setHasUnsavedChanges}
+                onSave={handleSave}
+                onRevert={handleRevert}
+                isEmpty={isNewDocument}
+                useWebPPI={true}
+              />
+              {!isNewDocument && (
+                <div className="document-generate-button-wrapper">
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    icon="truck"
+                    iconVariant="outline"
+                    onClick={() => {
+                      // TODO: Implement generate delivery note functionality
+                      console.log('Generate delivery note from transport document');
+                    }}
+                    className="document-generate-button"
+                  >
+                    Generate Delivery Note
+                  </Button>
+                </div>
+              )}
+            </div>
+          </>
         )}
         
         <div className="document-view-sidebar">
-          <div className="file-details-section">
-            <h3 className="file-details-title">File Details</h3>
-            <div className="file-details-item">
-              <span className="file-details-label">Created by</span>
-              <span className="file-details-value">{fileDetails.createdBy}</span>
-            </div>
-            <div className="file-details-item">
-              <span className="file-details-label">Created at</span>
-              <span className="file-details-value">{fileDetails.createdAt}</span>
-            </div>
-            <div className="file-details-item">
-              <span className="file-details-label">Size</span>
-              <span className="file-details-value">{fileDetails.size}</span>
-            </div>
-            <div className="file-details-item">
-              <span className="file-details-label">Last modified</span>
-              <span className="file-details-value">{fileDetails.lastModified}</span>
-            </div>
-            {getRelatedDocuments.length > 0 && (
-              <div className="file-details-item">
-                <span className="file-details-label">Related Documents</span>
-                <div className="file-details-related-links">
-                  {getRelatedDocuments.map((relatedDoc) => (
-                    <a 
-                      key={relatedDoc.documentId}
-                      href="#" 
-                      className="file-details-related-link"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setPreviewDocument(relatedDoc);
-                      }}
-                    >
-                      {relatedDoc.documentType} {relatedDoc.documentNumber}
-                    </a>
-                  ))}
+          {!isNewDocument && (
+            <>
+              <div className="file-details-section">
+                <h3 className="file-details-title">File Details</h3>
+                <div className="file-details-item">
+                  <span className="file-details-label">Created by</span>
+                  <span className="file-details-value">{fileDetails.createdBy}</span>
                 </div>
+                <div className="file-details-item">
+                  <span className="file-details-label">Created at</span>
+                  <span className="file-details-value">{fileDetails.createdAt}</span>
+                </div>
+                <div className="file-details-item">
+                  <span className="file-details-label">Size</span>
+                  <span className="file-details-value">{fileDetails.size}</span>
+                </div>
+                <div className="file-details-item">
+                  <span className="file-details-label">Last modified</span>
+                  <span className="file-details-value">{fileDetails.lastModified}</span>
+                </div>
+                {getRelatedDocuments.length > 0 && (
+                  <div className="file-details-item">
+                    <span className="file-details-label">Related Documents</span>
+                    <div className="file-details-related-links">
+                      {getRelatedDocuments.map((relatedDoc) => (
+                        <a 
+                          key={relatedDoc.documentId}
+                          href="#" 
+                          className="file-details-related-link"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPreviewDocument(relatedDoc);
+                          }}
+                        >
+                          {relatedDoc.documentType} {relatedDoc.documentNumber}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          
-          <div className="file-history-section">
+              
+              <div className="file-history-section">
             <h3 className="file-details-title">History</h3>
             <div className="file-history-list">
               {fileDetails.history.map((entry, index) => (
@@ -687,6 +792,8 @@ export const DocumentViewPage = () => {
               <Icon name="chevron-down" size="sm" variant="outline" />
             </a>
           </div>
+            </>
+          )}
         </div>
       </div>
       

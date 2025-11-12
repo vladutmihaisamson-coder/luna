@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconButton } from './design-system/molecules/IconButton/IconButton';
 import { Button } from './design-system/atoms/Button/Button';
+import { Icon } from './design-system/atoms/Icon/Icon';
 import { DownloadModal } from './DownloadModal';
 import { ShareModal } from './ShareModal';
 import { TransportDocument } from './TransportDocument';
@@ -390,6 +391,16 @@ export const DocumentPreviewModal = ({
               />
               <div className="action-button-tooltip">Share</div>
             </div>
+            <div className="action-button-tooltip-wrapper">
+              <IconButton
+                icon="edit"
+                variant="default"
+                size="xl"
+                onClick={handleGoToDocument}
+                aria-label="Edit document"
+              />
+              <div className="action-button-tooltip">Edit</div>
+            </div>
           </div>
         )}
         <div className="document-preview-modal-content">
@@ -422,12 +433,81 @@ export const DocumentPreviewModal = ({
           >
             Close
           </Button>
-          <Button
-            variant="primary"
-            onClick={handleGoToDocument}
-          >
-            {buttonText}
-          </Button>
+          {docType === 'fattura' && (
+            <Button
+              variant="secondary"
+              size="lg"
+              icon="receipt"
+              iconVariant="outline"
+              onClick={() => {
+                // TODO: Implement generate receipt functionality
+                console.log('Generate receipt from invoice');
+              }}
+              className="document-preview-generate-button"
+            >
+              Generate Receipt
+            </Button>
+          )}
+          {docType === 'offer' && (
+            <Button
+              variant="secondary"
+              size="lg"
+              icon="file-text"
+              iconVariant="outline"
+              onClick={() => {
+                // TODO: Implement generate invoice functionality
+                console.log('Generate invoice from offer');
+              }}
+              className="document-preview-generate-button"
+            >
+              Generate Invoice
+            </Button>
+          )}
+          {docType === 'agreement' && (
+            <Button
+              variant="secondary"
+              size="lg"
+              icon="file-text"
+              iconVariant="outline"
+              onClick={() => {
+                // TODO: Implement generate invoice from agreement functionality
+                console.log('Generate invoice from agreement');
+              }}
+              className="document-preview-generate-button"
+            >
+              Generate Invoice
+            </Button>
+          )}
+          {docType === 'purchase-order' && (
+            <Button
+              variant="secondary"
+              size="lg"
+              icon="file-text"
+              iconVariant="outline"
+              onClick={() => {
+                // TODO: Implement generate receipt from purchase order functionality
+                console.log('Generate receipt from purchase order');
+              }}
+              className="document-preview-generate-button"
+            >
+              Generate Receipt
+            </Button>
+          )}
+          {docType === 'transport' && (
+            <Button
+              variant="secondary"
+              size="lg"
+              icon="truck"
+              iconVariant="outline"
+              onClick={() => {
+                // TODO: Implement generate delivery note functionality
+                console.log('Generate delivery note from transport document');
+              }}
+              className="document-preview-generate-button"
+            >
+              Generate Delivery Note
+            </Button>
+          )}
         </div>
 
         {showActions && (
