@@ -20,30 +20,35 @@
   gap: var(--spacing-xs);
 }
 
-/* Very subtle colors for different document types */
+/* Colors for different document types with better contrast */
 .document-tag-transport .luna-badge {
-  background: #f0f7ff !important; /* Very subtle blue tint */
-  border-color: #d0e5ff !important;
+  background: #eff6ff !important; /* Light blue tint */
+  border-color: #bfdbfe !important;
+  color: #1e40af !important;
 }
 
 .document-tag-offer .luna-badge {
-  background: #f0fdf4 !important; /* Very subtle green tint */
-  border-color: #d0f0d0 !important;
+  background: #f0fdf4 !important; /* Light green tint */
+  border-color: #bbf7d0 !important;
+  color: #166534 !important;
 }
 
 .document-tag-invoice .luna-badge {
-  background: #fff7ed !important; /* Very subtle orange/amber tint */
-  border-color: #ffe4cc !important;
+  background: #fffbeb !important; /* Light orange/amber tint */
+  border-color: #fde68a !important;
+  color: #92400e !important;
 }
 
 .document-tag-agreement .luna-badge {
-  background: #f5f3ff !important; /* Very subtle purple tint */
+  background: #faf5ff !important; /* Light purple tint */
   border-color: #e9d5ff !important;
+  color: #7c3aed !important;
 }
 
 .document-tag-purchase-order .luna-badge {
-  background: #f0f9ff !important; /* Very subtle cyan/blue tint */
-  border-color: #d0e8ff !important;
+  background: #ecfeff !important; /* Light cyan/blue tint */
+  border-color: #a5f3fc !important;
+  color: #155e75 !important;
 }
 
 .document-tag-icon {

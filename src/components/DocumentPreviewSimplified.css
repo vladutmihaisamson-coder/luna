@@ -80,7 +80,8 @@
 }
 
 .document-preview-simplified-info,
-.document-preview-simplified-total {
+.document-preview-simplified-total,
+.document-preview-simplified-country {
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -1,24 +1,30 @@
 import { useNavigate } from 'react-router-dom';
+import { useCallback } from 'react';
 import { DocumentPreviewSimplified } from './DocumentPreviewSimplified';
 import './DocumentOverview.css';
 
-export const DocumentOverview = ({ documentId, title, previewContent, documentNumber, date, documentType, total, currencySymbol = '€', isSelected, onSelect, searchQuery, content, itemCount, direction, needsAttention, signatureStatus, lastModified, isEditable }) => {
+export const DocumentOverview = ({ documentId, title, previewContent, documentNumber, date, documentType, total, currencySymbol = '€', isSelected, onSelect, searchQuery, content, itemCount, direction, needsAttention, signatureStatus, lastModified, isEditable, country }) => {
   const navigate = useNavigate();
 
-  const handleClick = (e) => {
+  const handleClick = useCallback((e) => {
     // Don't navigate if clicking on the checkbox
     if (e.target.closest('.document-checkbox-wrapper')) {
       return;
     }
+    if (!documentId) {
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
     navigate(`/document/${documentId}`);
-  };
+  }, [documentId, navigate]);
 
-  const handleCheckboxChange = (e) => {
+  const handleCheckboxChange = useCallback((e) => {
     e.stopPropagation();
     if (onSelect) {
       onSelect(documentId, e.target.checked);
     }
-  };
+  }, [documentId, onSelect]);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-US', {
@@ -45,7 +51,14 @@ export const DocumentOverview = ({ documentId, title, previewContent, documentNu
         onClick={handleClick}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => e.key === 'Enter' && handleClick(e)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            if (!documentId) {
+              return;
+            }
+            navigate(`/document/${documentId}`);
+          }
+        }}
       >
         <div className="document-checkbox-wrapper">
           <input
@@ -71,6 +84,7 @@ export const DocumentOverview = ({ documentId, title, previewContent, documentNu
             signatureStatus={signatureStatus}
             lastModified={lastModified}
             isEditable={isEditable}
+            country={country}
           />
         </div>
       </div>

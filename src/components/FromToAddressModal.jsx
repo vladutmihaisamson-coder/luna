@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { IconButton } from './design-system/molecules/IconButton/IconButton';
+import { Icon } from './design-system/atoms/Icon/Icon';
 import { Button } from './design-system/atoms/Button/Button';
 import { Input } from './design-system/atoms/Input/Input';
 import './FromToAddressModal.css';
@@ -14,23 +15,24 @@ export const FromToAddressModal = ({
   onSearch
 }) => {
   const [editedName, setEditedName] = useState(name);
-  const [editedAddress, setEditedAddress] = useState(address);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [editedAddress, setEditedAddress] = useState(Array.isArray(address) ? address.join(', ') : address);
+  const [editedEmail, setEditedEmail] = useState('');
+  const [editedPhone, setEditedPhone] = useState('');
+  const [businessSearchQuery, setBusinessSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [onlineResults, setOnlineResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [isSearchingOnline, setIsSearchingOnline] = useState(false);
-  const [searchMode, setSearchMode] = useState('local'); // 'local' or 'online'
+  const [isBusinessSearchExpanded, setIsBusinessSearchExpanded] = useState(false);
   const modalRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
       setEditedName(name);
-      setEditedAddress(address);
-      setSearchQuery('');
+      setEditedAddress(Array.isArray(address) ? address.join(', ') : address);
+      setEditedEmail('');
+      setEditedPhone('');
+      setBusinessSearchQuery('');
       setSearchResults([]);
-      setOnlineResults([]);
-      setSearchMode('local');
+      setIsBusinessSearchExpanded(false);
     }
   }, [isOpen, name, address]);
 
@@ -58,110 +60,42 @@ export const FromToAddressModal = ({
     };
   }, [isOpen, onClose]);
 
-  const handleAddressLineChange = (index, value) => {
-    const newAddress = [...editedAddress];
-    newAddress[index] = value;
-    setEditedAddress(newAddress);
-  };
-
-  const handleAddLine = () => {
-    setEditedAddress([...editedAddress, '']);
-  };
-
-  const handleRemoveLine = (index) => {
-    const newAddress = editedAddress.filter((_, i) => i !== index);
-    setEditedAddress(newAddress);
-  };
-
   const handleSearch = async () => {
-    if (!searchQuery.trim()) {
+    if (!businessSearchQuery.trim()) {
       setSearchResults([]);
-      setOnlineResults([]);
       return;
     }
 
-    if (searchMode === 'local') {
-      setIsSearching(true);
-      try {
-        // Call the search function passed as prop
-        if (onSearch) {
-          const results = await onSearch(searchQuery);
-          setSearchResults(results || []);
-        } else {
-          // Fallback: mock search results
-          setSearchResults([
-            {
-              id: 1,
-              name: 'ABC Logistics Ltd.',
-              address: ['123 Warehouse St, Industrial Park', 'New York, NY 10001', '+1 (555) 123-4567']
-            },
-            {
-              id: 2,
-              name: 'XYZ Distribution Co.',
-              address: ['456 Delivery Ave, Commerce District', 'Los Angeles, CA 90001', '+1 (555) 987-6543']
-            }
-          ].filter(item => 
-            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.address.some(line => line.toLowerCase().includes(searchQuery.toLowerCase()))
-          ));
-        }
-      } catch (error) {
-        console.error('Search error:', error);
-        setSearchResults([]);
-      } finally {
-        setIsSearching(false);
+    setIsSearching(true);
+    try {
+      // Call the search function passed as prop
+      if (onSearch) {
+        const results = await onSearch(businessSearchQuery);
+        setSearchResults(results || []);
+      } else {
+        // Fallback: mock search results
+        setSearchResults([
+          {
+            id: 1,
+            name: 'ABC Logistics Ltd.',
+            address: '123 Warehouse St, Industrial Park, New York, NY 10001'
+          },
+          {
+            id: 2,
+            name: 'XYZ Distribution Co.',
+            address: '456 Delivery Ave, Commerce District, Los Angeles, CA 90001'
+          }
+        ].filter(item => 
+          item.name.toLowerCase().includes(businessSearchQuery.toLowerCase()) ||
+          item.address.toLowerCase().includes(businessSearchQuery.toLowerCase())
+        ));
       }
-    } else {
-      // Online search
-      setIsSearchingOnline(true);
-      try {
-        // Search online sources (using a mock API call - in production, use a real company search API)
-        await searchOnlineCompanies(searchQuery);
-      } catch (error) {
-        console.error('Online search error:', error);
-        setOnlineResults([]);
-      } finally {
-        setIsSearchingOnline(false);
-      }
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
     }
-  };
-
-  const searchOnlineCompanies = async (query) => {
-    // Mock online search - in production, this would call a real API like:
-    // - Companies House API (UK)
-    // - OpenCorporates API
-    // - Google Places API
-    // - Or a custom company database API
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Mock results from online sources
-    const mockOnlineResults = [
-      {
-        id: 'online-1',
-        name: `${query} Industries Inc.`,
-        address: ['789 Corporate Blvd, Business District', 'Chicago, IL 60601', 'United States'],
-        source: 'Online Database',
-        website: 'www.example.com'
-      },
-      {
-        id: 'online-2',
-        name: `${query} Manufacturing Ltd.`,
-        address: ['456 Industrial Way, Manufacturing Zone', 'Detroit, MI 48201', 'United States'],
-        source: 'Online Database',
-        website: 'www.example2.com'
-      },
-      {
-        id: 'online-3',
-        name: `${query} Solutions GmbH`,
-        address: ['123 Business Park, Technology Center', 'Berlin, 10115', 'Germany'],
-        source: 'Online Database',
-        website: 'www.example3.com'
-      }
-    ];
-    
-    setOnlineResults(mockOnlineResults);
   };
 
   const handleSelectResult = (result) => {
@@ -170,17 +104,19 @@ export const FromToAddressModal = ({
       setEditedName(result.name);
     }
     if (result.address) {
-      setEditedAddress(result.address);
+      setEditedAddress(Array.isArray(result.address) ? result.address.join(', ') : result.address);
     }
-    setSearchQuery('');
+    setBusinessSearchQuery('');
     setSearchResults([]);
-    setOnlineResults([]);
+    setIsBusinessSearchExpanded(false);
   };
 
   const handleSave = () => {
     if (onSave) {
       // Pass both name and address as an object
-      onSave({ name: editedName, address: editedAddress });
+      // Convert address string back to array if needed
+      const addressArray = editedAddress ? [editedAddress] : [];
+      onSave({ name: editedName, address: addressArray });
     }
     onClose();
   };
@@ -202,144 +138,132 @@ export const FromToAddressModal = ({
         </div>
 
         <div className="from-to-modal-content">
-          <div className="from-to-modal-section">
-            <h3 className="from-to-modal-section-title">Search</h3>
-            <div className="from-to-search-mode-toggle">
-              <button
-                className={`search-mode-button ${searchMode === 'local' ? 'active' : ''}`}
-                onClick={() => setSearchMode('local')}
-              >
-                Local Database
-              </button>
-              <button
-                className={`search-mode-button ${searchMode === 'online' ? 'active' : ''}`}
-                onClick={() => setSearchMode('online')}
-              >
-                Online Sources
-              </button>
-            </div>
-            <div className="from-to-search-container">
-              <div className="from-to-search-input-wrapper">
-                <input
-                  type="text"
-                  className="from-to-search-input"
-                  placeholder={searchMode === 'local' ? "Search for client address..." : "Search online for companies..."}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                />
-              </div>
-              <IconButton
-                icon="search"
-                variant="ghost"
-                size="sm"
-                onClick={handleSearch}
-                disabled={isSearching || isSearchingOnline}
-                aria-label="Search"
-                className="from-to-search-button"
-              />
-            </div>
-
-            {isSearchingOnline && (
-              <div className="from-to-search-loading">
-                <span>Searching online sources...</span>
-              </div>
-            )}
-
-            {searchMode === 'local' && searchResults.length > 0 && (
-              <div className="from-to-search-results">
-                <div className="from-to-search-results-header">Local Results</div>
-                {searchResults.map((result) => (
-                  <div
-                    key={result.id}
-                    className="from-to-search-result-item"
-                    onClick={() => handleSelectResult(result)}
-                  >
-                    <div className="from-to-search-result-name">{result.name}</div>
-                    <div className="from-to-search-result-address">
-                      {result.address.map((line, index) => (
-                        <div key={index}>{line}</div>
-                      ))}
-                    </div>
+          <div className="from-to-modal-description-wrapper">
+            <p className="from-to-modal-description">
+              Edit {label} information
+            </p>
+            <div className={`search-business-wrapper ${isBusinessSearchExpanded ? 'expanded' : ''}`}>
+              {isBusinessSearchExpanded ? (
+                <div className="search-business-input-wrapper">
+                  <Icon name="search" size="sm" variant="outline" />
+                  <input
+                    type="text"
+                    className="search-business-input"
+                    placeholder="Search businesses online..."
+                    value={businessSearchQuery}
+                    onChange={(e) => setBusinessSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleSearch();
+                      }
+                    }}
+                    onBlur={() => {
+                      if (!businessSearchQuery.trim()) {
+                        setIsBusinessSearchExpanded(false);
+                      }
+                    }}
+                    autoFocus={true}
+                  />
+                  {businessSearchQuery && (
+                    <button
+                      className="search-business-clear"
+                      onClick={() => {
+                        setBusinessSearchQuery('');
+                      }}
+                      aria-label="Clear search"
+                    >
+                      <Icon name="x" size="sm" variant="outline" />
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="search-business-tooltip-wrapper">
+                  <IconButton
+                    icon="search"
+                    variant="ghost"
+                    size="lg"
+                    onClick={() => {
+                      setIsBusinessSearchExpanded(true);
+                    }}
+                    aria-label="Search businesses online"
+                    className="search-business-button"
+                  />
+                  <div className="search-business-tooltip">
+                    Search businesses online to quickly add client information
                   </div>
-                ))}
-              </div>
-            )}
-
-            {searchMode === 'online' && onlineResults.length > 0 && (
-              <div className="from-to-search-results">
-                <div className="from-to-search-results-header">Online Results</div>
-                {onlineResults.map((result) => (
-                  <div
-                    key={result.id}
-                    className="from-to-search-result-item from-to-online-result"
-                    onClick={() => handleSelectResult(result)}
-                  >
-                    <div className="from-to-search-result-header-row">
-                      <div className="from-to-search-result-name">{result.name}</div>
-                      {result.source && (
-                        <span className="from-to-search-result-source">{result.source}</span>
-                      )}
-                    </div>
-                    <div className="from-to-search-result-address">
-                      {result.address.map((line, index) => (
-                        <div key={index}>{line}</div>
-                      ))}
-                    </div>
-                    {result.website && (
-                      <div className="from-to-search-result-website">{result.website}</div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="from-to-modal-section">
-            <h3 className="from-to-modal-section-title">Edit Client</h3>
-            <div className="from-to-client-editor">
-              <div className="from-to-name-field">
-                <label className="from-to-field-label">Name</label>
+          {isBusinessSearchExpanded && searchResults.length > 0 && (
+            <div className="from-to-search-results">
+              <div className="from-to-search-results-header">Search Results</div>
+              {searchResults.map((result) => (
+                <div
+                  key={result.id}
+                  className="from-to-search-result-item"
+                  onClick={() => handleSelectResult(result)}
+                >
+                  <div className="from-to-search-result-name">{result.name}</div>
+                  <div className="from-to-search-result-address">
+                    {Array.isArray(result.address) ? result.address.join(', ') : result.address}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <form id="from-to-form" className="from-to-form">
+            <div className="form-fields-wrapper">
+              <div className="form-field">
+                <label htmlFor="from-to-name">Client Name *</label>
                 <Input
+                  id="from-to-name"
                   type="text"
                   value={editedName}
                   onChange={(value) => setEditedName(value)}
-                  placeholder="Client name"
+                  placeholder="Enter client name"
+                  required
+                  className="form-input-square"
                 />
               </div>
-              <div className="from-to-address-field">
-                <label className="from-to-field-label">Address</label>
-                <div className="from-to-address-editor">
-                  {editedAddress.map((line, index) => (
-                    <div key={index} className="from-to-address-line">
-                      <div className="from-to-address-input-wrapper">
-                        <Input
-                          type="text"
-                          value={line}
-                          onChange={(value) => handleAddressLineChange(index, value)}
-                          placeholder={`Address line ${index + 1}`}
-                        />
-                      </div>
-                      <IconButton
-                        icon="delete"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemoveLine(index)}
-                        aria-label="Remove line"
-                      />
-                    </div>
-                  ))}
-                  <Button
-                    variant="ghost"
-                    className="from-to-add-line-button"
-                    onClick={handleAddLine}
-                  >
-                    + Add Line
-                  </Button>
-                </div>
+              <div className="form-field">
+                <label htmlFor="from-to-address">Address *</label>
+                <Input
+                  id="from-to-address"
+                  type="text"
+                  value={editedAddress}
+                  onChange={(value) => setEditedAddress(value)}
+                  placeholder="Enter client address"
+                  required
+                  className="form-input-square"
+                />
+              </div>
+              <div className="form-field">
+                <label htmlFor="from-to-email">Email</label>
+                <Input
+                  id="from-to-email"
+                  type="email"
+                  value={editedEmail}
+                  onChange={(value) => setEditedEmail(value)}
+                  placeholder="Enter client email"
+                  className="form-input-square"
+                />
+              </div>
+              <div className="form-field">
+                <label htmlFor="from-to-phone">Phone</label>
+                <Input
+                  id="from-to-phone"
+                  type="tel"
+                  value={editedPhone}
+                  onChange={(value) => setEditedPhone(value)}
+                  placeholder="Enter client phone"
+                  className="form-input-square"
+                />
               </div>
             </div>
-          </div>
+          </form>
         </div>
 
         <div className="from-to-modal-footer">

@@ -29,3 +29,22 @@
   font-weight: var(--font-weight-medium);
 }
 
+@media (prefers-color-scheme: dark) {
+  .dropdown-item {
+    color: #E0E0E0;
+  }
+
+  .dropdown-item:hover {
+    background: #2A2A2A;
+  }
+
+  .dropdown-item:focus {
+    background: #2A2A2A;
+  }
+
+  .dropdown-item-selected {
+    background: #2A2A2A;
+    color: #FFFFFF;
+  }
+}
+

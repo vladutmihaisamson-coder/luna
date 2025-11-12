@@ -2,7 +2,7 @@
 
 export const typography = {
   fontFamily: {
-    primary: "'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    primary: "'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
     mono: "'SF Mono', 'Monaco', 'Courier New', monospace",
   },
   

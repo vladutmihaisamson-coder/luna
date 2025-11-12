@@ -6,11 +6,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 10000;
   padding: var(--spacing-lg);
   animation: fadeIn var(--duration-fast) var(--easing-subtle) forwards;
 }
@@ -25,7 +27,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  z-index: 1001;
+  z-index: 10001;
   position: relative;
   animation: scaleIn var(--duration-normal) var(--easing-subtle) forwards;
 }

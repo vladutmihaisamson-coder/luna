@@ -5,7 +5,7 @@
   flex-direction: column;
   min-height: 100vh;
   padding: 32px 48px 48px 48px;
-  background: var(--color-bg-white);
+  background: linear-gradient(to bottom, #fafafa, #fcfcfc);
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -37,6 +37,12 @@
   box-sizing: border-box;
 }
 
+/* Add large smooth shadow to documents on edit page */
+.document-view-content .document {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04), 0 8px 25px rgba(0, 0, 0, 0.02);
+  transition: box-shadow 0.3s ease;
+}
+
 .document-view-sidebar {
   position: sticky;
   top: 50vh;
@@ -55,8 +61,8 @@
   position: fixed;
   top: 32px;
   left: 32px;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: white;
   border: 1px solid #e0e0e0;
@@ -131,7 +137,7 @@
 
 .button-separator {
   width: 1px;
-  height: var(--size-button-xl);
+  height: 48px;
   background: #e0e0e0;
   margin: 0 8px;
   flex-shrink: 0;

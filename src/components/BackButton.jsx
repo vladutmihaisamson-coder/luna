@@ -17,7 +17,7 @@ export const BackButton = ({ onClick, className = '' }) => {
     <IconButton
       icon="chevron-left"
       variant="ghost"
-      size="md"
+      size="lg"
       onClick={handleClick}
       aria-label="Go back"
       className={`back-button ${className}`}

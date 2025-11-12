@@ -45,3 +45,11 @@
   padding: var(--spacing-xs) 0;
 }
 
+@media (prefers-color-scheme: dark) {
+  .dropdown {
+    background: #1A1A1A;
+    border-color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+}
+

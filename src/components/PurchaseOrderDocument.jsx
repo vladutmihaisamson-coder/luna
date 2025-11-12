@@ -16,18 +16,18 @@ export const PurchaseOrderDocument = ({ onHasChanges, onSave, onRevert, isEmpty 
   const initialPOItems = isEmpty ? [
     { id: 1, description: '', quantity: 1, unit: 'pieces' }
   ] : [
-    { id: 1, description: 'Hydraulic Cylinder Seal Kit', quantity: 12, unit: 'pieces' },
-    { id: 2, description: 'Pressure Relief Valve', quantity: 8, unit: 'pieces' },
-    { id: 3, description: 'Control Panel Circuit Board', quantity: 4, unit: 'pieces' },
-    { id: 4, description: 'Hydraulic Oil Filter Element', quantity: 24, unit: 'pieces' },
-    { id: 5, description: 'Pneumatic Fittings Set', quantity: 50, unit: 'pieces' },
-    { id: 6, description: 'Steel Guide Rails', quantity: 6, unit: 'pieces' },
-    { id: 7, description: 'Safety Interlock Switch', quantity: 10, unit: 'pieces' },
-    { id: 8, description: 'Hydraulic Pump Replacement', quantity: 2, unit: 'pieces' },
-    { id: 9, description: 'Electrical Cable Harness', quantity: 15, unit: 'pieces' },
-    { id: 10, description: 'Tooling Inserts', quantity: 30, unit: 'pieces' },
-    { id: 11, description: 'Lubrication System Components', quantity: 5, unit: 'sets' },
-    { id: 12, description: 'Control Software License', quantity: 1, unit: 'license' }
+    { id: 1, description: 'Programmable Logic Controller (PLC) System', quantity: 1, unit: 'units' },
+    { id: 2, description: 'Variable Frequency Drive (VFD) 15kW', quantity: 2, unit: 'units' },
+    { id: 3, description: 'Servo Motor Drive Unit', quantity: 3, unit: 'units' },
+    { id: 4, description: 'HMI Touchscreen Display 12-inch', quantity: 1, unit: 'units' },
+    { id: 5, description: 'Control Panel Enclosure IP65', quantity: 1, unit: 'units' },
+    { id: 6, description: 'Safety Relay Module', quantity: 2, unit: 'units' },
+    { id: 7, description: 'Proximity Sensors Set', quantity: 8, unit: 'pieces' },
+    { id: 8, description: 'Pressure Transducer 0-100 bar', quantity: 4, unit: 'pieces' },
+    { id: 9, description: 'Position Encoder Absolute', quantity: 2, unit: 'pieces' },
+    { id: 10, description: 'Power Distribution Unit', quantity: 1, unit: 'units' },
+    { id: 11, description: 'Control Software License', quantity: 1, unit: 'license' },
+    { id: 12, description: 'Ethernet Communication Module', quantity: 1, unit: 'units' }
   ];
   const initialDate = new Date().toISOString().split('T')[0];
 

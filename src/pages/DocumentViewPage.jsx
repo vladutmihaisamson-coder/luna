@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { BackButton } from '../components/BackButton';
 import { TransportDocument } from '../components/TransportDocument';
 import { FatturaDocument } from '../components/FatturaDocument';
@@ -8,7 +8,6 @@ import { AgreementDocument } from '../components/AgreementDocument';
 import { PurchaseOrderDocument } from '../components/PurchaseOrderDocument';
 import { ShareModal } from '../components/ShareModal';
 import { SaveWarningModal } from '../components/SaveWarningModal';
-import { ScreenCalibration } from '../components/ScreenCalibration';
 import { IconButton } from '../components/design-system/molecules/IconButton/IconButton';
 import { Button } from '../components/design-system/atoms/Button/Button';
 import html2pdf from 'html2pdf.js';
@@ -18,14 +17,13 @@ export const DocumentViewPage = () => {
   const { documentId } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isSaveWarningModalOpen, setIsSaveWarningModalOpen] = useState(false);
-  const [isCalibrationOpen, setIsCalibrationOpen] = useState(false);
-  const [calibrationKey, setCalibrationKey] = useState(0); // Force re-render on calibration
 
   // Determine document type from URL query parameter or documentId
-  const getDocumentType = () => {
+  const documentType = useMemo(() => {
     const typeParam = searchParams.get('type');
     if (typeParam) return typeParam;
     if (documentId?.startsWith('fattura-')) return 'fattura';
@@ -33,32 +31,17 @@ export const DocumentViewPage = () => {
     if (documentId?.startsWith('agreement-')) return 'agreement';
     if (documentId?.startsWith('po-') || documentId?.startsWith('purchase-order-')) return 'purchase-order';
     return 'transport';
-  };
+  }, [documentId, searchParams]);
 
-  const documentType = getDocumentType();
-  const isNewDocument = documentId?.includes('-new-');
+  const isNewDocument = useMemo(() => documentId?.includes('-new-'), [documentId]);
 
-  // Check for calibration on first load
+  // Reset state when documentId or location changes
   useEffect(() => {
-    const hasCalibrated = localStorage.getItem('calibratedPPI');
-    const skipCalibration = localStorage.getItem('skipCalibration');
-    
-    // Show calibration if not calibrated and not skipped
-    if (!hasCalibrated && !skipCalibration) {
-      // Delay slightly to let page render first
-      setTimeout(() => {
-        setIsCalibrationOpen(true);
-      }, 500);
-    }
-  }, []);
+    setHasUnsavedChanges(false);
+    setIsShareModalOpen(false);
+    setIsSaveWarningModalOpen(false);
+  }, [documentId, location.pathname]);
 
-  const handleCalibrate = (ppi) => {
-    // Calibration is stored in localStorage by ScreenCalibration component
-    // Force document components to recalculate by updating key
-    setCalibrationKey(prev => prev + 1);
-    // Mark that user has seen calibration (even if skipped)
-    localStorage.setItem('skipCalibration', 'true');
-  };
 
   const handlePrint = () => {
     window.print();
@@ -108,7 +91,7 @@ export const DocumentViewPage = () => {
       );
       if (!confirmed) return;
     }
-    navigate(-1);
+    navigate('/');
   };
 
   const handleSave = () => {
@@ -205,19 +188,12 @@ export const DocumentViewPage = () => {
           onClick={() => setIsShareModalOpen(true)}
           aria-label="Share document"
         />
-        <IconButton
-          icon="settings"
-          variant="ghost"
-          size="lg"
-          onClick={() => setIsCalibrationOpen(true)}
-          aria-label="Calibrate screen"
-          title="Calibrate screen for accurate document sizing"
-        />
       </div>
       
       <div className="document-view-content">
         {documentType === 'fattura' ? (
           <FatturaDocument 
+            key={documentId}
             onHasChanges={setHasUnsavedChanges}
             onSave={handleSave}
             onRevert={handleRevert}
@@ -226,6 +202,7 @@ export const DocumentViewPage = () => {
           />
         ) : documentType === 'offer' ? (
           <OfferDocument 
+            key={documentId}
             onHasChanges={setHasUnsavedChanges}
             onSave={handleSave}
             onRevert={handleRevert}
@@ -234,6 +211,7 @@ export const DocumentViewPage = () => {
           />
         ) : documentType === 'agreement' ? (
           <AgreementDocument 
+            key={documentId}
             onHasChanges={setHasUnsavedChanges}
             onSave={handleSave}
             onRevert={handleRevert}
@@ -242,6 +220,7 @@ export const DocumentViewPage = () => {
           />
         ) : documentType === 'purchase-order' ? (
           <PurchaseOrderDocument 
+            key={documentId}
             onHasChanges={setHasUnsavedChanges}
             onSave={handleSave}
             onRevert={handleRevert}
@@ -250,6 +229,7 @@ export const DocumentViewPage = () => {
           />
         ) : (
           <TransportDocument 
+            key={documentId}
             onHasChanges={setHasUnsavedChanges}
             onSave={handleSave}
             onRevert={handleRevert}
@@ -319,11 +299,6 @@ export const DocumentViewPage = () => {
         documentTitle={`${documentType}-${documentId}`}
       />
       
-      <ScreenCalibration
-        isOpen={isCalibrationOpen}
-        onClose={() => setIsCalibrationOpen(false)}
-        onCalibrate={handleCalibrate}
-      />
     </div>
   );
 };

@@ -32,7 +32,8 @@ import {
   FiSend,
   FiArchive,
   FiSliders,
-  FiSettings
+  FiSettings,
+  FiBriefcase
 } from 'react-icons/fi';
 
 // Material Design Icons (filled) - verified to exist
@@ -64,7 +65,8 @@ import {
   MdInbox,
   MdSend,
   MdArchive,
-  MdTune
+  MdTune,
+  MdBusiness
 } from 'react-icons/md';
 
 // Bootstrap Icons (for drag handle filled) - verified to exist
@@ -203,6 +205,10 @@ const iconMap = {
   settings: {
     outline: FiSettings,
     filled: MdTune, // Using MdTune as filled variant for settings
+  },
+  building: {
+    outline: FiBriefcase,
+    filled: MdBusiness,
   },
 };
 

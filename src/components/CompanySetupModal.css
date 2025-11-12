@@ -1,0 +1,185 @@
+@import './design-system/tokens/designTokens.css';
+
+.company-setup-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: var(--spacing-lg);
+  animation: fadeIn var(--duration-fast) var(--easing-subtle) forwards;
+  overflow: hidden;
+}
+
+.company-setup-modal {
+  background: var(--color-bg-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10001;
+  position: relative;
+}
+
+.company-setup-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xl);
+  border-bottom: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  flex-shrink: 0;
+}
+
+.company-setup-modal-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.company-setup-modal-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--spacing-xl);
+  -webkit-overflow-scrolling: touch;
+}
+
+.company-setup-modal-description {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--spacing-xl) 0;
+  line-height: 1.5;
+}
+
+.company-setup-logo-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.company-setup-logo-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.company-setup-logo-upload {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.company-setup-logo-upload-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  width: 120px;
+  height: 120px;
+  border: 2px dashed var(--stroke-color-subtle);
+  border-radius: var(--border-radius-md);
+  background: var(--color-bg-light);
+  cursor: pointer;
+  transition: var(--transition-all);
+  color: var(--color-text-secondary);
+}
+
+.company-setup-logo-upload-button:hover {
+  border-color: var(--color-primary);
+  background: var(--color-bg-white);
+  color: var(--color-primary);
+}
+
+.company-setup-logo-preview {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+}
+
+.company-setup-logo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: var(--color-bg-light);
+}
+
+.company-setup-logo-remove {
+  position: absolute;
+  top: var(--spacing-xs);
+  right: var(--spacing-xs);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  color: var(--color-bg-white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-all);
+}
+
+.company-setup-logo-remove:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.company-setup-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.company-setup-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+.company-setup-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.company-setup-form-field label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.company-setup-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  border-top: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  flex-shrink: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+

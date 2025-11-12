@@ -14,7 +14,8 @@ export const DocumentPreviewSimplified = ({
   content,
   signatureStatus,
   lastModified,
-  isEditable
+  isEditable,
+  country
 }) => {
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-US', {
@@ -44,6 +45,12 @@ export const DocumentPreviewSimplified = ({
         <div className="document-preview-simplified-title">{title}</div>
       )}
       
+      {country && (
+        <div className="document-preview-simplified-country">
+          <span className="document-preview-simplified-label">Country:</span>
+          <span className="document-preview-simplified-value">{country}</span>
+        </div>
+      )}
       
       {itemCount !== undefined && itemCount !== null && (
         <div className="document-preview-simplified-info">

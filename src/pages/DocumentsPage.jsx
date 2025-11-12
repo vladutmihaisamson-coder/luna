@@ -1,5 +1,5 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DocumentOverview } from '../components/DocumentOverview';
 import { ClientOverview } from '../components/ClientOverview';
 import { TransportDocument } from '../components/TransportDocument';
@@ -15,6 +15,7 @@ import { Dropdown } from '../components/design-system/organisms/Dropdown/Dropdow
 import { DocumentTypeSelectionModal } from '../components/DocumentTypeSelectionModal';
 import { PDFUploadModal } from '../components/PDFUploadModal';
 import { ExtractedDocumentViewer } from '../components/ExtractedDocumentViewer';
+import { CompanySetupModal } from '../components/CompanySetupModal';
 import { EmptyState } from '../components/EmptyState';
 import { textContainsQuery } from '../utils/textHighlight';
 import './DocumentsPage.css';
@@ -47,16 +48,47 @@ export const DocumentsPage = () => {
   const [viewMode, setViewMode] = useState(savedState?.viewMode || 'grid'); // 'grid' or 'folder'
   const [documentFilter, setDocumentFilter] = useState(savedState?.documentFilter || 'all'); // 'all', 'in', 'out'
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [createModalInitialTab, setCreateModalInitialTab] = useState('documents');
   const [isPDFUploadModalOpen, setIsPDFUploadModalOpen] = useState(false);
   const [extractedDocument, setExtractedDocument] = useState(null);
   const [isSearchExpanded, setIsSearchExpanded] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isCompanySetupModalOpen, setIsCompanySetupModalOpen] = useState(false);
+  const [needsCompanySetup, setNeedsCompanySetup] = useState(false);
+  const [companyDetails, setCompanyDetails] = useState(null);
+  const [showCompanyTooltip, setShowCompanyTooltip] = useState(false);
   const [itemsToShow, setItemsToShow] = useState(24); // Initial number of documents to show
   const [selectedDocuments, setSelectedDocuments] = useState(new Set());
   const [openDropdown, setOpenDropdown] = useState(null); // Track which filter pill dropdown is open
+  const [openFilterPanelDropdown, setOpenFilterPanelDropdown] = useState(null); // Track which filter panel dropdown is open
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
   const [isFilterPanelClosing, setIsFilterPanelClosing] = useState(false);
+  const [filterButtonHovered, setFilterButtonHovered] = useState(false);
+  const [hoveredFilterId, setHoveredFilterId] = useState(null);
+  const [showFilterButtonTooltip, setShowFilterButtonTooltip] = useState(false);
+  const [showFilterFieldTooltip, setShowFilterFieldTooltip] = useState(null);
+  const [hoveredActionButton, setHoveredActionButton] = useState(null);
+  const [showActionButtonTooltip, setShowActionButtonTooltip] = useState(null);
+  const filterButtonHoverTimeoutRef = useRef(null);
+  const filterFieldHoverTimeoutRef = useRef(null);
+  const actionButtonHoverTimeoutRef = useRef(null);
+  
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (filterButtonHoverTimeoutRef.current) {
+        clearTimeout(filterButtonHoverTimeoutRef.current);
+      }
+      if (filterFieldHoverTimeoutRef.current) {
+        clearTimeout(filterFieldHoverTimeoutRef.current);
+      }
+      if (actionButtonHoverTimeoutRef.current) {
+        clearTimeout(actionButtonHoverTimeoutRef.current);
+      }
+    };
+  }, []);
+  
   const [headerSearchQuery, setHeaderSearchQuery] = useState(savedState?.headerSearchQuery || '');
   const [activeTab, setActiveTab] = useState(savedState?.activeTab || 'all'); // 'all', 'latest', 'archived', or 'clients'
   const searchInputRef = useRef(null);
@@ -66,21 +98,321 @@ export const DocumentsPage = () => {
   const pageContainerRef = useRef(null);
 
   const handleCreateNewDocument = () => {
+    setCreateModalInitialTab('documents');
     setIsCreateModalOpen(true);
   };
 
-  const handleSelectDocumentType = (type) => {
+  const handleCreateNewClient = () => {
+    setCreateModalInitialTab('clients');
+    setIsCreateModalOpen(true);
+  };
+
+  const handleSelectDocumentType = useCallback((type) => {
     // Generate a new document ID and navigate to a new document of the selected type
     const newDocumentId = `${type}-new-${Date.now()}`;
-    navigate(`/document/${newDocumentId}?type=${type}`);
-  };
+    const path = `/document/${newDocumentId}?type=${type}`;
+    navigate(path);
+  }, [navigate]);
 
   const handleViewModeChange = () => {
     setViewMode(viewMode === 'grid' ? 'folder' : 'grid');
   };
 
-  // Create filters array for FilterPillGroup based on documentFilter
+  const handleFilterChange = (filterId, value) => {
+    // Handle direction filter separately to update documentFilter
+    // The useEffect will update filterState when documentFilter changes
+    if (filterId === 'direction') {
+      setDocumentFilter(value);
+      setOpenDropdown(null);
+      setOpenFilterPanelDropdown(null);
+      return; // Don't update filterState directly, let useEffect handle it
+    }
+    
+    setFilterState(prev => 
+      prev.map(filter => 
+        filter.id === filterId 
+          ? { ...filter, selectedValue: value }
+          : filter
+      )
+    );
+    setOpenDropdown(null);
+    setOpenFilterPanelDropdown(null);
+  };
+
+  const handleDropdownToggle = (filterId) => {
+    setOpenDropdown(openDropdown === filterId ? null : filterId);
+  };
+
+  const handleDropdownClose = () => {
+    setOpenDropdown(null);
+  };
+
+  const handleFilterPanelDropdownToggle = (filterId) => {
+    setOpenFilterPanelDropdown(openFilterPanelDropdown === filterId ? null : filterId);
+  };
+
+  const handleFilterPanelDropdownClose = () => {
+    setOpenFilterPanelDropdown(null);
+  };
+
+  const handleMoreMenuToggle = () => {
+    setIsMoreMenuOpen(!isMoreMenuOpen);
+  };
+
+  const handleResetFilters = () => {
+    setDocumentFilter('all');
+    setFilterState(prev => 
+      prev.map(filter => 
+        filter.id === 'direction' 
+          ? { ...filter, selectedValue: 'all' }
+          : { ...filter, selectedValue: null }
+      )
+    );
+    setSearchQuery('');
+    setHeaderSearchQuery('');
+    setIsSearchExpanded(false);
+  };
+
+  // Client to country mapping
+  const clientCountryMap = useMemo(() => {
+    return {
+      'client-1': 'Italy', // SACME
+      'client-2': 'Italy', // Brembo S.p.A.
+      'client-3': 'Germany', // Thyssenkrupp Materials
+      'client-4': 'Germany', // Schaeffler Group
+      'client-5': 'Germany', // Bosch Rexroth
+      'client-6': 'Germany', // Festo AG
+      'client-7': 'Germany', // Siemens Industry
+      'client-8': 'Germany', // ABB Automation
+      'client-9': 'USA', // Parker Hannifin
+      'SACME': 'Italy',
+      'Brembo S.p.A.': 'Italy',
+      'Thyssenkrupp Materials': 'Germany',
+      'Schaeffler Group': 'Germany',
+      'Bosch Rexroth': 'Germany',
+      'Festo AG': 'Germany',
+      'Siemens Industry': 'Germany',
+      'ABB Automation': 'Germany',
+      'Parker Hannifin': 'USA',
+      'Industrial Press Systems': 'USA',
+      'Compaction Equipment Inc.': 'USA',
+      'Material Processing Corp.': 'USA',
+      'Heavy Equipment Logistics': 'USA',
+      'Custom Press Solutions': 'USA',
+      'Powder Processing Equipment': 'USA',
+      'Compaction Systems Ltd.': 'USA',
+      'Industrial Machinery Transport': 'USA',
+      'Equipment Restoration Services': 'USA',
+      'Specialized Cargo Services': 'Canada',
+      'Press Modernization Partners': 'Canada',
+      'Advanced Compaction Systems': 'USA',
+      'Press Maintenance Experts': 'USA',
+      'Heavy Machinery Haulers': 'USA',
+      'Used Press Marketplace': 'USA',
+      'Equipment Inspection Services': 'USA',
+      'Industrial Transport Solutions': 'USA',
+      'Press Construction Services': 'USA',
+      'Rebuilt Press Specialists': 'USA',
+      'Press Retrofit Solutions': 'USA',
+      'Machinery Delivery Services': 'USA',
+      'Press Equipment Brokers': 'USA',
+      'Press Rebuild Contractors': 'USA',
+      'Heavy Equipment Movers': 'USA',
+      'Press Engineering Services': 'USA',
+      'Legacy Equipment Services': 'USA',
+      'Archive Transport Services': 'USA',
+    };
+  }, []);
+
+
+  // Focus search input when expanded
+  useEffect(() => {
+    if (isSearchExpanded && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchExpanded]);
+
+  // Restore scroll position on mount
+  useEffect(() => {
+    if (savedState?.scrollPosition && pageContainerRef.current) {
+      // Use setTimeout to ensure DOM is ready
+      setTimeout(() => {
+        window.scrollTo(0, savedState.scrollPosition);
+      }, 100);
+    }
+  }, []); // Only run on mount
+
+  // Check if company setup is needed on mount and load company details
+  useEffect(() => {
+    const setupCompleted = localStorage.getItem('companySetupCompleted') === 'true';
+    const setupSkipped = localStorage.getItem('companySetupSkipped') === 'true';
+    
+    // Load company details
+    const savedCompany = localStorage.getItem('companyDetails');
+    if (savedCompany) {
+      try {
+        const company = JSON.parse(savedCompany);
+        setCompanyDetails(company);
+      } catch (e) {
+        console.error('Error loading company details:', e);
+      }
+    }
+    
+    if (!setupCompleted && !setupSkipped) {
+      setIsCompanySetupModalOpen(true);
+      setNeedsCompanySetup(true);
+    } else if (setupSkipped) {
+      setNeedsCompanySetup(true);
+    } else {
+      setNeedsCompanySetup(false);
+    }
+  }, []);
+
+  // Close dropdowns and menus when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target) &&
+          moreButtonRef.current && !moreButtonRef.current.contains(event.target)) {
+        setIsMoreMenuOpen(false);
+      }
+    };
+
+    if (isMoreMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [isMoreMenuOpen]);
+
+
+
+
+
+  // Helper function to parse date string to Date object
+  const parseDate = (dateString) => {
+    const months = { "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3, "May": 4, "Jun": 5, "Jul": 6, "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11 };
+    const parts = dateString.split(", ");
+    const datePart = parts[0].split(" ");
+    const year = parseInt(parts[1]);
+    const month = months[datePart[0]];
+    const day = parseInt(datePart[1]);
+    return new Date(year, month, day);
+  };
+
+  const documents = [
+    { documentId: "test-doc-001", title: "TEST_CLIENT_QA_001", documentNumber: "TEST-2025-001", date: "Nov 9, 2025", dateObj: parseDate("Nov 9, 2025"), documentType: "Transport", clientId: "test-client-1", direction: "out", content: "Test document for QA purposes. This is a sample transport document used for testing the document management system functionality.", previewContent: <TransportDocument />, needsAttention: false, signatureStatus: null, lastModified: "Nov 9, 2025", isEditable: true },
+    { documentId: "offer-001", title: "SACME", documentNumber: "OF-2025-001", date: "Nov 7, 2025", dateObj: parseDate("Nov 7, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 125000.00, content: "Hydraulic Powder Compaction Press HPC-500, Automated Control System, Press Tooling Set, Installation Service, Spare Parts Package, Technical Documentation.", previewContent: <OfferDocument />, needsAttention: true, signatureStatus: "Awaiting Signature", lastModified: "Nov 7, 2025", isEditable: true },
+    { documentId: "fattura-001", title: "Brembo S.p.A.", documentNumber: "FT-2025-001", date: "Nov 6, 2025", dateObj: parseDate("Nov 6, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 87500.00, content: "Mechanical Press Rebuild Service, Control System Upgrade, New Hydraulic Pumps, Safety Interlocks Installation, Operator Training.", previewContent: <FatturaDocument />, needsAttention: true },
+    { documentId: "transport-001", title: "Thyssenkrupp Materials", documentNumber: "TD-2025-001", date: "Nov 5, 2025", dateObj: parseDate("Nov 5, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Hydraulic Press HPC-300 Unit, Hydraulic System Components, Control Panel Assembly, Installation Tools, Press Tooling, Spare Parts Package, Technical Documentation, Safety Equipment.", previewContent: <TransportDocument /> },
+    { documentId: "agreement-001", title: "Schaeffler Group", documentNumber: "AG-2025-001", date: "Nov 4, 2025", dateObj: parseDate("Nov 4, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 6, content: "Retrofitting agreement for mechanical press upgrade. Includes modernization of control system, safety upgrades, and performance optimization.", previewContent: <AgreementDocument />, needsAttention: true, signatureStatus: "Pending", lastModified: "Nov 4, 2025", isEditable: false },
+    { documentId: "offer-002", title: "Industrial Press Systems", documentNumber: "OF-2025-002", date: "Nov 3, 2025", dateObj: parseDate("Nov 3, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 95000.00, content: "Used mechanical powder compaction press MPC-400. Recently rebuilt, includes full documentation and 6-month warranty.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-002", title: "Compaction Equipment Inc.", documentNumber: "FT-2025-002", date: "Nov 2, 2025", dateObj: parseDate("Nov 2, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 45000.00, content: "Press retrofitting service. Control system upgrade, new hydraulic pumps, safety interlocks installation, operator training.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-002", title: "Material Processing Corp.", documentNumber: "TD-2025-002", date: "Nov 1, 2025", dateObj: parseDate("Nov 1, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Shipment of new hydraulic compaction press HPC-600. Complete system with tooling, spare parts package, and technical documentation.", previewContent: <TransportDocument /> },
+    { documentId: "offer-003", title: "Precision Press Manufacturing", documentNumber: "OF-2025-003", date: "Oct 31, 2025", dateObj: parseDate("Oct 31, 2025"), documentType: "Offer", clientId: "client-1", direction: "in", total: 65000.00, content: "Purchase offer for used hydraulic press HPC-250. Includes inspection, dismantling, and transport to our facility.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-003", title: "Press Rebuild Services", documentNumber: "FT-2025-003", date: "Oct 30, 2025", dateObj: parseDate("Oct 30, 2025"), documentType: "Invoice", clientId: "client-2", direction: "in", total: 32000.00, content: "Invoice for press rebuild service received. Complete overhaul of mechanical press including new components and testing.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-003", title: "Heavy Equipment Logistics", documentNumber: "TD-2025-003", date: "Oct 29, 2025", dateObj: parseDate("Oct 29, 2025"), documentType: "Transport", clientId: "client-3", direction: "in", content: "Received shipment of used mechanical press MPC-350. Press requires inspection and rebuild before resale.", previewContent: <TransportDocument /> },
+    { documentId: "agreement-002", title: "Custom Press Solutions", documentNumber: "AG-2025-002", date: "Oct 28, 2025", dateObj: parseDate("Oct 28, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 5, content: "Construction agreement for custom hydraulic press. Design specifications, manufacturing timeline, delivery terms, and warranty conditions.", previewContent: <AgreementDocument />, signatureStatus: "Signed", lastModified: "Oct 29, 2025", isEditable: false },
+    { documentId: "offer-004", title: "Powder Processing Equipment", documentNumber: "OF-2025-004", date: "Oct 27, 2025", dateObj: parseDate("Oct 27, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 78000.00, content: "Rebuilt mechanical press MPC-500. Complete restoration with new bearings, seals, and updated control system. Ready for immediate use.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-004", title: "Compaction Systems Ltd.", documentNumber: "FT-2025-004", date: "Oct 26, 2025", dateObj: parseDate("Oct 26, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 55000.00, content: "Retrofitting service invoice. Modernization of hydraulic press control system, installation of new safety features, and performance testing.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-004", title: "Industrial Machinery Transport", documentNumber: "TD-2025-004", date: "Oct 25, 2025", dateObj: parseDate("Oct 25, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Delivery of retrofitted hydraulic press HPC-400. Includes updated control panel, new hydraulic components, and installation support.", previewContent: <TransportDocument /> },
+    { documentId: "offer-005", title: "Press Equipment Suppliers", documentNumber: "OF-2025-005", date: "Oct 24, 2025", dateObj: parseDate("Oct 24, 2025"), documentType: "Offer", clientId: "client-1", direction: "in", total: 42000.00, content: "Offer to purchase used mechanical press MPC-200. Press requires rebuild but has good structural condition and original tooling.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-005", title: "Equipment Restoration Services", documentNumber: "FT-2025-005", date: "Oct 23, 2025", dateObj: parseDate("Oct 23, 2025"), documentType: "Invoice", clientId: "client-2", direction: "in", total: 28000.00, content: "Received invoice for press inspection and assessment service. Complete evaluation of mechanical press condition and rebuild recommendations.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-005", title: "Specialized Cargo Services", documentNumber: "TD-2025-005", date: "Oct 22, 2025", dateObj: parseDate("Oct 22, 2025"), documentType: "Transport", clientId: "client-3", direction: "in", content: "Received hydraulic press HPC-180 for rebuild. Press includes original documentation and tooling. Scheduled for complete restoration.", previewContent: <TransportDocument /> },
+    { documentId: "agreement-003", title: "Press Modernization Partners", documentNumber: "AG-2025-003", date: "Oct 21, 2025", dateObj: parseDate("Oct 21, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 7, content: "Service agreement for press modernization project. Includes design review, component upgrades, installation, and operator training program.", previewContent: <AgreementDocument /> },
+    { documentId: "po-001", title: "Bosch Rexroth", documentNumber: "PO-2025-001", date: "Nov 8, 2025", dateObj: parseDate("Nov 8, 2025"), documentType: "Purchase Order", clientId: "client-5", direction: "in", itemCount: 12, content: "Programmable Logic Controller (PLC) System, Variable Frequency Drive (VFD) 15kW, Servo Motor Drive Unit, HMI Touchscreen Display 12-inch, Control Panel Enclosure IP65, Safety Relay Module, Proximity Sensors Set, Pressure Transducer 0-100 bar, Position Encoder Absolute, Power Distribution Unit, Control Software License, Ethernet Communication Module.", previewContent: <PurchaseOrderDocument />, signatureStatus: "Signed", lastModified: "Nov 8, 2025", isEditable: false },
+    { documentId: "po-002", title: "Festo AG", documentNumber: "PO-2025-002", date: "Nov 5, 2025", dateObj: parseDate("Nov 5, 2025"), documentType: "Purchase Order", clientId: "client-6", direction: "in", itemCount: 15, content: "Servo Motor 3kW with Encoder, Servo Drive Controller, Linear Actuator Control Module, Pneumatic Valve Manifold Controller, I/O Expansion Module 32-channel, Temperature Sensor PT100, Pressure Switch 0-200 bar, Limit Switch Set, Emergency Stop Button Station, Control Panel Push Buttons, LED Indicator Lights, Terminal Blocks Set, Cable Management System, Control Cabinet Cooling Fan, Electrical Wiring Harness.", previewContent: <PurchaseOrderDocument /> },
+    { documentId: "po-003", title: "Siemens Industry", documentNumber: "PO-2025-003", date: "Nov 2, 2025", dateObj: parseDate("Nov 2, 2025"), documentType: "Purchase Order", clientId: "client-7", direction: "in", itemCount: 10, content: "Siemens S7-1500 PLC CPU, Digital Input Module 16-channel, Digital Output Module 16-channel, Analog Input Module 8-channel, Profinet Communication Module, Motor Starter Contactor 25A, Overload Relay, Circuit Breaker 3-phase, Control Transformer 400V/24V, Motor Control Center Panel.", previewContent: <PurchaseOrderDocument /> },
+    { documentId: "po-004", title: "ABB Automation", documentNumber: "PO-2025-004", date: "Oct 30, 2025", dateObj: parseDate("Oct 30, 2025"), documentType: "Purchase Order", clientId: "client-8", direction: "in", itemCount: 14, content: "ABB AC Drive ACS880 22kW, Motor Control Unit, Soft Starter 30A, Power Factor Correction Capacitor, Current Transformer Set, Voltage Monitor Relay, Phase Sequence Relay, Ground Fault Monitor, Motor Protection Relay, Control Relay Set, Signal Conditioner Module, Data Logger Module, Remote I/O Station, Industrial Ethernet Switch.", previewContent: <PurchaseOrderDocument /> },
+    { documentId: "po-005", title: "Parker Hannifin", documentNumber: "PO-2025-005", date: "Oct 28, 2025", dateObj: parseDate("Oct 28, 2025"), documentType: "Purchase Order", clientId: "client-9", direction: "in", itemCount: 11, content: "Servo Controller Module, Stepper Motor Driver, Linear Encoder System, Rotary Encoder High Resolution, Motion Control Card, Fieldbus Interface Module, Signal Amplifier Module, Electrical Junction Box, Cable Gland Set, Control Panel Mounting Rails, Electrical Installation Accessories Kit.", previewContent: <PurchaseOrderDocument /> },
+    { documentId: "offer-006", title: "Advanced Compaction Systems", documentNumber: "OF-2025-006", date: "Oct 20, 2025", dateObj: parseDate("Oct 20, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 135000.00, content: "New hydraulic powder compaction press HPC-700. Latest model with advanced control system, automated tooling, and comprehensive warranty.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-006", title: "Press Maintenance Experts", documentNumber: "FT-2025-006", date: "Oct 19, 2025", dateObj: parseDate("Oct 19, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 38000.00, content: "Press rebuild service completed. Full restoration including new hydraulic system, updated controls, safety upgrades, and performance certification.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-006", title: "Heavy Machinery Haulers", documentNumber: "TD-2025-006", date: "Oct 18, 2025", dateObj: parseDate("Oct 18, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Delivery of custom-built mechanical press MPC-600. Special order with enhanced features, includes installation and commissioning services.", previewContent: <TransportDocument /> },
+    { documentId: "offer-007", title: "Used Press Marketplace", documentNumber: "OF-2025-007", date: "Oct 17, 2025", dateObj: parseDate("Oct 17, 2025"), documentType: "Offer", clientId: "client-1", direction: "in", total: 35000.00, content: "Purchase offer for mechanical press MPC-150. Press requires rebuild but includes original tooling and technical documentation.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-007", title: "Equipment Inspection Services", documentNumber: "FT-2025-007", date: "Oct 16, 2025", dateObj: parseDate("Oct 16, 2025"), documentType: "Invoice", clientId: "client-2", direction: "in", total: 15000.00, content: "Received invoice for press evaluation service. Technical assessment, condition report, and rebuild cost estimate for hydraulic press.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-007", title: "Industrial Transport Solutions", documentNumber: "TD-2025-007", date: "Oct 15, 2025", dateObj: parseDate("Oct 15, 2025"), documentType: "Transport", clientId: "client-3", direction: "in", content: "Received used hydraulic press HPC-200 for rebuild. Press arrives with partial documentation. Scheduled for complete restoration and upgrade.", previewContent: <TransportDocument /> },
+    { documentId: "agreement-004", title: "Press Construction Services", documentNumber: "AG-2025-004", date: "Oct 14, 2025", dateObj: parseDate("Oct 14, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 8, content: "Construction agreement for new mechanical press. Custom specifications, manufacturing schedule, quality standards, delivery terms, and warranty coverage.", previewContent: <AgreementDocument /> },
+    { documentId: "offer-008", title: "Rebuilt Press Specialists", documentNumber: "OF-2025-008", date: "Oct 13, 2025", dateObj: parseDate("Oct 13, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 68000.00, content: "Fully rebuilt mechanical press MPC-300. Complete restoration with new components, updated safety systems, and 12-month warranty included.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-008", title: "Press Retrofit Solutions", documentNumber: "FT-2025-008", date: "Oct 12, 2025", dateObj: parseDate("Oct 12, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 52000.00, content: "Retrofitting service invoice. Control system modernization, hydraulic upgrades, safety enhancements, and comprehensive testing completed.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-008", title: "Machinery Delivery Services", documentNumber: "TD-2025-008", date: "Oct 11, 2025", dateObj: parseDate("Oct 11, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Delivery of rebuilt hydraulic press HPC-450. Includes updated control system, new hydraulic components, tooling, and installation support.", previewContent: <TransportDocument /> },
+    { documentId: "offer-009", title: "Press Equipment Brokers", documentNumber: "OF-2025-009", date: "Oct 10, 2025", dateObj: parseDate("Oct 10, 2025"), documentType: "Offer", clientId: "client-1", direction: "in", total: 48000.00, content: "Purchase offer for used hydraulic press HPC-350. Press requires rebuild but has complete tooling set and original documentation.", previewContent: <OfferDocument /> },
+    { documentId: "fattura-009", title: "Press Rebuild Contractors", documentNumber: "FT-2025-009", date: "Oct 9, 2025", dateObj: parseDate("Oct 9, 2025"), documentType: "Invoice", clientId: "client-2", direction: "in", total: 25000.00, content: "Received invoice for press rebuild service. Complete overhaul including new bearings, seals, hydraulic components, and control system updates.", previewContent: <FatturaDocument /> },
+    { documentId: "transport-009", title: "Heavy Equipment Movers", documentNumber: "TD-2025-009", date: "Oct 8, 2025", dateObj: parseDate("Oct 8, 2025"), documentType: "Transport", clientId: "client-3", direction: "in", content: "Received mechanical press MPC-250 for restoration. Press includes original tooling and technical manuals. Scheduled for complete rebuild.", previewContent: <TransportDocument /> },
+    { documentId: "agreement-005", title: "Press Engineering Services", documentNumber: "AG-2025-005", date: "Oct 7, 2025", dateObj: parseDate("Oct 7, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 6, content: "Retrofitting agreement for hydraulic press upgrade. Includes design modifications, component replacement, installation, and operator training.", previewContent: <AgreementDocument />, archived: true },
+    { documentId: "offer-010", title: "Vintage Press Collection", documentNumber: "OF-2024-001", date: "Sep 15, 2024", dateObj: parseDate("Sep 15, 2024"), documentType: "Offer", clientId: "client-1", direction: "out", total: 25000.00, content: "Vintage mechanical press from 1980s. Fully functional but requires modernization.", previewContent: <OfferDocument />, archived: true },
+    { documentId: "fattura-010", title: "Legacy Equipment Services", documentNumber: "FT-2024-002", date: "Sep 10, 2024", dateObj: parseDate("Sep 10, 2024"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 18000.00, content: "Historical press restoration service completed. Preserved original components and documentation.", previewContent: <FatturaDocument />, archived: true },
+    { documentId: "transport-010", title: "Archive Transport Services", documentNumber: "TD-2024-003", date: "Sep 5, 2024", dateObj: parseDate("Sep 5, 2024"), documentType: "Transport", clientId: "client-3", direction: "in", content: "Archived press unit received for historical preservation. Documented and stored in archive facility.", previewContent: <TransportDocument />, archived: true },
+  ];
+
+  // Create filters array for FilterPillGroup based on documentFilter and activeTab
   const filters = useMemo(() => {
+    // If clients tab is active, show client-related filters
+    if (activeTab === 'clients') {
+      // Get unique client names from documents for the client name filter
+      const uniqueClientNames = Array.from(new Set(
+        documents
+          .filter(doc => !doc.archived)
+          .map(doc => ({ id: doc.clientId || doc.title, name: doc.title }))
+      )).sort((a, b) => a.name.localeCompare(b.name));
+
+      return [
+        {
+          id: 'who',
+          title: 'Client',
+          placeholder: 'Which client?',
+          options: [
+            { value: 'all', label: 'All Clients' },
+            ...uniqueClientNames.map(client => ({
+              value: client.id,
+              label: client.name
+            }))
+          ],
+          selectedValue: null,
+        },
+        {
+          id: 'country',
+          title: 'Country',
+          placeholder: 'Which country?',
+          options: [
+            { value: 'all', label: 'All Countries' },
+            { value: 'Italy', label: 'Italy' },
+            { value: 'Germany', label: 'Germany' },
+            { value: 'USA', label: 'USA' },
+            { value: 'Canada', label: 'Canada' },
+          ],
+          selectedValue: null,
+        },
+        {
+          id: 'category',
+          title: 'Document Type',
+          placeholder: 'What document types?',
+          options: [
+            { value: 'all', label: 'All Types' },
+            { value: 'transport', label: 'Transport' },
+            { value: 'offer', label: 'Offer' },
+            { value: 'invoice', label: 'Invoice' },
+            { value: 'agreement', label: 'Agreement' },
+            { value: 'purchase-order', label: 'Purchase Order' },
+          ],
+          selectedValue: null,
+        },
+        {
+          id: 'document-count',
+          title: 'Document Count',
+          placeholder: 'How many documents?',
+          options: [
+            { value: 'all', label: 'All Counts' },
+            { value: '1-5', label: '1-5 documents' },
+            { value: '6-10', label: '6-10 documents' },
+            { value: '11-20', label: '11-20 documents' },
+            { value: '21+', label: '21+ documents' },
+          ],
+          selectedValue: null,
+        },
+      ];
+    }
+
+    // Default document filters
     const isIn = documentFilter === 'in';
     const isOut = documentFilter === 'out';
 
@@ -172,11 +504,25 @@ export const DocumentsPage = () => {
         ],
         selectedValue: null,
       },
+      {
+        id: 'country',
+        title: 'Country',
+        placeholder: 'Which country?',
+        options: [
+          { value: 'all', label: 'All Countries' },
+          { value: 'Italy', label: 'Italy' },
+          { value: 'Germany', label: 'Germany' },
+          { value: 'USA', label: 'USA' },
+          { value: 'Canada', label: 'Canada' },
+        ],
+        selectedValue: null,
+      },
     ];
-  }, [documentFilter]);
+  }, [documentFilter, activeTab, documents]);
 
   // Initialize filterState from saved state or filters
   const [filterState, setFilterState] = useState(() => {
+    // Use filters from useMemo for initial state
     if (savedState?.filterState) {
       // Merge saved filter state with current filters structure
       return filters.map(newFilter => {
@@ -197,7 +543,7 @@ export const DocumentsPage = () => {
   // Preserve selected values for filters that don't depend on direction
   useEffect(() => {
     setFilterState(prev => {
-      return filters.map(newFilter => {
+      const newState = filters.map(newFilter => {
         const oldFilter = prev.find(f => f.id === newFilter.id);
         // For direction filter, always use the new value
         if (newFilter.id === 'direction') {
@@ -212,62 +558,29 @@ export const DocumentsPage = () => {
         }
         return newFilter;
       });
+      // Only update if the state actually changed (compare by JSON to avoid reference issues)
+      const prevStr = JSON.stringify(prev.map(f => ({ id: f.id, selectedValue: f.selectedValue, options: f.options })));
+      const newStr = JSON.stringify(newState.map(f => ({ id: f.id, selectedValue: f.selectedValue, options: f.options })));
+      return prevStr !== newStr ? newState : prev;
     });
-  }, [filters]);
-
-  const handleFilterChange = (filterId, value) => {
-    // Handle direction filter separately to update documentFilter
-    // The useEffect will update filterState when documentFilter changes
-    if (filterId === 'direction') {
-      setDocumentFilter(value);
-      setOpenDropdown(null);
-      return; // Don't update filterState directly, let useEffect handle it
-    }
-    
-    setFilterState(prev => 
-      prev.map(filter => 
-        filter.id === filterId 
-          ? { ...filter, selectedValue: value }
-          : filter
-      )
-    );
-    setOpenDropdown(null);
-  };
-
-  const handleDropdownToggle = (filterId) => {
-    setOpenDropdown(openDropdown === filterId ? null : filterId);
-  };
-
-  const handleDropdownClose = () => {
-    setOpenDropdown(null);
-  };
-
-  const handleMoreMenuToggle = () => {
-    setIsMoreMenuOpen(!isMoreMenuOpen);
-  };
-
-  const handleResetFilters = () => {
-    setDocumentFilter('all');
-    setFilterState(prev => 
-      prev.map(filter => 
-        filter.id === 'direction' 
-          ? { ...filter, selectedValue: 'all' }
-          : { ...filter, selectedValue: null }
-      )
-    );
-    setSearchQuery('');
-    setHeaderSearchQuery('');
-    setIsSearchExpanded(false);
-  };
+  }, [documentFilter, activeTab, filters]); // Include filters but with change detection to prevent loops
 
   // Get selected filter values for filtering logic
   const selectedFilters = useMemo(() => {
-    return {
+    const baseFilters = {
       when: filterState.find(f => f.id === 'when')?.selectedValue || null,
       who: filterState.find(f => f.id === 'who')?.selectedValue || null,
       category: filterState.find(f => f.id === 'category')?.selectedValue || null,
+      country: filterState.find(f => f.id === 'country')?.selectedValue || null,
     };
-  }, [filterState]);
+    
+    // Add client-specific filters when on clients tab
+    if (activeTab === 'clients') {
+      baseFilters['document-count'] = filterState.find(f => f.id === 'document-count')?.selectedValue || null;
+    }
+    
+    return baseFilters;
+  }, [filterState, activeTab]);
 
   // Check if any filters are active
   const hasActiveFilters = useMemo(() => {
@@ -280,17 +593,8 @@ export const DocumentsPage = () => {
       // For other filters, check if any value is selected
       return value !== null && value !== undefined && value !== 'all';
     });
-    const hasSearchQuery = (searchQuery && searchQuery.trim().length > 0) || 
-                           (headerSearchQuery && headerSearchQuery.trim().length > 0);
-    return hasFilterSelected || hasSearchQuery;
-  }, [filterState, searchQuery, headerSearchQuery]);
-
-  // Focus search input when expanded
-  useEffect(() => {
-    if (isSearchExpanded && searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  }, [isSearchExpanded]);
+    return hasFilterSelected;
+  }, [filterState]);
 
   // Save state to localStorage whenever key state changes
   useEffect(() => {
@@ -303,16 +607,6 @@ export const DocumentsPage = () => {
     };
     saveState(stateToSave);
   }, [activeTab, headerSearchQuery, documentFilter, viewMode, filterState]);
-
-  // Restore scroll position on mount
-  useEffect(() => {
-    if (savedState?.scrollPosition && pageContainerRef.current) {
-      // Use setTimeout to ensure DOM is ready
-      setTimeout(() => {
-        window.scrollTo(0, savedState.scrollPosition);
-      }, 100);
-    }
-  }, []); // Only run on mount
 
   // Save scroll position before navigation
   useEffect(() => {
@@ -334,82 +628,6 @@ export const DocumentsPage = () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [activeTab, headerSearchQuery, documentFilter, viewMode, filterState]);
-
-  // Close dropdowns and menus when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target) &&
-          moreButtonRef.current && !moreButtonRef.current.contains(event.target)) {
-        setIsMoreMenuOpen(false);
-      }
-    };
-
-    if (isMoreMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }
-  }, [isMoreMenuOpen]);
-
-
-
-
-
-  // Helper function to parse date string to Date object
-  const parseDate = (dateString) => {
-    const months = { "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3, "May": 4, "Jun": 5, "Jul": 6, "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11 };
-    const parts = dateString.split(", ");
-    const datePart = parts[0].split(" ");
-    const year = parseInt(parts[1]);
-    const month = months[datePart[0]];
-    const day = parseInt(datePart[1]);
-    return new Date(year, month, day);
-  };
-
-  const documents = [
-    { documentId: "test-doc-001", title: "TEST_CLIENT_QA_001", documentNumber: "TEST-2025-001", date: "Nov 9, 2025", dateObj: parseDate("Nov 9, 2025"), documentType: "Transport", clientId: "test-client-1", direction: "out", content: "Test document for QA purposes. This is a sample transport document used for testing the document management system functionality.", previewContent: <TransportDocument />, needsAttention: false, signatureStatus: null, lastModified: "Nov 9, 2025", isEditable: true },
-    { documentId: "offer-001", title: "SACME", documentNumber: "OF-2025-001", date: "Nov 7, 2025", dateObj: parseDate("Nov 7, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 125000.00, content: "Hydraulic Powder Compaction Press HPC-500, Automated Control System, Press Tooling Set, Installation Service, Spare Parts Package, Technical Documentation.", previewContent: <OfferDocument />, needsAttention: true, signatureStatus: "Awaiting Signature", lastModified: "Nov 7, 2025", isEditable: true },
-    { documentId: "fattura-001", title: "Brembo S.p.A.", documentNumber: "FT-2025-001", date: "Nov 6, 2025", dateObj: parseDate("Nov 6, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 87500.00, content: "Mechanical Press Rebuild Service, Control System Upgrade, New Hydraulic Pumps, Safety Interlocks Installation, Operator Training.", previewContent: <FatturaDocument />, needsAttention: true },
-    { documentId: "transport-001", title: "Thyssenkrupp Materials", documentNumber: "TD-2025-001", date: "Nov 5, 2025", dateObj: parseDate("Nov 5, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Hydraulic Press HPC-300 Unit, Hydraulic System Components, Control Panel Assembly, Installation Tools, Press Tooling, Spare Parts Package, Technical Documentation, Safety Equipment.", previewContent: <TransportDocument /> },
-    { documentId: "agreement-001", title: "Schaeffler Group", documentNumber: "AG-2025-001", date: "Nov 4, 2025", dateObj: parseDate("Nov 4, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 6, content: "Retrofitting agreement for mechanical press upgrade. Includes modernization of control system, safety upgrades, and performance optimization.", previewContent: <AgreementDocument />, needsAttention: true, signatureStatus: "Pending", lastModified: "Nov 4, 2025", isEditable: false },
-    { documentId: "offer-002", title: "Industrial Press Systems", documentNumber: "OF-2025-002", date: "Nov 3, 2025", dateObj: parseDate("Nov 3, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 95000.00, content: "Used mechanical powder compaction press MPC-400. Recently rebuilt, includes full documentation and 6-month warranty.", previewContent: <OfferDocument /> },
-    { documentId: "fattura-002", title: "Compaction Equipment Inc.", documentNumber: "FT-2025-002", date: "Nov 2, 2025", dateObj: parseDate("Nov 2, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 45000.00, content: "Press retrofitting service. Control system upgrade, new hydraulic pumps, safety interlocks installation, operator training.", previewContent: <FatturaDocument /> },
-    { documentId: "transport-002", title: "Material Processing Corp.", documentNumber: "TD-2025-002", date: "Nov 1, 2025", dateObj: parseDate("Nov 1, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Shipment of new hydraulic compaction press HPC-600. Complete system with tooling, spare parts package, and technical documentation.", previewContent: <TransportDocument /> },
-    { documentId: "offer-003", title: "Precision Press Manufacturing", documentNumber: "OF-2025-003", date: "Oct 31, 2025", dateObj: parseDate("Oct 31, 2025"), documentType: "Offer", clientId: "client-1", direction: "in", total: 65000.00, content: "Purchase offer for used hydraulic press HPC-250. Includes inspection, dismantling, and transport to our facility.", previewContent: <OfferDocument /> },
-    { documentId: "fattura-003", title: "Press Rebuild Services", documentNumber: "FT-2025-003", date: "Oct 30, 2025", dateObj: parseDate("Oct 30, 2025"), documentType: "Invoice", clientId: "client-2", direction: "in", total: 32000.00, content: "Invoice for press rebuild service received. Complete overhaul of mechanical press including new components and testing.", previewContent: <FatturaDocument /> },
-    { documentId: "transport-003", title: "Heavy Equipment Logistics", documentNumber: "TD-2025-003", date: "Oct 29, 2025", dateObj: parseDate("Oct 29, 2025"), documentType: "Transport", clientId: "client-3", direction: "in", content: "Received shipment of used mechanical press MPC-350. Press requires inspection and rebuild before resale.", previewContent: <TransportDocument /> },
-    { documentId: "agreement-002", title: "Custom Press Solutions", documentNumber: "AG-2025-002", date: "Oct 28, 2025", dateObj: parseDate("Oct 28, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 5, content: "Construction agreement for custom hydraulic press. Design specifications, manufacturing timeline, delivery terms, and warranty conditions.", previewContent: <AgreementDocument />, signatureStatus: "Signed", lastModified: "Oct 29, 2025", isEditable: false },
-    { documentId: "offer-004", title: "Powder Processing Equipment", documentNumber: "OF-2025-004", date: "Oct 27, 2025", dateObj: parseDate("Oct 27, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 78000.00, content: "Rebuilt mechanical press MPC-500. Complete restoration with new bearings, seals, and updated control system. Ready for immediate use.", previewContent: <OfferDocument /> },
-    { documentId: "fattura-004", title: "Compaction Systems Ltd.", documentNumber: "FT-2025-004", date: "Oct 26, 2025", dateObj: parseDate("Oct 26, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 55000.00, content: "Retrofitting service invoice. Modernization of hydraulic press control system, installation of new safety features, and performance testing.", previewContent: <FatturaDocument /> },
-    { documentId: "transport-004", title: "Industrial Machinery Transport", documentNumber: "TD-2025-004", date: "Oct 25, 2025", dateObj: parseDate("Oct 25, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Delivery of retrofitted hydraulic press HPC-400. Includes updated control panel, new hydraulic components, and installation support.", previewContent: <TransportDocument /> },
-    { documentId: "offer-005", title: "Press Equipment Suppliers", documentNumber: "OF-2025-005", date: "Oct 24, 2025", dateObj: parseDate("Oct 24, 2025"), documentType: "Offer", clientId: "client-1", direction: "in", total: 42000.00, content: "Offer to purchase used mechanical press MPC-200. Press requires rebuild but has good structural condition and original tooling.", previewContent: <OfferDocument /> },
-    { documentId: "fattura-005", title: "Equipment Restoration Services", documentNumber: "FT-2025-005", date: "Oct 23, 2025", dateObj: parseDate("Oct 23, 2025"), documentType: "Invoice", clientId: "client-2", direction: "in", total: 28000.00, content: "Received invoice for press inspection and assessment service. Complete evaluation of mechanical press condition and rebuild recommendations.", previewContent: <FatturaDocument /> },
-    { documentId: "transport-005", title: "Specialized Cargo Services", documentNumber: "TD-2025-005", date: "Oct 22, 2025", dateObj: parseDate("Oct 22, 2025"), documentType: "Transport", clientId: "client-3", direction: "in", content: "Received hydraulic press HPC-180 for rebuild. Press includes original documentation and tooling. Scheduled for complete restoration.", previewContent: <TransportDocument /> },
-    { documentId: "agreement-003", title: "Press Modernization Partners", documentNumber: "AG-2025-003", date: "Oct 21, 2025", dateObj: parseDate("Oct 21, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 7, content: "Service agreement for press modernization project. Includes design review, component upgrades, installation, and operator training program.", previewContent: <AgreementDocument /> },
-    { documentId: "po-001", title: "Bosch Rexroth", documentNumber: "PO-2025-001", date: "Nov 8, 2025", dateObj: parseDate("Nov 8, 2025"), documentType: "Purchase Order", clientId: "client-5", direction: "in", itemCount: 12, content: "Hydraulic Cylinder Seal Kit, Pressure Relief Valve, Control Panel Circuit Board, Hydraulic Oil Filter Element, Pneumatic Fittings Set, Steel Guide Rails, Safety Interlock Switch, Hydraulic Pump Replacement, Electrical Cable Harness, Tooling Inserts, Lubrication System Components, Control Software License.", previewContent: <PurchaseOrderDocument />, signatureStatus: "Signed", lastModified: "Nov 8, 2025", isEditable: false },
-    { documentId: "po-002", title: "Festo AG", documentNumber: "PO-2025-002", date: "Nov 5, 2025", dateObj: parseDate("Nov 5, 2025"), documentType: "Purchase Order", clientId: "client-6", direction: "in", itemCount: 15, content: "Hydraulic Seals, Pressure Gauges, Control Valves, Oil Filters, Pneumatic Cylinders, Steel Bearings, Safety Switches, Hydraulic Pumps, Electrical Connectors, Tooling Components, Lubrication Pumps, Control Modules, Sensor Arrays, Actuator Systems, Maintenance Kits.", previewContent: <PurchaseOrderDocument /> },
-    { documentId: "po-003", title: "Siemens Industry", documentNumber: "PO-2025-003", date: "Nov 2, 2025", dateObj: parseDate("Nov 2, 2025"), documentType: "Purchase Order", clientId: "client-7", direction: "in", itemCount: 10, content: "Hydraulic Hoses, Pressure Sensors, Control Panels, Filter Housings, Pneumatic Valves, Guide Rails, Safety Relays, Pump Motors, Cable Assemblies, Tooling Fixtures.", previewContent: <PurchaseOrderDocument /> },
-    { documentId: "po-004", title: "ABB Automation", documentNumber: "PO-2025-004", date: "Oct 30, 2025", dateObj: parseDate("Oct 30, 2025"), documentType: "Purchase Order", clientId: "client-8", direction: "in", itemCount: 14, content: "Hydraulic Cylinders, Pressure Switches, Control Valves, Filter Cartridges, Pneumatic Fittings, Steel Rods, Safety Sensors, Pump Assemblies, Electrical Wires, Tooling Plates, Lubrication Systems, Control Boards, Position Sensors, Actuator Motors.", previewContent: <PurchaseOrderDocument /> },
-    { documentId: "po-005", title: "Parker Hannifin", documentNumber: "PO-2025-005", date: "Oct 28, 2025", dateObj: parseDate("Oct 28, 2025"), documentType: "Purchase Order", clientId: "client-9", direction: "in", itemCount: 11, content: "Hydraulic Fittings, Pressure Transducers, Control Modules, Oil Filters, Pneumatic Actuators, Guide Blocks, Safety Buttons, Hydraulic Motors, Cable Ties, Tooling Clamps, Lubrication Pumps.", previewContent: <PurchaseOrderDocument /> },
-    { documentId: "offer-006", title: "Advanced Compaction Systems", documentNumber: "OF-2025-006", date: "Oct 20, 2025", dateObj: parseDate("Oct 20, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 135000.00, content: "New hydraulic powder compaction press HPC-700. Latest model with advanced control system, automated tooling, and comprehensive warranty.", previewContent: <OfferDocument /> },
-    { documentId: "fattura-006", title: "Press Maintenance Experts", documentNumber: "FT-2025-006", date: "Oct 19, 2025", dateObj: parseDate("Oct 19, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 38000.00, content: "Press rebuild service completed. Full restoration including new hydraulic system, updated controls, safety upgrades, and performance certification.", previewContent: <FatturaDocument /> },
-    { documentId: "transport-006", title: "Heavy Machinery Haulers", documentNumber: "TD-2025-006", date: "Oct 18, 2025", dateObj: parseDate("Oct 18, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Delivery of custom-built mechanical press MPC-600. Special order with enhanced features, includes installation and commissioning services.", previewContent: <TransportDocument /> },
-    { documentId: "offer-007", title: "Used Press Marketplace", documentNumber: "OF-2025-007", date: "Oct 17, 2025", dateObj: parseDate("Oct 17, 2025"), documentType: "Offer", clientId: "client-1", direction: "in", total: 35000.00, content: "Purchase offer for mechanical press MPC-150. Press requires rebuild but includes original tooling and technical documentation.", previewContent: <OfferDocument /> },
-    { documentId: "fattura-007", title: "Equipment Inspection Services", documentNumber: "FT-2025-007", date: "Oct 16, 2025", dateObj: parseDate("Oct 16, 2025"), documentType: "Invoice", clientId: "client-2", direction: "in", total: 15000.00, content: "Received invoice for press evaluation service. Technical assessment, condition report, and rebuild cost estimate for hydraulic press.", previewContent: <FatturaDocument /> },
-    { documentId: "transport-007", title: "Industrial Transport Solutions", documentNumber: "TD-2025-007", date: "Oct 15, 2025", dateObj: parseDate("Oct 15, 2025"), documentType: "Transport", clientId: "client-3", direction: "in", content: "Received used hydraulic press HPC-200 for rebuild. Press arrives with partial documentation. Scheduled for complete restoration and upgrade.", previewContent: <TransportDocument /> },
-    { documentId: "agreement-004", title: "Press Construction Services", documentNumber: "AG-2025-004", date: "Oct 14, 2025", dateObj: parseDate("Oct 14, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 8, content: "Construction agreement for new mechanical press. Custom specifications, manufacturing schedule, quality standards, delivery terms, and warranty coverage.", previewContent: <AgreementDocument /> },
-    { documentId: "offer-008", title: "Rebuilt Press Specialists", documentNumber: "OF-2025-008", date: "Oct 13, 2025", dateObj: parseDate("Oct 13, 2025"), documentType: "Offer", clientId: "client-1", direction: "out", total: 68000.00, content: "Fully rebuilt mechanical press MPC-300. Complete restoration with new components, updated safety systems, and 12-month warranty included.", previewContent: <OfferDocument /> },
-    { documentId: "fattura-008", title: "Press Retrofit Solutions", documentNumber: "FT-2025-008", date: "Oct 12, 2025", dateObj: parseDate("Oct 12, 2025"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 52000.00, content: "Retrofitting service invoice. Control system modernization, hydraulic upgrades, safety enhancements, and comprehensive testing completed.", previewContent: <FatturaDocument /> },
-    { documentId: "transport-008", title: "Machinery Delivery Services", documentNumber: "TD-2025-008", date: "Oct 11, 2025", dateObj: parseDate("Oct 11, 2025"), documentType: "Transport", clientId: "client-3", direction: "out", content: "Delivery of rebuilt hydraulic press HPC-450. Includes updated control system, new hydraulic components, tooling, and installation support.", previewContent: <TransportDocument /> },
-    { documentId: "offer-009", title: "Press Equipment Brokers", documentNumber: "OF-2025-009", date: "Oct 10, 2025", dateObj: parseDate("Oct 10, 2025"), documentType: "Offer", clientId: "client-1", direction: "in", total: 48000.00, content: "Purchase offer for used hydraulic press HPC-350. Press requires rebuild but has complete tooling set and original documentation.", previewContent: <OfferDocument /> },
-    { documentId: "fattura-009", title: "Press Rebuild Contractors", documentNumber: "FT-2025-009", date: "Oct 9, 2025", dateObj: parseDate("Oct 9, 2025"), documentType: "Invoice", clientId: "client-2", direction: "in", total: 25000.00, content: "Received invoice for press rebuild service. Complete overhaul including new bearings, seals, hydraulic components, and control system updates.", previewContent: <FatturaDocument /> },
-    { documentId: "transport-009", title: "Heavy Equipment Movers", documentNumber: "TD-2025-009", date: "Oct 8, 2025", dateObj: parseDate("Oct 8, 2025"), documentType: "Transport", clientId: "client-3", direction: "in", content: "Received mechanical press MPC-250 for restoration. Press includes original tooling and technical manuals. Scheduled for complete rebuild.", previewContent: <TransportDocument /> },
-    { documentId: "agreement-005", title: "Press Engineering Services", documentNumber: "AG-2025-005", date: "Oct 7, 2025", dateObj: parseDate("Oct 7, 2025"), documentType: "Agreement", clientId: "client-4", direction: "out", itemCount: 6, content: "Retrofitting agreement for hydraulic press upgrade. Includes design modifications, component replacement, installation, and operator training.", previewContent: <AgreementDocument />, archived: true },
-    { documentId: "offer-010", title: "Vintage Press Collection", documentNumber: "OF-2024-001", date: "Sep 15, 2024", dateObj: parseDate("Sep 15, 2024"), documentType: "Offer", clientId: "client-1", direction: "out", total: 25000.00, content: "Vintage mechanical press from 1980s. Fully functional but requires modernization.", previewContent: <OfferDocument />, archived: true },
-    { documentId: "fattura-010", title: "Legacy Equipment Services", documentNumber: "FT-2024-002", date: "Sep 10, 2024", dateObj: parseDate("Sep 10, 2024"), documentType: "Invoice", clientId: "client-2", direction: "out", total: 18000.00, content: "Historical press restoration service completed. Preserved original components and documentation.", previewContent: <FatturaDocument />, archived: true },
-    { documentId: "transport-010", title: "Archive Transport Services", documentNumber: "TD-2024-003", date: "Sep 5, 2024", dateObj: parseDate("Sep 5, 2024"), documentType: "Transport", clientId: "client-3", direction: "in", content: "Archived press unit received for historical preservation. Documented and stored in archive facility.", previewContent: <TransportDocument />, archived: true },
-  ];
 
   // Filter documents based on selected filters
   const filteredDocuments = useMemo(() => {
@@ -514,8 +732,16 @@ export const DocumentsPage = () => {
       }
     }
 
+    // Filter by "country"
+    if (selectedFilters.country && selectedFilters.country !== 'all') {
+      filtered = filtered.filter(doc => {
+        const docCountry = clientCountryMap[doc.clientId] || clientCountryMap[doc.title];
+        return docCountry === selectedFilters.country;
+      });
+    }
+
     return filtered;
-  }, [documents, documentFilter, selectedFilters, searchQuery, headerSearchQuery, activeTab]);
+  }, [documents, documentFilter, selectedFilters, searchQuery, headerSearchQuery, activeTab, clientCountryMap]);
 
   const visibleDocuments = useMemo(() => {
     return filteredDocuments.slice(0, itemsToShow);
@@ -680,6 +906,64 @@ export const DocumentsPage = () => {
     }).sort((a, b) => a.clientName.localeCompare(b.clientName));
   }, [documents, activeTab]);
 
+  // Filter clients based on selected filters
+  const filteredClients = useMemo(() => {
+    if (activeTab !== 'clients') return [];
+    
+    let filtered = [...clients];
+    
+    // Filter by client name (who)
+    if (selectedFilters.who && selectedFilters.who !== 'all') {
+      filtered = filtered.filter(client => client.clientId === selectedFilters.who);
+    }
+    
+    // Filter by country
+    if (selectedFilters.country && selectedFilters.country !== 'all') {
+      filtered = filtered.filter(client => {
+        const clientCountry = clientCountryMap[client.clientId] || clientCountryMap[client.clientName];
+        return clientCountry === selectedFilters.country;
+      });
+    }
+    
+    // Filter by document type (category)
+    if (selectedFilters.category && selectedFilters.category !== 'all') {
+      const typeMap = {
+        'transport': 'Transport',
+        'offer': 'Offer',
+        'invoice': 'Invoice',
+        'agreement': 'Agreement',
+        'purchase-order': 'Purchase Order'
+      };
+      const documentType = typeMap[selectedFilters.category];
+      if (documentType) {
+        filtered = filtered.filter(client => 
+          client.documentTypes.includes(documentType)
+        );
+      }
+    }
+    
+    // Filter by document count
+    if (selectedFilters['document-count'] && selectedFilters['document-count'] !== 'all') {
+      filtered = filtered.filter(client => {
+        const count = client.documentCount;
+        switch (selectedFilters['document-count']) {
+          case '1-5':
+            return count >= 1 && count <= 5;
+          case '6-10':
+            return count >= 6 && count <= 10;
+          case '11-20':
+            return count >= 11 && count <= 20;
+          case '21+':
+            return count >= 21;
+          default:
+            return true;
+        }
+      });
+    }
+    
+    return filtered;
+  }, [clients, selectedFilters, activeTab, clientCountryMap]);
+
   const groupedDocuments = useMemo(() => {
     const groups = {
       Transport: [],
@@ -698,11 +982,16 @@ export const DocumentsPage = () => {
 
   const hasMore = itemsToShow < filteredDocuments.length;
 
-  const handleShowMore = () => {
-    setItemsToShow(prev => Math.min(prev + 12, filteredDocuments.length));
-  };
+  const handleShowMore = useCallback(() => {
+    setItemsToShow(prev => {
+      // Use the current filteredDocuments length
+      const currentLength = filteredDocuments.length;
+      const newValue = Math.min(prev + 12, currentLength);
+      return newValue;
+    });
+  }, [filteredDocuments]);
 
-  const handleDocumentSelect = (documentId, isSelected) => {
+  const handleDocumentSelect = useCallback((documentId, isSelected) => {
     setSelectedDocuments(prev => {
       const newSet = new Set(prev);
       if (isSelected) {
@@ -712,7 +1001,7 @@ export const DocumentsPage = () => {
       }
       return newSet;
     });
-  };
+  }, []);
 
   const handleUnselectAll = () => {
     setSelectedDocuments(new Set());
@@ -789,14 +1078,18 @@ export const DocumentsPage = () => {
     setItemsToShow(24);
   }, [documentFilter, selectedFilters, searchQuery]);
 
-
   return (
     <div className="documents-page" ref={pageContainerRef}>
       <div className="documents-top-bar">
         <div className="luna-logo">
           <div className="luna-logo-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21.752 15.002A9.717 9.717 0 0 1 12 21.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.598.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" fill="currentColor"/>
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Outer circle - stamp border */}
+              <circle cx="14" cy="14" r="13" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+              {/* Inner decorative circle for stamp effect */}
+              <circle cx="14" cy="14" r="10.5" stroke="currentColor" strokeWidth="0.5" fill="none" opacity="0.25"/>
+              {/* Moon crescent - cleaner design */}
+              <path d="M14 7C10.134 7 7 10.134 7 14C7 17.866 10.134 21 14 21C17.866 21 21 17.866 21 14C21 10.134 17.866 7 14 7ZM14 19C11.239 19 9 16.761 9 14C9 11.239 11.239 9 14 9C16.761 9 19 11.239 19 14C19 16.761 16.761 19 14 19Z" fill="currentColor"/>
             </svg>
           </div>
           <span className="luna-logo-text">Luna</span>
@@ -829,12 +1122,61 @@ export const DocumentsPage = () => {
         </div>
         
         <div className="top-action-buttons-container">
+          {/* Company Button */}
+          <div className="company-button-wrapper">
+            {companyDetails?.logo ? (
+              <button
+                className="company-button-with-logo"
+                onClick={() => setIsCompanySetupModalOpen(true)}
+                aria-label="Company settings"
+              >
+                <img 
+                  src={companyDetails.logo} 
+                  alt={companyDetails.name || 'Company'} 
+                  className="company-button-logo"
+                />
+                {companyDetails?.name && (
+                  <span className="company-button-name">{companyDetails.name}</span>
+                )}
+              </button>
+            ) : (
+              <IconButton
+                icon="building"
+                variant="ghost"
+                size="lg"
+                iconVariant="filled"
+                onClick={() => setIsCompanySetupModalOpen(true)}
+                aria-label="Company settings"
+              />
+            )}
+            {needsCompanySetup && (
+              <span className="company-attention-dot" aria-label="Company setup needed" />
+            )}
+            <div className="company-tooltip-wrapper">
+              {showCompanyTooltip && (
+                <div className="company-tooltip">
+                  <p>You can configure your company details later by clicking this button</p>
+                  <button
+                    className="company-tooltip-close"
+                    onClick={() => setShowCompanyTooltip(false)}
+                    aria-label="Close tooltip"
+                  >
+                    <Icon name="x" size="sm" variant="outline" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Profile Button */}
           <IconButton
             icon="user"
             variant="ghost"
             size="lg"
-            onClick={() => {}}
-            aria-label="Profile"
+            onClick={() => {
+              // TODO: Open user profile modal/settings
+            }}
+            aria-label="User profile"
           />
           <IconButton
             icon="upload"
@@ -850,6 +1192,62 @@ export const DocumentsPage = () => {
             onClick={handleCreateNewDocument}
             aria-label="Create new document"
           />
+        </div>
+      </div>
+      <div className="documents-templates-section">
+        <div className="documents-templates-container">
+          <h3 className="documents-templates-title">Create from Template</h3>
+          <div className="documents-templates-list">
+            <button
+              className="document-template-tag"
+              onClick={() => handleSelectDocumentType('transport')}
+              aria-label="Create Transport Document"
+            >
+              <Icon name="plus" size="md" variant="outline" />
+              <span>Transport</span>
+            </button>
+            <button
+              className="document-template-tag"
+              onClick={() => handleSelectDocumentType('offer')}
+              aria-label="Create Offer Document"
+            >
+              <Icon name="plus" size="md" variant="outline" />
+              <span>Offer</span>
+            </button>
+            <button
+              className="document-template-tag"
+              onClick={() => handleSelectDocumentType('fattura')}
+              aria-label="Create Invoice Document"
+            >
+              <Icon name="plus" size="md" variant="outline" />
+              <span>Invoice</span>
+            </button>
+            <button
+              className="document-template-tag"
+              onClick={() => handleSelectDocumentType('agreement')}
+              aria-label="Create Agreement Document"
+            >
+              <Icon name="plus" size="md" variant="outline" />
+              <span>Agreement</span>
+            </button>
+            <button
+              className="document-template-tag"
+              onClick={() => handleSelectDocumentType('purchase-order')}
+              aria-label="Create Purchase Order Document"
+            >
+              <Icon name="plus" size="md" variant="outline" />
+              <span>Purchase Order</span>
+            </button>
+            <div className="document-template-separator"></div>
+            <button
+              className="document-template-tag"
+              onClick={handleCreateNewClient}
+              aria-label="Create New Client"
+            >
+              <Icon name="user" size="md" variant="outline" />
+              <span>New Client</span>
+            </button>
+          </div>
         </div>
       </div>
       <div className="documents-content-section">
@@ -874,6 +1272,7 @@ export const DocumentsPage = () => {
               >
                 Archived
               </button>
+              <div className="documents-tab-separator"></div>
               <button
                 className={`documents-tab ${activeTab === 'clients' ? 'active' : ''}`}
                 onClick={() => setActiveTab('clients')}
@@ -883,80 +1282,234 @@ export const DocumentsPage = () => {
             </div>
           </div>
           <div className="documents-content-container-right">
-            {(isFilterPanelOpen || isFilterPanelClosing) && (
-              <div className={`documents-filter-fields-container ${isFilterPanelClosing ? 'closing' : ''}`}>
-                {filterState.map((filter) => (
-                  <div key={filter.id} className="documents-filter-field">
-                    <select
-                      className="documents-filter-select"
-                      value={filter.selectedValue || ''}
-                      onChange={(e) => handleFilterChange(filter.id, e.target.value || null)}
-                    >
-                      <option value="">{filter.placeholder}</option>
-                      {filter.options.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
+            {selectedDocuments.size === 0 && (
+              <>
+                {(isFilterPanelOpen || isFilterPanelClosing) && (
+                  <div className={`documents-filter-fields-container ${isFilterPanelClosing ? 'closing' : ''}`}>
+                    {filterState.map((filter) => {
+                      const selectedOption = filter.options.find(opt => opt.value === filter.selectedValue);
+                      const displayText = selectedOption ? selectedOption.label : filter.placeholder;
+                      const isOpen = openFilterPanelDropdown === filter.id;
+                      
+                      // Prepare options for dropdown (include empty option for placeholder)
+                      const dropdownOptions = [
+                        { value: '', label: filter.placeholder },
+                        ...filter.options
+                      ];
+
+                      return (
+                        <div 
+                          key={filter.id} 
+                          className="documents-filter-field"
+                          onMouseEnter={() => {
+                            setHoveredFilterId(filter.id);
+                            filterFieldHoverTimeoutRef.current = setTimeout(() => {
+                              setShowFilterFieldTooltip(filter.id);
+                            }, 500);
+                          }}
+                          onMouseLeave={() => {
+                            setHoveredFilterId(null);
+                            if (filterFieldHoverTimeoutRef.current) {
+                              clearTimeout(filterFieldHoverTimeoutRef.current);
+                            }
+                            setShowFilterFieldTooltip(null);
+                          }}
+                        >
+                          <div className="documents-filter-dropdown-wrapper">
+                            <button
+                              type="button"
+                              className={`documents-filter-select-button ${isOpen ? 'open' : ''}`}
+                              onClick={() => handleFilterPanelDropdownToggle(filter.id)}
+                              aria-expanded={isOpen}
+                              aria-haspopup="listbox"
+                            >
+                              <span className={filter.selectedValue ? 'documents-filter-select-value' : 'documents-filter-select-placeholder'}>
+                                {displayText}
+                              </span>
+                              <Icon name="chevron-down" size="sm" variant="outline" className="documents-filter-select-chevron" />
+                            </button>
+                            <Dropdown
+                              isOpen={isOpen}
+                              onClose={handleFilterPanelDropdownClose}
+                              options={dropdownOptions}
+                              selectedValue={filter.selectedValue || ''}
+                              onSelect={(value) => handleFilterChange(filter.id, value || null)}
+                              position="bottom"
+                              align="left"
+                              className="documents-filter-dropdown"
+                            />
+                            {showFilterFieldTooltip === filter.id && (
+                              <div className="filter-field-hover-tooltip">
+                                {filter.title}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                ))}
-              </div>
+                )}
+                {hasActiveFilters && (
+                  <IconButton
+                    icon="reset"
+                    variant="ghost"
+                    size="lg"
+                    onClick={handleResetFilters}
+                    aria-label="Clear all filters"
+                  />
+                )}
+                <div className="filters-button-wrapper">
+                  <div 
+                    className={hasActiveFilters ? "filters-button-tooltip-wrapper" : ""}
+                    onMouseEnter={() => {
+                      setFilterButtonHovered(true);
+                      filterButtonHoverTimeoutRef.current = setTimeout(() => {
+                        setShowFilterButtonTooltip(true);
+                      }, 500);
+                    }}
+                    onMouseLeave={() => {
+                      setFilterButtonHovered(false);
+                      if (filterButtonHoverTimeoutRef.current) {
+                        clearTimeout(filterButtonHoverTimeoutRef.current);
+                      }
+                      setShowFilterButtonTooltip(false);
+                    }}
+                  >
+                    <IconButton
+                      icon={isFilterPanelOpen ? "x" : "sliders"}
+                      variant="ghost"
+                      size="lg"
+                      onClick={() => {
+                        if (isFilterPanelOpen) {
+                          setIsFilterPanelClosing(true);
+                          setTimeout(() => {
+                            setIsFilterPanelOpen(false);
+                            setIsFilterPanelClosing(false);
+                          }, 300);
+                        } else {
+                          setIsFilterPanelOpen(true);
+                        }
+                      }}
+                      aria-label={isFilterPanelOpen ? "Close filters" : "Filters"}
+                    />
+                    {hasActiveFilters && !isFilterPanelOpen && (
+                      <>
+                        <span className="filters-button-dot" aria-label="Filters active"></span>
+                        <div className="filters-button-tooltip">
+                          Filters are currently applied to your documents
+                        </div>
+                      </>
+                    )}
+                    {showFilterButtonTooltip && (
+                      <div className="filter-button-hover-tooltip">
+                        {isFilterPanelOpen ? "Close filters" : "Open filters"}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
             )}
-            {hasActiveFilters && (
-              <IconButton
-                icon="reset"
-                variant="ghost"
-                size="lg"
-                onClick={handleResetFilters}
-                aria-label="Clear all filters"
-              />
-            )}
-            <div className="filters-button-wrapper">
-              <IconButton
-                icon={isFilterPanelOpen ? "x" : "sliders"}
-                variant="ghost"
-                size="lg"
-                onClick={() => {
-                  if (isFilterPanelOpen) {
-                    setIsFilterPanelClosing(true);
-                    setTimeout(() => {
-                      setIsFilterPanelOpen(false);
-                      setIsFilterPanelClosing(false);
-                    }, 300);
-                  } else {
-                    setIsFilterPanelOpen(true);
-                  }
-                }}
-                aria-label={isFilterPanelOpen ? "Close filters" : "Filters"}
-              />
-              {hasActiveFilters && !isFilterPanelOpen && (
-                <span className="filters-button-dot" aria-label="Filters active"></span>
-              )}
-            </div>
             {selectedDocuments.size > 0 && (
               <>
-                <IconButton
-                  icon="archive"
-                  variant="ghost"
-                  size="lg"
-                  onClick={handleArchive}
-                  aria-label="Archive selected documents"
-                />
-                <IconButton
-                  icon="download"
-                  variant="ghost"
-                  size="lg"
-                  onClick={handleDownload}
-                  aria-label="Download selected documents"
-                />
-                <IconButton
-                  icon="print"
-                  variant="ghost"
-                  size="lg"
-                  onClick={handlePrint}
-                  aria-label="Print selected documents"
-                />
+                <div 
+                  className="action-button-wrapper"
+                  onMouseEnter={() => {
+                    if (actionButtonHoverTimeoutRef.current) {
+                      clearTimeout(actionButtonHoverTimeoutRef.current);
+                    }
+                    setHoveredActionButton('archive');
+                    setShowActionButtonTooltip(null);
+                    actionButtonHoverTimeoutRef.current = setTimeout(() => {
+                      setShowActionButtonTooltip('archive');
+                    }, 500);
+                  }}
+                  onMouseLeave={() => {
+                    setHoveredActionButton(null);
+                    if (actionButtonHoverTimeoutRef.current) {
+                      clearTimeout(actionButtonHoverTimeoutRef.current);
+                    }
+                    setShowActionButtonTooltip(null);
+                  }}
+                >
+                  <IconButton
+                    icon="archive"
+                    variant="ghost"
+                    size="lg"
+                    onClick={handleArchive}
+                    aria-label="Archive selected documents"
+                  />
+                  {showActionButtonTooltip === 'archive' && (
+                    <div className="action-button-hover-tooltip">
+                      Archive selected documents
+                    </div>
+                  )}
+                </div>
+                <div 
+                  className="action-button-wrapper"
+                  onMouseEnter={() => {
+                    if (actionButtonHoverTimeoutRef.current) {
+                      clearTimeout(actionButtonHoverTimeoutRef.current);
+                    }
+                    setHoveredActionButton('download');
+                    setShowActionButtonTooltip(null);
+                    actionButtonHoverTimeoutRef.current = setTimeout(() => {
+                      setShowActionButtonTooltip('download');
+                    }, 500);
+                  }}
+                  onMouseLeave={() => {
+                    setHoveredActionButton(null);
+                    if (actionButtonHoverTimeoutRef.current) {
+                      clearTimeout(actionButtonHoverTimeoutRef.current);
+                    }
+                    setShowActionButtonTooltip(null);
+                  }}
+                >
+                  <IconButton
+                    icon="download"
+                    variant="ghost"
+                    size="lg"
+                    onClick={handleDownload}
+                    aria-label="Download selected documents"
+                  />
+                  {showActionButtonTooltip === 'download' && (
+                    <div className="action-button-hover-tooltip">
+                      Download selected documents
+                    </div>
+                  )}
+                </div>
+                <div 
+                  className="action-button-wrapper"
+                  onMouseEnter={() => {
+                    if (actionButtonHoverTimeoutRef.current) {
+                      clearTimeout(actionButtonHoverTimeoutRef.current);
+                    }
+                    setHoveredActionButton('print');
+                    setShowActionButtonTooltip(null);
+                    actionButtonHoverTimeoutRef.current = setTimeout(() => {
+                      setShowActionButtonTooltip('print');
+                    }, 500);
+                  }}
+                  onMouseLeave={() => {
+                    setHoveredActionButton(null);
+                    if (actionButtonHoverTimeoutRef.current) {
+                      clearTimeout(actionButtonHoverTimeoutRef.current);
+                    }
+                    setShowActionButtonTooltip(null);
+                  }}
+                >
+                  <IconButton
+                    icon="print"
+                    variant="ghost"
+                    size="lg"
+                    onClick={handlePrint}
+                    aria-label="Print selected documents"
+                  />
+                  {showActionButtonTooltip === 'print' && (
+                    <div className="action-button-hover-tooltip">
+                      Print selected documents
+                    </div>
+                  )}
+                </div>
                 <Button
                   icon="x"
                   variant="ghost"
@@ -975,26 +1528,31 @@ export const DocumentsPage = () => {
         <>
           {activeTab === 'clients' ? (
             <>
-              {clients.length === 0 ? (
+              {filteredClients.length === 0 ? (
                 <EmptyState
                   icon="user"
                   title="No clients found"
-                  message="No clients found in your documents."
+                  message={clients.length === 0 
+                    ? "No clients found in your documents."
+                    : "No clients match your current filters."
+                  }
                   action={
-                    <Button
-                      variant="primary"
-                      size="md"
-                      icon="plus"
-                      onClick={handleCreateNewDocument}
-                    >
-                      Create Document
-                    </Button>
+                    clients.length === 0 ? (
+                      <Button
+                        variant="primary"
+                        size="md"
+                        icon="plus"
+                        onClick={handleCreateNewDocument}
+                      >
+                        Create Document
+                      </Button>
+                    ) : null
                   }
                 />
               ) : (
                 <>
                   <div className="documents-page-grid">
-                    {clients.map((client) => (
+                    {filteredClients.map((client) => (
                       <ClientOverview
                         key={client.clientId}
                         clientId={client.clientId}
@@ -1044,29 +1602,33 @@ export const DocumentsPage = () => {
               ) : (
                 <>
                   <div className="documents-page-grid">
-                    {visibleDocuments.map((doc) => (
-                      <DocumentOverview
-                        key={doc.documentId}
-                        documentId={doc.documentId}
-                        title={doc.title}
-                        documentNumber={doc.documentNumber}
-                        date={doc.date}
-                        documentType={doc.documentType}
-                        previewContent={doc.previewContent}
-                        total={doc.total}
-                        currencySymbol="€"
-                        isSelected={selectedDocuments.has(doc.documentId)}
-                        onSelect={handleDocumentSelect}
-                        searchQuery={searchQuery}
-                        content={doc.content}
-                        itemCount={doc.itemCount}
-                        direction={doc.direction}
-                        needsAttention={doc.needsAttention}
-                        signatureStatus={doc.signatureStatus}
-                        lastModified={doc.lastModified}
-                        isEditable={doc.isEditable}
-                      />
-                    ))}
+                    {visibleDocuments.map((doc) => {
+                      const docCountry = clientCountryMap[doc.clientId] || clientCountryMap[doc.title];
+                      return (
+                        <DocumentOverview
+                          key={doc.documentId}
+                          documentId={doc.documentId}
+                          title={doc.title}
+                          documentNumber={doc.documentNumber}
+                          date={doc.date}
+                          documentType={doc.documentType}
+                          previewContent={doc.previewContent}
+                          total={doc.total}
+                          currencySymbol="€"
+                          isSelected={selectedDocuments.has(doc.documentId)}
+                          onSelect={handleDocumentSelect}
+                          searchQuery={searchQuery}
+                          content={doc.content}
+                          itemCount={doc.itemCount}
+                          direction={doc.direction}
+                          needsAttention={doc.needsAttention}
+                          signatureStatus={doc.signatureStatus}
+                          lastModified={doc.lastModified}
+                          isEditable={doc.isEditable}
+                          country={docCountry}
+                        />
+                      );
+                    })}
                   </div>
                   {hasMore && (
                     <div className="documents-show-more">
@@ -1134,12 +1696,28 @@ export const DocumentsPage = () => {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onSelectDocumentType={handleSelectDocumentType}
+        initialTab={createModalInitialTab}
       />
       
       <PDFUploadModal
         isOpen={isPDFUploadModalOpen}
         onClose={() => setIsPDFUploadModalOpen(false)}
         onDocumentExtracted={handleDocumentExtracted}
+      />
+      <CompanySetupModal
+        isOpen={isCompanySetupModalOpen}
+        onClose={() => {
+          setIsCompanySetupModalOpen(false);
+          setNeedsCompanySetup(true);
+          // Show tooltip when modal is closed/skipped
+          setShowCompanyTooltip(true);
+        }}
+        onSave={(companyData) => {
+          setNeedsCompanySetup(false);
+          setCompanyDetails(companyData);
+          setShowCompanyTooltip(false);
+          console.log('Company details saved:', companyData);
+        }}
       />
 
       {extractedDocument && (
@@ -1150,13 +1728,6 @@ export const DocumentsPage = () => {
         />
       )}
 
-      <footer className="documents-page-footer">
-        <div className="documents-page-footer-content">
-          <Link to="/test-table" className="documents-page-footer-link">
-            Test Table Page
-          </Link>
-        </div>
-      </footer>
     </div>
   );
 };

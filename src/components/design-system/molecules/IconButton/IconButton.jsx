@@ -7,6 +7,7 @@ export const IconButton = ({
   icon,
   variant = 'default',
   size = 'md',
+  iconVariant = 'filled',
   onClick,
   disabled = false,
   'aria-label': ariaLabel,
@@ -23,7 +24,7 @@ export const IconButton = ({
       aria-label={ariaLabel}
       {...props}
     >
-      <Icon name={icon} size={size === 'sm' ? 'sm' : size === 'md' ? 'md' : size === 'lg' ? 'lg' : size === 'xl' ? 'xl' : 'md'} />
+      <Icon name={icon} size={size === 'sm' ? 'sm' : size === 'md' ? 'md' : size === 'lg' ? 'lg' : size === 'xl' ? 'xl' : 'md'} variant={iconVariant} />
     </Button>
   );
 };
