@@ -18,7 +18,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: var(--spacing-md) 0;
+  padding: var(--spacing-xs) 0;
 }
 
 .documents-content-container {
@@ -306,6 +306,8 @@
   justify-content: space-between;
   text-align: left;
   gap: var(--spacing-sm);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .documents-filter-select-button:hover {
@@ -323,11 +325,19 @@
   color: var(--color-text-primary);
   font-weight: var(--font-weight-semibold);
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .documents-filter-select-placeholder {
   color: var(--color-text-secondary);
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .documents-filter-select-chevron {
@@ -1005,7 +1015,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: var(--spacing-lg) 0;
+  padding: var(--spacing-lg) 0 var(--spacing-xs) 0;
   background: transparent;
 }
 
@@ -1038,11 +1048,11 @@
 
 .document-template-tag {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-md);
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
   background: var(--color-bg-white);
   border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
   border-radius: var(--border-radius-md);
@@ -1052,34 +1062,20 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-primary);
-  width: 120px;
-  height: 140px;
+  width: auto;
+  height: auto;
+  min-height: 40px;
   box-shadow: var(--shadow-sm);
   position: relative;
   overflow: hidden;
 }
 
-.document-template-tag::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--color-primary);
-  opacity: 0;
-  transition: var(--transition-all);
-}
 
 .document-template-tag:hover {
   background: var(--color-bg-light);
   border-color: var(--color-primary);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
-}
-
-.document-template-tag:hover::before {
-  opacity: 1;
 }
 
 .document-template-tag:active {
@@ -1089,7 +1085,7 @@
 
 .document-template-separator {
   width: 1px;
-  height: 100px;
+  height: 24px;
   background: var(--stroke-color-subtle);
   margin: 0 var(--spacing-xs);
   align-self: center;
@@ -1099,13 +1095,80 @@
 .document-template-tag .icon {
   flex-shrink: 0;
   color: var(--color-primary);
-  margin-bottom: var(--spacing-xs);
+  order: 1;
+  margin: 0;
+}
+
+/* Transport icon color */
+.document-template-tag:has(.document-tag-transport) .icon {
+  color: #1e40af;
+}
+
+/* Offer icon color */
+.document-template-tag:has(.document-tag-offer) .icon {
+  color: #166534;
+}
+
+/* Invoice icon color */
+.document-template-tag:has(.document-tag-invoice) .icon {
+  color: #92400e;
+}
+
+/* Agreement icon color */
+.document-template-tag:has(.document-tag-agreement) .icon {
+  color: #7c3aed;
+}
+
+/* Purchase Order icon color */
+.document-template-tag:has(.document-tag-purchase-order) .icon {
+  color: #155e75;
 }
 
 .document-template-tag span {
   line-height: 1.2;
   text-align: center;
   font-size: var(--font-size-sm);
+}
+
+.document-template-tag .document-tag {
+  position: static !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  order: 2;
+  margin: 0;
+}
+
+.document-template-tag .document-tag .luna-badge {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* Transport tag text color */
+.document-template-tag .document-tag-transport .luna-badge {
+  color: #1e40af !important;
+}
+
+/* Offer tag text color */
+.document-template-tag .document-tag-offer .luna-badge {
+  color: #166534 !important;
+}
+
+/* Invoice tag text color */
+.document-template-tag .document-tag-invoice .luna-badge {
+  color: #92400e !important;
+}
+
+/* Agreement tag text color */
+.document-template-tag .document-tag-agreement .luna-badge {
+  color: #7c3aed !important;
+}
+
+/* Purchase Order tag text color */
+.document-template-tag .document-tag-purchase-order .luna-badge {
+  color: #155e75 !important;
 }
 
 .documents-page-grid {

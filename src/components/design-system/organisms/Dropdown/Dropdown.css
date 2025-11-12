@@ -7,10 +7,10 @@
   max-width: 300px;
   max-height: 200px;
   overflow-y: auto;
-  background: var(--color-bg-white);
-  border: var(--border-width) solid var(--color-border-light);
+  background: #1A1A1A;
+  border: var(--border-width) solid #333;
   border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   isolation: isolate;
   animation: fadeInUp var(--duration-normal) var(--easing-subtle) forwards;
 }

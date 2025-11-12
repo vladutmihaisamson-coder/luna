@@ -50,13 +50,6 @@ export const ClientPreviewSimplified = ({
         </div>
       )}
       
-      {documentTypes && documentTypes.length > 0 && (
-        <div className="client-preview-simplified-types">
-          <span className="client-preview-simplified-label">Types:</span>
-          <span className="client-preview-simplified-value">{documentTypes.join(', ')}</span>
-        </div>
-      )}
-      
       <div className="client-preview-simplified-contact">
         <div className="client-preview-simplified-contact-item">
           <span className="client-preview-simplified-contact-label">Address:</span>

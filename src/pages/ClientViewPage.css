@@ -147,6 +147,12 @@
   font-family: var(--font-family);
 }
 
+.client-view-chart-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
 .client-view-documents-section {
   display: flex;
   flex-direction: column;

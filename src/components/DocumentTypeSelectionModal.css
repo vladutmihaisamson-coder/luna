@@ -373,7 +373,7 @@
   border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
   border-radius: 9999px;
   padding: 0 var(--spacing-md);
-  height: 44px;
+  height: var(--size-button-lg);
   width: 0;
   opacity: 0;
   overflow: hidden;

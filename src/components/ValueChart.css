@@ -1,0 +1,100 @@
+@import './design-system/tokens/designTokens.css';
+
+.value-chart-container {
+  width: 100%;
+  padding: var(--spacing-xl);
+  background: var(--color-bg-white);
+  border-radius: var(--border-radius-md);
+  border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+}
+
+.value-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.value-chart-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+  font-family: var(--font-family);
+}
+
+.value-chart-selector {
+  position: relative;
+  min-width: 200px;
+}
+
+.value-chart-selector-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-bg-white);
+  border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-md);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: var(--transition-all);
+}
+
+.value-chart-selector-button:hover {
+  border-color: var(--color-primary);
+  background: var(--color-bg-light);
+}
+
+.value-chart-selector-text {
+  flex: 1;
+  text-align: left;
+}
+
+.value-chart-content {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.value-chart-svg {
+  width: 100%;
+  min-width: 800px;
+  height: 300px;
+  display: block;
+}
+
+.chart-line {
+  transition: stroke var(--duration-fast) var(--easing-subtle);
+}
+
+.chart-point {
+  transition: r var(--duration-fast) var(--easing-subtle);
+  cursor: pointer;
+}
+
+.chart-point:hover {
+  r: 6;
+}
+
+.chart-area {
+  transition: fill-opacity var(--duration-fast) var(--easing-subtle);
+}
+
+@media (max-width: 768px) {
+  .value-chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .value-chart-selector {
+    width: 100%;
+    min-width: unset;
+  }
+}
+

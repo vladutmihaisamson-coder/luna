@@ -1,0 +1,137 @@
+@import './design-system/tokens/designTokens.css';
+
+.download-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: var(--spacing-lg);
+}
+
+.download-modal {
+  background: var(--color-bg-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10001;
+  position: relative;
+}
+
+.download-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  flex-shrink: 0;
+}
+
+.download-modal-title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.download-modal-content {
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.download-modal-description {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.download-format-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.download-format-option {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md);
+  border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: var(--transition-all);
+  background: var(--color-bg-white);
+}
+
+.download-format-option:hover {
+  background: var(--color-bg-light);
+  border-color: var(--color-primary);
+}
+
+.download-format-option.selected {
+  background: var(--color-bg-light);
+  border-color: var(--color-primary);
+  border-width: 2px;
+}
+
+.download-format-radio {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: var(--spacing-md);
+}
+
+.download-format-radio input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.download-format-label {
+  flex: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.download-format-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex: 1;
+}
+
+.download-format-name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.download-format-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.download-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  flex-shrink: 0;
+}
+

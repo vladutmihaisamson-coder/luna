@@ -69,7 +69,7 @@
   z-index: 100;
   opacity: 0;
   visibility: hidden;
-  transition: var(--transition-all);
+  transition: opacity 0.1s ease, visibility 0.1s ease;
   pointer-events: auto;
 }
 
@@ -80,8 +80,8 @@
 }
 
 .client-checkbox {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
   accent-color: var(--color-primary);
   pointer-events: auto;
@@ -92,18 +92,20 @@
   -webkit-appearance: none;
   -moz-appearance: none;
   position: relative;
-  transition: var(--transition-all);
+  transition: background-color 0.1s ease, border-color 0.1s ease;
 }
 
-.client-preview:hover .client-checkbox {
-  background: var(--color-bg-white);
-}
-
-.client-checkbox:hover {
+.client-checkbox:hover:not(:checked) {
   border-color: var(--color-primary);
 }
 
 .client-checkbox:checked {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  transition: none;
+}
+
+.client-checkbox:checked:hover {
   background: var(--color-primary);
   border-color: var(--color-primary);
 }
@@ -111,12 +113,48 @@
 .client-checkbox:checked::after {
   content: '';
   position: absolute;
-  left: 7px;
-  top: 3px;
-  width: 6px;
-  height: 12px;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 10px;
   border: solid white;
   border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
+  transform: translate(-50%, -60%) rotate(45deg);
+}
+
+.client-create-document-button-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--spacing-sm);
+  background: var(--color-bg-white);
+  border-top: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition-all);
+  pointer-events: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.client-preview:hover .client-create-document-button-wrapper {
+  opacity: 1;
+  visibility: visible;
+}
+
+.client-create-document-button {
+  width: 100%;
+  pointer-events: auto;
+  font-size: var(--font-size-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  min-height: 44px;
+  background: var(--color-bg-white) !important;
+  border-color: var(--stroke-color-subtle) !important;
+}
+
+.client-create-document-button:hover {
+  background: var(--color-bg-white) !important;
 }
 

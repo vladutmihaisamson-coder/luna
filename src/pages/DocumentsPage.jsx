@@ -17,6 +17,7 @@ import { PDFUploadModal } from '../components/PDFUploadModal';
 import { ExtractedDocumentViewer } from '../components/ExtractedDocumentViewer';
 import { CompanySetupModal } from '../components/CompanySetupModal';
 import { EmptyState } from '../components/EmptyState';
+import { DocumentTag } from '../components/DocumentTag';
 import { textContainsQuery } from '../utils/textHighlight';
 import './DocumentsPage.css';
 
@@ -97,7 +98,10 @@ export const DocumentsPage = () => {
   const headerSearchInputRef = useRef(null);
   const pageContainerRef = useRef(null);
 
-  const handleCreateNewDocument = () => {
+  const [createModalClient, setCreateModalClient] = useState(null);
+
+  const handleCreateNewDocument = (client = null) => {
+    setCreateModalClient(client);
     setCreateModalInitialTab('documents');
     setIsCreateModalOpen(true);
   };
@@ -1204,7 +1208,7 @@ export const DocumentsPage = () => {
               aria-label="Create Transport Document"
             >
               <Icon name="plus" size="md" variant="outline" />
-              <span>Transport</span>
+              <DocumentTag documentType="Transport">Transport</DocumentTag>
             </button>
             <button
               className="document-template-tag"
@@ -1212,7 +1216,7 @@ export const DocumentsPage = () => {
               aria-label="Create Offer Document"
             >
               <Icon name="plus" size="md" variant="outline" />
-              <span>Offer</span>
+              <DocumentTag documentType="Offer">Offer</DocumentTag>
             </button>
             <button
               className="document-template-tag"
@@ -1220,7 +1224,7 @@ export const DocumentsPage = () => {
               aria-label="Create Invoice Document"
             >
               <Icon name="plus" size="md" variant="outline" />
-              <span>Invoice</span>
+              <DocumentTag documentType="Invoice">Invoice</DocumentTag>
             </button>
             <button
               className="document-template-tag"
@@ -1228,7 +1232,7 @@ export const DocumentsPage = () => {
               aria-label="Create Agreement Document"
             >
               <Icon name="plus" size="md" variant="outline" />
-              <span>Agreement</span>
+              <DocumentTag documentType="Agreement">Agreement</DocumentTag>
             </button>
             <button
               className="document-template-tag"
@@ -1236,7 +1240,7 @@ export const DocumentsPage = () => {
               aria-label="Create Purchase Order Document"
             >
               <Icon name="plus" size="md" variant="outline" />
-              <span>Purchase Order</span>
+              <DocumentTag documentType="Purchase Order">Purchase Order</DocumentTag>
             </button>
             <div className="document-template-separator"></div>
             <button
@@ -1400,9 +1404,9 @@ export const DocumentsPage = () => {
                         </div>
                       </>
                     )}
-                    {showFilterButtonTooltip && (
+                    {showFilterButtonTooltip && !isFilterPanelOpen && (
                       <div className="filter-button-hover-tooltip">
-                        {isFilterPanelOpen ? "Close filters" : "Open filters"}
+                        Open filters
                       </div>
                     )}
                   </div>
@@ -1565,6 +1569,7 @@ export const DocumentsPage = () => {
                         address={client.address}
                         phone={client.phone}
                         email={client.email}
+                        onCreateDocument={() => handleCreateNewDocument(client)}
                       />
                     ))}
                   </div>
@@ -1694,9 +1699,13 @@ export const DocumentsPage = () => {
       )}
       <DocumentTypeSelectionModal
         isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
+        onClose={() => {
+          setIsCreateModalOpen(false);
+          setCreateModalClient(null);
+        }}
         onSelectDocumentType={handleSelectDocumentType}
         initialTab={createModalInitialTab}
+        client={createModalClient}
       />
       
       <PDFUploadModal

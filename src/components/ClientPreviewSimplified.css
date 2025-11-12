@@ -39,8 +39,7 @@
 
 .client-preview-simplified-info,
 .client-preview-simplified-total,
-.client-preview-simplified-date,
-.client-preview-simplified-types {
+.client-preview-simplified-date {
   display: flex;
   justify-content: space-between;
   align-items: center;

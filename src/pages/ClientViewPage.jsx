@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { BackButton } from '../components/BackButton';
 import { DocumentOverview } from '../components/DocumentOverview';
+import { ValueChart } from '../components/ValueChart';
 import { IconButton } from '../components/design-system/molecules/IconButton/IconButton';
 import { Button } from '../components/design-system/atoms/Button/Button';
 import './ClientViewPage.css';
@@ -344,6 +345,13 @@ export const ClientViewPage = () => {
               />
             </div>
           )}
+        </div>
+
+        <div className="client-view-chart-section">
+          <ValueChart 
+            documents={clientDocuments} 
+            documentTypes={clientInfo.documentTypes || []}
+          />
         </div>
 
         <div className="client-view-documents-section">

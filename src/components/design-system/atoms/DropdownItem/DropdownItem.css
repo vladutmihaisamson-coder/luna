@@ -9,23 +9,24 @@
   text-align: left;
   font-family: var(--font-family);
   font-size: var(--font-size-md);
-  color: var(--color-text-primary);
+  color: #E0E0E0;
   cursor: pointer;
   transition: var(--transition-background);
   box-sizing: border-box;
 }
 
 .dropdown-item:hover {
-  background: var(--color-bg-light);
+  background: #2A2A2A;
 }
 
 .dropdown-item:focus {
   outline: none;
-  background: var(--color-bg-hover);
+  background: #2A2A2A;
 }
 
 .dropdown-item-selected {
-  background: var(--color-bg-light);
+  background: #2A2A2A;
+  color: #FFFFFF;
   font-weight: var(--font-weight-medium);
 }
 

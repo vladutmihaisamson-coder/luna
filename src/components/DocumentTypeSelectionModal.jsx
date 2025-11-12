@@ -12,10 +12,12 @@ export const DocumentTypeSelectionModal = ({
   isOpen,
   onClose,
   onSelectDocumentType,
-  initialTab = 'documents'
+  initialTab = 'documents',
+  client = null // Client object with clientName, clientId, etc.
 }) => {
   const modalRef = useRef(null);
   const [activeTab, setActiveTab] = useState(initialTab); // 'documents' | 'clients' | 'users'
+  const hideTabs = client !== null; // Hide tabs when client is provided
   
   // Client form state
   const [clientName, setClientName] = useState('');
@@ -196,7 +198,8 @@ export const DocumentTypeSelectionModal = ({
   // Reset to initial tab when modal opens
   useEffect(() => {
     if (isOpen) {
-      setActiveTab(initialTab);
+      // If client is provided, always show documents tab
+      setActiveTab(client ? 'documents' : initialTab);
       // Reset form states
       setClientName('');
       setClientAddress('');
@@ -211,13 +214,16 @@ export const DocumentTypeSelectionModal = ({
       setTemplateSearchQuery('');
       setIsRoleDropdownOpen(false);
     }
-  }, [isOpen, initialTab]);
+  }, [isOpen, initialTab, client]);
 
   const renderDocumentsTab = () => (
     <>
       <div className="document-type-modal-description-wrapper">
         <p className="document-type-modal-description">
-          Select a document type to get started
+          {client 
+            ? `Select a document type to create for ${client.clientName}`
+            : 'Select a document type to get started'
+          }
         </p>
         <div className={`search-business-wrapper ${isTemplateSearchExpanded ? 'expanded' : ''}`}>
           {isTemplateSearchExpanded ? (
@@ -534,7 +540,9 @@ export const DocumentTypeSelectionModal = ({
     <div className="document-type-modal-overlay">
       <div className="document-type-modal" ref={modalRef}>
         <div className="document-type-modal-header">
-          <h2 className="document-type-modal-title">Create New</h2>
+          <h2 className="document-type-modal-title">
+            {client ? `Create Document for ${client.clientName}` : 'Create New'}
+          </h2>
           <IconButton
             icon="x"
             variant="ghost"
@@ -544,27 +552,29 @@ export const DocumentTypeSelectionModal = ({
           />
         </div>
 
-        <div className="document-type-modal-tabs">
-          <button
-            className={`modal-tab ${activeTab === 'documents' ? 'active' : ''}`}
-            onClick={() => setActiveTab('documents')}
-          >
-            Documents
-          </button>
-          <button
-            className={`modal-tab ${activeTab === 'clients' ? 'active' : ''}`}
-            onClick={() => setActiveTab('clients')}
-          >
-            Clients
-          </button>
-          <div className="modal-tab-separator"></div>
-          <button
-            className={`modal-tab ${activeTab === 'users' ? 'active' : ''}`}
-            onClick={() => setActiveTab('users')}
-          >
-            Users
-          </button>
-        </div>
+        {!hideTabs && (
+          <div className="document-type-modal-tabs">
+            <button
+              className={`modal-tab ${activeTab === 'documents' ? 'active' : ''}`}
+              onClick={() => setActiveTab('documents')}
+            >
+              Documents
+            </button>
+            <button
+              className={`modal-tab ${activeTab === 'clients' ? 'active' : ''}`}
+              onClick={() => setActiveTab('clients')}
+            >
+              Clients
+            </button>
+            <div className="modal-tab-separator"></div>
+            <button
+              className={`modal-tab ${activeTab === 'users' ? 'active' : ''}`}
+              onClick={() => setActiveTab('users')}
+            >
+              Users
+            </button>
+          </div>
+        )}
 
         <div 
           className="document-type-modal-content"
@@ -594,9 +604,9 @@ export const DocumentTypeSelectionModal = ({
             }
           }}
         >
-          {activeTab === 'documents' && renderDocumentsTab()}
-          {activeTab === 'clients' && renderClientsTab()}
-          {activeTab === 'users' && renderUsersTab()}
+          {(activeTab === 'documents' || hideTabs) && renderDocumentsTab()}
+          {!hideTabs && activeTab === 'clients' && renderClientsTab()}
+          {!hideTabs && activeTab === 'users' && renderUsersTab()}
         </div>
 
         {(activeTab === 'clients' || activeTab === 'users') && (

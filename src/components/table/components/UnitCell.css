@@ -66,6 +66,32 @@
   overflow-y: visible !important;
 }
 
+.unit-dropdown .dropdown {
+  background: var(--color-dark) !important;
+  border-color: #333 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.unit-dropdown .dropdown-item {
+  color: #E0E0E0 !important;
+  background: transparent !important;
+}
+
+.unit-dropdown .dropdown-item:hover {
+  background: #2A2A2A !important;
+  color: #E0E0E0 !important;
+}
+
+.unit-dropdown .dropdown-item:focus {
+  background: #2A2A2A !important;
+  color: #E0E0E0 !important;
+}
+
+.unit-dropdown .dropdown-item-selected {
+  background: #2A2A2A !important;
+  color: #FFFFFF !important;
+}
+
 .unit-dropdown-controls {
   display: flex;
   align-items: center;
