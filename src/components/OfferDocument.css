@@ -1,3 +1,33 @@
 /* Offer Document Styles */
 @import './table/tokens/tableTokens.css';
 @import './design-system/tokens/designTokens.css';
+
+.offer-invoice-reference {
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-top: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  border-bottom: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  background: var(--color-bg-light);
+}
+
+.offer-invoice-reference-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.offer-invoice-reference-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.offer-invoice-reference-number,
+.offer-invoice-reference-date,
+.offer-invoice-reference-total {
+  line-height: 1.5;
+}

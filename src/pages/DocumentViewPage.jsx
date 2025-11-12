@@ -6,6 +6,7 @@ import { FatturaDocument } from '../components/FatturaDocument';
 import { OfferDocument } from '../components/OfferDocument';
 import { AgreementDocument } from '../components/AgreementDocument';
 import { PurchaseOrderDocument } from '../components/PurchaseOrderDocument';
+import { DocumentPreviewModal } from '../components/DocumentPreviewModal';
 import { ShareModal } from '../components/ShareModal';
 import { SaveWarningModal } from '../components/SaveWarningModal';
 import { DownloadModal } from '../components/DownloadModal';
@@ -26,6 +27,7 @@ export const DocumentViewPage = () => {
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [isVersionPreviewOpen, setIsVersionPreviewOpen] = useState(false);
   const [previewVersionIndex, setPreviewVersionIndex] = useState(null);
+  const [previewDocument, setPreviewDocument] = useState(null);
 
   // Determine document type from URL query parameter or documentId
   const documentType = useMemo(() => {
@@ -39,6 +41,65 @@ export const DocumentViewPage = () => {
   }, [documentId, searchParams]);
 
   const isNewDocument = useMemo(() => documentId?.includes('-new-'), [documentId]);
+
+  // Generate random related documents mapping
+  const getRelatedDocuments = useMemo(() => {
+    // All available documents with full data
+    const allDocuments = [
+      { documentId: "test-doc-001", documentNumber: "TEST-2025-001", documentType: "Transport", title: "TEST_CLIENT_QA_001", total: null, currencySymbol: "€", content: "Test document", itemCount: null, direction: "out", needsAttention: false, signatureStatus: null, lastModified: "Nov 9, 2025", isEditable: true, country: null },
+      { documentId: "offer-001", documentNumber: "OF-2025-001", documentType: "Offer", title: "SACME", total: 125000.00, currencySymbol: "€", content: "Hydraulic Powder Compaction Press", itemCount: null, direction: "out", needsAttention: true, signatureStatus: "Awaiting Signature", lastModified: "Nov 7, 2025", isEditable: true, country: null },
+      { documentId: "fattura-001", documentNumber: "FT-2025-001", documentType: "Invoice", title: "Brembo S.p.A.", total: 87500.00, currencySymbol: "€", content: "Mechanical Press Rebuild Service", itemCount: null, direction: "out", needsAttention: true, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "transport-001", documentNumber: "TD-2025-001", documentType: "Transport", title: "Thyssenkrupp Materials", total: null, currencySymbol: "€", content: "Hydraulic Press HPC-300 Unit", itemCount: null, direction: "out", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "agreement-001", documentNumber: "AG-2025-001", documentType: "Agreement", title: "Schaeffler Group", total: null, currencySymbol: "€", content: "Retrofitting agreement", itemCount: 6, direction: "out", needsAttention: true, signatureStatus: "Pending", lastModified: "Nov 4, 2025", isEditable: false, country: null },
+      { documentId: "offer-002", documentNumber: "OF-2025-002", documentType: "Offer", title: "Industrial Press Systems", total: 95000.00, currencySymbol: "€", content: "Used mechanical powder compaction press", itemCount: null, direction: "out", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "fattura-002", documentNumber: "FT-2025-002", documentType: "Invoice", title: "Compaction Equipment Inc.", total: 45000.00, currencySymbol: "€", content: "Press retrofitting service", itemCount: null, direction: "out", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "transport-002", documentNumber: "TD-2025-002", documentType: "Transport", title: "Material Processing Corp.", total: null, currencySymbol: "€", content: "Shipment of new hydraulic compaction press", itemCount: null, direction: "out", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "offer-003", documentNumber: "OF-2025-003", documentType: "Offer", title: "Precision Press Manufacturing", total: 65000.00, currencySymbol: "€", content: "Purchase offer for used hydraulic press", itemCount: null, direction: "in", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "fattura-003", documentNumber: "FT-2025-003", documentType: "Invoice", title: "Press Rebuild Services", total: 32000.00, currencySymbol: "€", content: "Invoice for press rebuild service", itemCount: null, direction: "in", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "transport-003", documentNumber: "TD-2025-003", documentType: "Transport", title: "Heavy Equipment Logistics", total: null, currencySymbol: "€", content: "Received shipment of used mechanical press", itemCount: null, direction: "in", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "agreement-002", documentNumber: "AG-2025-002", documentType: "Agreement", title: "Custom Press Solutions", total: null, currencySymbol: "€", content: "Construction agreement for custom hydraulic press", itemCount: 5, direction: "out", needsAttention: false, signatureStatus: "Signed", lastModified: "Oct 29, 2025", isEditable: false, country: null },
+      { documentId: "offer-004", documentNumber: "OF-2025-004", documentType: "Offer", title: "Powder Processing Equipment", total: 78000.00, currencySymbol: "€", content: "Rebuilt mechanical press MPC-500", itemCount: null, direction: "out", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "fattura-004", documentNumber: "FT-2025-004", documentType: "Invoice", title: "Compaction Systems Ltd.", total: 55000.00, currencySymbol: "€", content: "Retrofitting service invoice", itemCount: null, direction: "out", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "transport-004", documentNumber: "TD-2025-004", documentType: "Transport", title: "Industrial Machinery Transport", total: null, currencySymbol: "€", content: "Delivery of retrofitted hydraulic press", itemCount: null, direction: "out", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "offer-005", documentNumber: "OF-2025-005", documentType: "Offer", title: "Press Equipment Suppliers", total: 42000.00, currencySymbol: "€", content: "Offer to purchase used mechanical press", itemCount: null, direction: "in", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "fattura-005", documentNumber: "FT-2025-005", documentType: "Invoice", title: "Equipment Restoration Services", total: 28000.00, currencySymbol: "€", content: "Received invoice for press inspection", itemCount: null, direction: "in", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "transport-005", documentNumber: "TD-2025-005", documentType: "Transport", title: "Specialized Cargo Services", total: null, currencySymbol: "€", content: "Received hydraulic press HPC-180", itemCount: null, direction: "in", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "agreement-003", documentNumber: "AG-2025-003", documentType: "Agreement", title: "Press Modernization Partners", total: null, currencySymbol: "€", content: "Service agreement for press modernization", itemCount: 7, direction: "out", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "po-001", documentNumber: "PO-2025-001", documentType: "Purchase Order", title: "Bosch Rexroth", total: null, currencySymbol: "€", content: "Programmable Logic Controller System", itemCount: 12, direction: "in", needsAttention: false, signatureStatus: "Signed", lastModified: "Nov 8, 2025", isEditable: false, country: null },
+      { documentId: "po-002", documentNumber: "PO-2025-002", documentType: "Purchase Order", title: "Festo AG", total: null, currencySymbol: "€", content: "Servo Motor and Control System", itemCount: 15, direction: "in", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "po-003", documentNumber: "PO-2025-003", documentType: "Purchase Order", title: "Siemens Industry", total: null, currencySymbol: "€", content: "Siemens S7-1500 PLC System", itemCount: 10, direction: "in", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "po-004", documentNumber: "PO-2025-004", documentType: "Purchase Order", title: "ABB Automation", total: null, currencySymbol: "€", content: "ABB AC Drive and Control System", itemCount: 14, direction: "in", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+      { documentId: "po-005", documentNumber: "PO-2025-005", documentType: "Purchase Order", title: "Parker Hannifin", total: null, currencySymbol: "€", content: "Servo Controller and Motion Control", itemCount: 11, direction: "in", needsAttention: false, signatureStatus: null, lastModified: null, isEditable: null, country: null },
+    ];
+
+    // Create a deterministic but seemingly random mapping based on documentId hash
+    const getHash = (str) => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+      }
+      return Math.abs(hash);
+    };
+
+    if (!documentId) return [];
+
+    // Filter out current document
+    const otherDocuments = allDocuments.filter(doc => doc.documentId !== documentId);
+    
+    // Use hash of documentId to deterministically select related documents
+    const hash = getHash(documentId);
+    const numRelated = 1 + (hash % 3); // 1-3 related documents
+    
+    const related = [];
+    for (let i = 0; i < numRelated && i < otherDocuments.length; i++) {
+      const index = (hash + i * 7) % otherDocuments.length;
+      related.push(otherDocuments[index]);
+    }
+
+    return related;
+  }, [documentId]);
 
   // Reset state when documentId or location changes
   useEffect(() => {
@@ -498,14 +559,32 @@ export const DocumentViewPage = () => {
             useWebPPI={true}
           />
         ) : documentType === 'offer' ? (
-          <OfferDocument 
-            key={documentId}
-            onHasChanges={setHasUnsavedChanges}
-            onSave={handleSave}
-            onRevert={handleRevert}
-            isEmpty={isNewDocument}
-            useWebPPI={true}
-          />
+          <>
+            <OfferDocument 
+              key={documentId}
+              onHasChanges={setHasUnsavedChanges}
+              onSave={handleSave}
+              onRevert={handleRevert}
+              isEmpty={isNewDocument}
+              useWebPPI={true}
+            />
+            {documentId === 'offer-001' && (
+              <div className="offer-invoice-reference">
+                <div className="offer-invoice-reference-label">Related Invoice:</div>
+                <div className="offer-invoice-reference-content">
+                  <div className="offer-invoice-reference-number">
+                    Invoice No: FT-2025-001
+                  </div>
+                  <div className="offer-invoice-reference-date">
+                    Date: Nov 6, 2025
+                  </div>
+                  <div className="offer-invoice-reference-total">
+                    Amount: €87,500.00
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         ) : documentType === 'agreement' ? (
           <AgreementDocument 
             key={documentId}
@@ -554,6 +633,26 @@ export const DocumentViewPage = () => {
               <span className="file-details-label">Last modified</span>
               <span className="file-details-value">{fileDetails.lastModified}</span>
             </div>
+            {getRelatedDocuments.length > 0 && (
+              <div className="file-details-item">
+                <span className="file-details-label">Related Documents</span>
+                <div className="file-details-related-links">
+                  {getRelatedDocuments.map((relatedDoc) => (
+                    <a 
+                      key={relatedDoc.documentId}
+                      href="#" 
+                      className="file-details-related-link"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setPreviewDocument(relatedDoc);
+                      }}
+                    >
+                      {relatedDoc.documentType} {relatedDoc.documentNumber}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           
           <div className="file-history-section">
@@ -651,6 +750,16 @@ export const DocumentViewPage = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {previewDocument && (
+        <DocumentPreviewModal
+          isOpen={!!previewDocument}
+          onClose={() => setPreviewDocument(null)}
+          showActions={true}
+          buttonText="Edit"
+          {...previewDocument}
+        />
       )}
     </div>
   );

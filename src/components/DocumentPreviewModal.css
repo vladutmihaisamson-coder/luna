@@ -1,0 +1,232 @@
+@import './design-system/tokens/designTokens.css';
+
+.document-preview-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  min-width: 100vw;
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: var(--spacing-lg);
+  animation: fadeIn var(--duration-fast) var(--easing-subtle) forwards;
+  overflow: hidden;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.document-preview-modal {
+  background: var(--color-bg-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 1200px;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10001;
+  position: relative;
+  animation: scaleIn var(--duration-normal) var(--easing-subtle) forwards;
+}
+
+.document-preview-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xl);
+  border-bottom: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.document-preview-modal-header * {
+  pointer-events: auto !important;
+}
+
+.document-preview-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-bottom: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.document-preview-modal-actions * {
+  pointer-events: auto !important;
+}
+
+.action-button-tooltip-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.action-button-tooltip {
+  position: absolute;
+  top: calc(100% + var(--spacing-sm));
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-dark);
+  color: var(--color-bg-white);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--duration-fast) var(--easing-subtle), visibility var(--duration-fast) var(--easing-subtle), transform var(--duration-fast) var(--easing-subtle);
+  transform: translateX(-50%) translateY(-4px);
+  z-index: var(--z-index-tooltip);
+  box-shadow: var(--shadow-md);
+  min-width: 120px;
+  max-width: 200px;
+  text-align: center;
+}
+
+.action-button-tooltip-wrapper:hover .action-button-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.action-button-tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: var(--color-dark);
+}
+
+.document-preview-modal-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.document-preview-modal-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--spacing-xl);
+  -webkit-overflow-scrolling: touch;
+  background: #fafafa;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.document-preview-modal-document-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.document-preview-modal-document {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: var(--spacing-lg) 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.document-preview-modal-document * {
+  pointer-events: none !important;
+  user-select: none !important;
+  cursor: default !important;
+}
+
+.offer-invoice-reference {
+  position: absolute;
+  bottom: var(--spacing-lg);
+  right: var(--spacing-lg);
+  padding: var(--spacing-md);
+  border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  border-radius: var(--border-radius-md);
+  background: var(--color-bg-white);
+  min-width: 250px;
+  max-width: 350px;
+  pointer-events: auto;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 10;
+  box-shadow: var(--shadow-md);
+}
+
+.offer-invoice-reference * {
+  pointer-events: auto !important;
+}
+
+.offer-invoice-reference-label {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.offer-invoice-reference-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.offer-invoice-reference-number,
+.offer-invoice-reference-date,
+.offer-invoice-reference-total {
+  line-height: 1.5;
+}
+
+.document-preview-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xl);
+  border-top: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.document-preview-modal-footer * {
+  pointer-events: auto !important;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+

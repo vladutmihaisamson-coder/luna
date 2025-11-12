@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { BackButton } from '../components/BackButton';
 import { DocumentOverview } from '../components/DocumentOverview';
+import { DocumentPreviewModal } from '../components/DocumentPreviewModal';
 import { ValueChart } from '../components/ValueChart';
 import { IconButton } from '../components/design-system/molecules/IconButton/IconButton';
 import { Button } from '../components/design-system/atoms/Button/Button';
@@ -11,6 +12,7 @@ export const ClientViewPage = () => {
   const { clientId } = useParams();
   const navigate = useNavigate();
   const [selectedDocuments, setSelectedDocuments] = useState(new Set());
+  const [previewDocument, setPreviewDocument] = useState(null);
 
   // Mock documents data - in a real app, this would come from an API
   const parseDate = (dateString) => {
@@ -378,6 +380,7 @@ export const ClientViewPage = () => {
                 currencySymbol="€"
                 isSelected={selectedDocuments.has(doc.documentId)}
                 onSelect={handleSelectDocument}
+                onPreview={setPreviewDocument}
                 content={doc.content}
                 itemCount={doc.itemCount}
                 direction={doc.direction}
@@ -418,6 +421,14 @@ export const ClientViewPage = () => {
           </div>
         </div>
       </div>
+
+      {previewDocument && (
+        <DocumentPreviewModal
+          isOpen={!!previewDocument}
+          onClose={() => setPreviewDocument(null)}
+          {...previewDocument}
+        />
+      )}
     </div>
   );
 };

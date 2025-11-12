@@ -1,5 +1,42 @@
 @import '../components/design-system/tokens/designTokens.css';
 
+.offer-invoice-reference {
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border: var(--stroke-weight-subtle) solid var(--stroke-color-subtle);
+  border-radius: var(--border-radius-md);
+  background: var(--color-bg-white);
+  max-width: 600px;
+  width: 100%;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative;
+  z-index: 1;
+}
+
+.offer-invoice-reference-label {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.offer-invoice-reference-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.offer-invoice-reference-number,
+.offer-invoice-reference-date,
+.offer-invoice-reference-total {
+  line-height: 1.5;
+}
+
 .document-view-page {
   display: flex;
   flex-direction: column;
@@ -25,7 +62,7 @@
 }
 
 /* Document components are placed in the center column */
-.document-view-content > *:not(.document-view-sidebar) {
+.document-view-content > *:not(.document-view-sidebar):not(.offer-invoice-reference) {
   grid-column: 2;
   justify-self: center;
   flex-shrink: 0;
@@ -35,6 +72,14 @@
   max-width: none;
   /* Ensure the document maintains its calculated width */
   box-sizing: border-box;
+}
+
+/* Invoice reference should also be in center column */
+.document-view-content > .offer-invoice-reference {
+  grid-column: 2;
+  justify-self: center;
+  width: 100%;
+  max-width: 600px;
 }
 
 /* Add large smooth shadow to documents on edit page */
@@ -264,6 +309,26 @@
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-primary);
+}
+
+.file-details-related-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+}
+
+.file-details-related-link {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: var(--transition-all);
+}
+
+.file-details-related-link:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
 }
 
 .file-history-list {

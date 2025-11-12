@@ -17,7 +17,7 @@ export const DocumentTypeSelectionModal = ({
 }) => {
   const modalRef = useRef(null);
   const [activeTab, setActiveTab] = useState(initialTab); // 'documents' | 'clients' | 'users'
-  const hideTabs = client !== null; // Hide tabs when client is provided
+  const hideTabs = client !== null && client !== undefined && client.clientName; // Hide tabs when client is provided with a name
   
   // Client form state
   const [clientName, setClientName] = useState('');
@@ -198,8 +198,8 @@ export const DocumentTypeSelectionModal = ({
   // Reset to initial tab when modal opens
   useEffect(() => {
     if (isOpen) {
-      // If client is provided, always show documents tab
-      setActiveTab(client ? 'documents' : initialTab);
+      // If client is provided with a name, always show documents tab
+      setActiveTab(client && client.clientName ? 'documents' : initialTab);
       // Reset form states
       setClientName('');
       setClientAddress('');
@@ -220,7 +220,7 @@ export const DocumentTypeSelectionModal = ({
     <>
       <div className="document-type-modal-description-wrapper">
         <p className="document-type-modal-description">
-          {client 
+          {client && client.clientName
             ? `Select a document type to create for ${client.clientName}`
             : 'Select a document type to get started'
           }
@@ -541,7 +541,7 @@ export const DocumentTypeSelectionModal = ({
       <div className="document-type-modal" ref={modalRef}>
         <div className="document-type-modal-header">
           <h2 className="document-type-modal-title">
-            {client ? `Create Document for ${client.clientName}` : 'Create New'}
+            {client && client.clientName ? `Create Document for ${client.clientName}` : 'Create New'}
           </h2>
           <IconButton
             icon="x"

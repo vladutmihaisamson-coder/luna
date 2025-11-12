@@ -86,7 +86,6 @@
 .client-view-map-container {
   margin-top: var(--spacing-lg);
   width: 100%;
-  max-width: 600px;
   height: 300px;
   border-radius: var(--border-radius-md);
   overflow: hidden;

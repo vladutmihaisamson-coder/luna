@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { DocumentPreviewSimplified } from './DocumentPreviewSimplified';
 import './DocumentOverview.css';
 
-export const DocumentOverview = ({ documentId, title, previewContent, documentNumber, date, documentType, total, currencySymbol = '€', isSelected, onSelect, searchQuery, content, itemCount, direction, needsAttention, signatureStatus, lastModified, isEditable, country }) => {
+export const DocumentOverview = ({ documentId, title, previewContent, documentNumber, date, documentType, total, currencySymbol = '€', isSelected, onSelect, searchQuery, content, itemCount, direction, needsAttention, signatureStatus, lastModified, isEditable, country, onPreview }) => {
   const navigate = useNavigate();
 
   const handleClick = useCallback((e) => {
@@ -16,8 +16,30 @@ export const DocumentOverview = ({ documentId, title, previewContent, documentNu
     }
     e.preventDefault();
     e.stopPropagation();
-    navigate(`/document/${documentId}`);
-  }, [documentId, navigate]);
+    
+    // If onPreview is provided, show preview modal instead of navigating
+    if (onPreview) {
+      onPreview({
+        documentId,
+        title,
+        documentNumber,
+        date,
+        documentType,
+        total,
+        currencySymbol,
+        content,
+        itemCount,
+        direction,
+        needsAttention,
+        signatureStatus,
+        lastModified,
+        isEditable,
+        country
+      });
+    } else {
+      navigate(`/document/${documentId}`);
+    }
+  }, [documentId, navigate, onPreview, title, documentNumber, date, documentType, total, currencySymbol, content, itemCount, direction, needsAttention, signatureStatus, lastModified, isEditable, country]);
 
   const handleCheckboxChange = useCallback((e) => {
     e.stopPropagation();
@@ -56,7 +78,27 @@ export const DocumentOverview = ({ documentId, title, previewContent, documentNu
             if (!documentId) {
               return;
             }
-            navigate(`/document/${documentId}`);
+            if (onPreview) {
+              onPreview({
+                documentId,
+                title,
+                documentNumber,
+                date,
+                documentType,
+                total,
+                currencySymbol,
+                content,
+                itemCount,
+                direction,
+                needsAttention,
+                signatureStatus,
+                lastModified,
+                isEditable,
+                country
+              });
+            } else {
+              navigate(`/document/${documentId}`);
+            }
           }
         }}
       >

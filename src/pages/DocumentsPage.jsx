@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DocumentOverview } from '../components/DocumentOverview';
 import { ClientOverview } from '../components/ClientOverview';
+import { DocumentPreviewModal } from '../components/DocumentPreviewModal';
 import { TransportDocument } from '../components/TransportDocument';
 import { OfferDocument } from '../components/OfferDocument';
 import { FatturaDocument } from '../components/FatturaDocument';
@@ -60,6 +61,7 @@ export const DocumentsPage = () => {
   const [showCompanyTooltip, setShowCompanyTooltip] = useState(false);
   const [itemsToShow, setItemsToShow] = useState(24); // Initial number of documents to show
   const [selectedDocuments, setSelectedDocuments] = useState(new Set());
+  const [previewDocument, setPreviewDocument] = useState(null);
   const [openDropdown, setOpenDropdown] = useState(null); // Track which filter pill dropdown is open
   const [openFilterPanelDropdown, setOpenFilterPanelDropdown] = useState(null); // Track which filter panel dropdown is open
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
@@ -101,12 +103,20 @@ export const DocumentsPage = () => {
   const [createModalClient, setCreateModalClient] = useState(null);
 
   const handleCreateNewDocument = (client = null) => {
-    setCreateModalClient(client);
-    setCreateModalInitialTab('documents');
+    if (client) {
+      // Client-specific modal: set client and show documents tab
+      setCreateModalClient(client);
+      setCreateModalInitialTab('documents');
+    } else {
+      // Generic modal: same as New Client button but with documents tab preselected
+      setCreateModalClient(null);
+      setCreateModalInitialTab('documents');
+    }
     setIsCreateModalOpen(true);
   };
 
   const handleCreateNewClient = () => {
+    setCreateModalClient(null);
     setCreateModalInitialTab('clients');
     setIsCreateModalOpen(true);
   };
@@ -1622,6 +1632,7 @@ export const DocumentsPage = () => {
                           currencySymbol="€"
                           isSelected={selectedDocuments.has(doc.documentId)}
                           onSelect={handleDocumentSelect}
+                          onPreview={setPreviewDocument}
                           searchQuery={searchQuery}
                           content={doc.content}
                           itemCount={doc.itemCount}
@@ -1698,6 +1709,7 @@ export const DocumentsPage = () => {
         </div>
       )}
       <DocumentTypeSelectionModal
+        key={createModalClient ? `client-${createModalClient.clientId}` : 'generic'}
         isOpen={isCreateModalOpen}
         onClose={() => {
           setIsCreateModalOpen(false);
@@ -1734,6 +1746,16 @@ export const DocumentsPage = () => {
           extractedData={extractedDocument}
           onSave={handleExtractedDocumentSave}
           onClose={handleExtractedDocumentClose}
+        />
+      )}
+
+      {previewDocument && (
+        <DocumentPreviewModal
+          isOpen={!!previewDocument}
+          onClose={() => setPreviewDocument(null)}
+          showActions={true}
+          buttonText="Edit"
+          {...previewDocument}
         />
       )}
 

@@ -15,6 +15,7 @@ export const FromTo = ({
   onToAddressChange,
   onFromSearch,
   onToSearch,
+  clients = [],
   className = ''
 }) => {
   const [isFromModalOpen, setIsFromModalOpen] = useState(false);
@@ -134,6 +135,7 @@ export const FromTo = ({
         address={toAddress}
         onSave={handleToSave}
         onSearch={onToSearch}
+        clients={clients}
       />
     </>
   );
